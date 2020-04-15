@@ -1,22 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {Text, View, Image, TouchableOpacity, ScrollView,AsyncStorage,FlatList} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
+import axios from 'axios';
 
-export default class SchoolMessage extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    let {} = this.props;
-    return (
-      <ScrollView>
-        <View>
-          <Text style={cs.archiveText}>
-            Hieronder staan alle berichten van je docent. Hier kun je alles
-            makkelijk teruglezen.
-          </Text>
-          <View style={cs.messageContainer}>
+
+Data=(props )=> {
+ 
+return(
+  <View>
+       <View style={cs.messageContainer}>
             <View style={cs.chatWrapper}>
               <View style={cs.infoSenderMessage}>
                 <Image
@@ -32,7 +25,10 @@ export default class SchoolMessage extends Component {
               <TouchableOpacity
                 style={{alignSelf: 'flex-end'}}
                 onPress={() => {
-                  this.props.navigation.navigate('ReadMessage');
+                 props.navigation.navigate('ReadMessage', {
+                  itemId: props.item,
+                  
+                });
                 }}>
                 <Text style={cs.moreBtn}>lees meer...</Text>
               </TouchableOpacity>
@@ -42,7 +38,7 @@ export default class SchoolMessage extends Component {
           <View style={cs.messageDateWrapper}>
             <Text style={cs.messageDateText}>Geplaatst op 05-10-2018</Text>
           </View>
-          <View style={cs.messageContainer}>
+          {/* <View style={cs.messageContainer}>
             <View style={cs.chatWrapper}>
               <View style={cs.infoSenderMessage}>
                 <Image
@@ -71,7 +67,60 @@ export default class SchoolMessage extends Component {
           </View>
           <View style={cs.messageDateWrapper}>
             <Text style={cs.messageDateText}>Geplaatst op 05-10-2018</Text>
-          </View>
+          </View> */}
+  </View>
+
+);}
+export default class SchoolMessage extends Component {
+  constructor(props) {
+    super(props);
+    this.state={allMessage:[]}
+  }
+
+
+  componentDidMount(){
+    this.getMessage()
+  }
+   
+  getMessage=async()=>{
+    axios
+    .post(
+      global.url + 'api/school/loadUserNotification',
+      {
+        type:2,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+      console.warn("%%%%%%%%%%%%%%%%%%%%%%%%%%",res.data)
+      if(res.data.msg=="success"){
+      this.setState({allMessage:res.data.data})}
+     
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+  render() {
+    let {} = this.props;
+    return (
+      <ScrollView>
+        <View>
+          <Text style={cs.archiveText}>
+            Hieronder staan alle berichten van je docent. Hier kun je alles
+            makkelijk teruglezen.
+          </Text>
+          <FlatList
+              data={this.state.allMessage}
+              renderItem={({ item }) => <Data item={item} navigation={this.props.navigation} />}
+              keyExtractor={item => item.id}
+      />
+         
         </View>
       </ScrollView>
     );

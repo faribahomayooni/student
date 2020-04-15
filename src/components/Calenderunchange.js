@@ -52,6 +52,18 @@ class CalendarsScreen extends Component {
      LOADMONTH:"",
      month:'',
      year:'',
+     date: {
+      // year: 2018,
+      // month: 3,
+      // day: 1,
+      // timestamp: 1519862400000,
+      // dateString: '2018-03-01',
+      year: 2018,
+      month: 3,
+      day: 1,
+      timestamp: 1519862400000,
+      dateString: '2018-03-01',
+    },
      changemodedate:[],
      resloadmonthattendance:"",
      modify:0
@@ -601,55 +613,12 @@ this.setState({dynamicdate:obj})
             },
           }}
           
-        //   onDayPress={async(day) => {
-          
-        //      this.setState({press:true})
-        //    var data=  this.state.studentstatus.filter(obj=>obj.date!==day.dateString)
-          
-        // await   this.setState({studentstatus:data})
-          
-        //     this.state.studentstatus.push({
-        //       date:day.dateString,
-        //       type:this.props.type,
-        //     });
-          
-        //    let obj = this.state.studentstatus.reduce(
-        //       (c, v) =>
-        //         Object.assign(c, {
-        //           [v]: {selected: true,disabled: true},
-        //           [v.date]: {
+          onDayPress={async(day) => {
+            this.props.navigation.navigate('PresenceCalendar', {
+              date: this.state.date,
+            });
             
-        //             customStyles: {
-        //               container: {
-        //                 width: '97%',
-        //                 backgroundColor:
-        //                   (v.type === 1 && '#E7B52E') ||
-        //                   (v.type === 2 && '#F64D53') ||
-        //                   (v.type === 3 && '#88C755'),
-        //                 borderRadius: 0,
-        //               },
-        
-        //               text: {
-        //                 color: 'white',
-        //               },
-        //             },
-        //           },
-              
-        //         }),
-        //       {},
-        //     );
-        
-         
-        //      this.setState({dynamicdate: obj});
-        //      this.loadStudentInfo()
-        //      this.setState({markedDates:{...this.state.dynamicdate,...this.state.markedDates}})
-           
-        //       var change=  this.state.changemodedate.filter(obj=>obj.date!==day.dateString)
-        //     this.setState({changemodedate:change})
-        //     this.state.changemodedate.push({date:day.dateString,
-        //       type:this.props.type})
-        //       this.props.savedate(day.dateString,this.props.type,this.state.resloadmonthattendance)
-        //   }}
+          }}
            current={this.state.selected}
           minDate={'2018-02-01'}
           markingType={'custom'}

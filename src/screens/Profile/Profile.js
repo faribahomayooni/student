@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, AsyncStorage, ScrollView} from 'react-native';
+import {View, Text, AsyncStorage, ScrollView,Dimensions} from 'react-native';
 import {commonStyle as cs} from '../../styles/common/styles';
 import {Button} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,18 +8,90 @@ import Progress from './../../components/Progress';
 import axios from 'axios';
 import {apiActions} from '../../actions';
 
+const {width,height}=Dimensions.get('window')
+
 class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
       studentInfo: null,
+      groupname:"",
+      groupid:"",
+      TeacherLastName:'',
+      TeacherLastName:"",
+      targetName:""
     };
   }
-  componentDidMount() {
+  componentDidMount=async()=> {
+ await  this.loadStudentGroup(-1);
+  
     const {dispatch} = this.props;
-    dispatch(apiActions.loadStudentInfo());
+     dispatch(apiActions.loadStudentInfo());
     // console.warn(info);
     this.loadStudentInfo();
+    // console.warn("!!!!!!!!!!!",this.props.loadStudentGroup &&  this.props.loadStudentGroup)
+  // this.getTeacherName()
+    
+  }
+
+   loadStudentGroup=async(studentId) =>{  
+      axios
+        .post(
+          global.url + 'api/student/loadStudentGroup',
+          {
+            studentId: studentId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': await AsyncStorage.getItem('@token'),
+            },
+          },
+        )
+        .then(async(res) => {
+          console.warn("***********",res.data.data[0].FLD_FK_GROUP)
+          if (res.data.msg === 'success') {
+            this.setState({groupname:res.data.data[0].FLD_GROUP_NAME,groupid:await res.data.data[0].FLD_FK_GROUP})   
+           this. getTeacherName(res.data.data[0].FLD_FK_GROUP)
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  
+    
+    
+  }
+  getTeacherName=async(id)=>{
+    console.warn("{{{{{{{{{{{{{{{{{{",this.state.groupid)
+    axios
+    .post(
+      global.url + 'api/school/loadGroupInfo',
+      {
+        groupId: id,
+       
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+  
+      console.warn("++++++++++++++++++++++++",res)
+      if (res.data.msg === 'success') {
+       
+          this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
+        
+        
+      }
+    })
+    .catch(error => {
+      console.warn("99999999999",error);
+    });
+  
   }
 
   loadStudentInfo = async () => {
@@ -46,28 +118,32 @@ class Profile extends Component {
   };
 
   render() {
+    console.warn(this.props.loadStudentGroup &&this.props.loadStudentGroup[0].FLD_GROUP_NAME ,"================.load student group")
     const {studentInfo} = this.props;
     return (
       <ScrollView>
         <View style={cs.mainContainer}>
-          <View style={cs.profileInfo}>
+          <View style={[cs.profileInfo]}>
             <Text>
               <Text style={cs.BoldProfileInfo}>
                 {this.state.studentInfo !== null &&
                   this.state.studentInfo.data[0].firstname}
               </Text>
               <Text style={cs.RegularProfileInfo}>, je zit in groep </Text>
-              <Text style={cs.colorProfileInfo}>VH_2019_B1.</Text>
+                 
+                  
+                
             </Text>
+            <Text style={[cs.colorProfileInfo]}>{this.state.groupname}</Text>
             <Text>
               <Text style={cs.RegularProfileInfo}>
-                Je volgt een <Text style={cs.colorProfileInfo}>B1 </Text>traject
+                Je volgt een <Text style={cs.colorProfileInfo}>{this.state.targetName} </Text>traject
                 en je
               </Text>
             </Text>
             <Text>
               <Text style={cs.RegularProfileInfo}>
-                docent is <Text style={cs.colorProfileInfo}>Jannie Make.</Text>
+                docent is <Text style={cs.colorProfileInfo}>{this.state.teacherName}{' '}{this.state.teacherlastname}</Text>
               </Text>
             </Text>
           </View>
@@ -77,7 +153,7 @@ class Profile extends Component {
           </View>
           <View style={{alignItems: 'center'}}>
             <Text style={cs.progressText}>
-              <Text style={cs.BoldProgressInfo}>
+              <Text style={[cs.BoldProgressInfo]}>
                 {' '}
                 {this.state.studentInfo !== null &&
                   this.state.studentInfo.data[0].firstname}{' '}
@@ -128,6 +204,7 @@ const mapStateToProps = state => {
   return {
     studentInfo: state.api.studentInfo,
     user: state.api.user,
+    loadStudentGroup: state.api.loadStudentGroup,
   };
 };
 

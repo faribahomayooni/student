@@ -1,4 +1,0 @@
-#Mon Mar 09 12:11:14 IRST 2020
-base.0=C\:\\Users\\Asus\\Desktop\\nt2\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-path.0=classes.dex
-renamed.0=classes.dex

@@ -17,4 +17,5 @@ export const allConstants = {
   LOAD_MONTH_ATTENDANCE: 'LOAD_MONTH_ATTENDANCE',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   LOAD_STUDENT_INFO: 'LOAD_STUDENT_INFO',
+  group_id:'group-id'
 };

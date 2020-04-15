@@ -2,13 +2,15 @@
 import React, {Component, useState, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {commonStyle as cs} from '../../styles/common/styles';
-import {View, ScrollView} from 'react-native';
+import {View, ScrollView,ActivityIndicator,Text,ToastAndroid,AsyncStorage} from 'react-native';
 import {Button} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {apiActions} from '../../actions';
+import axios from 'axios';
 import NavigationService from '../../../src/routers/NavigationService';
 
 const PhotoPopUp = props => {
+  const [addCost, setCost] = useState(false);
   const id = props.navigation.getParam('id');
   const costTypeId = props.navigation.getParam('costTypeId');
   // const date = props.navigation.getParam('date');
@@ -17,19 +19,83 @@ const PhotoPopUp = props => {
   const costFileName = props.navigation.getParam('costFileName');
   const studentId = props.navigation.getParam('studentId');
 
+  
+const   addTravel=async(
+  id,
+  costTypeId,
+  date,
+  costFile,
+  costFileName,
+  studentId,
+) =>{
+    axios
+      .post(
+        global.url + 'api/student/addTravelCost',
+        {
+          id: id,
+          costTypeId: costTypeId,
+          date: date,
+          costFile: costFile,
+          costFileName: costFileName,
+          studentId: studentId,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        },
+      )
+      .then(res => {
+        console.warn('result', res);
+        if (res.data.msg === 'success') {
+          ToastAndroid.show(
+            'Travel cost add successful',
+            ToastAndroid.SHORT,
+          );
+          setCost(false)
+        //   showToast('Travel cost add successful');
+         NavigationService.navigate('TravelsCostSetting');
+         
+        }
+      })
+      .catch(error => {
+        setCost(false)
+        ToastAndroid.show(
+         error,
+          ToastAndroid.SHORT,
+        );
+         
+        // );
+         showToast(error);
+        console.warn('error2', error);
+      });
+
+   
+
+}
+
+
   const addTravelCost = () => {
+   setCost(true)
     console.warn('costTypeId', costTypeId);
     console.warn('date', date);
-    props.dispatch(
-      apiActions.addTravelCost(
-        id,
-        costTypeId,
-        date,
-        costFile,
-        costFileName,
-        studentId,
-      ),
-    );
+    addTravel(id,
+      costTypeId,
+      date,
+      costFile,
+      costFileName,
+      studentId)
+    // props.dispatch(
+    //   apiActions.addTravelCost(
+    //     id,
+    //     costTypeId,
+    //     date,
+    //     costFile,
+    //     costFileName,
+    //     studentId,
+    //   ),
+    // );
   };
   
   const cancel = () => {
@@ -37,8 +103,18 @@ const PhotoPopUp = props => {
   };
   return (
     <ScrollView>
+     
+     
       <View style={cs.mainContainer}>
-        <View style={cs.textLoginContainer}>
+      { addCost===true &&
+      <View  style={{position:"absolute",top:150,left:160,zIndex:2}}>
+        <ActivityIndicator   size={"large"}/>
+        <Text style={{color:"green"}}>Please wait</Text>
+
+     </View>
+
+      }
+        <View style={addCost!==true ? cs.textLoginContainer:cs.loading}>
           <View style={cs.ImageSectionsZone}>
             <View>{props.navigation.getParam('renderFileData')}</View>
           </View>

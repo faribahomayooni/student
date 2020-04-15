@@ -10,6 +10,10 @@ class HelpCentre extends Component {
     super(props);
     this.state = {};
   }
+
+
+
+  
   render() {
     return (
       <ScrollView>

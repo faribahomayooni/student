@@ -15,7 +15,7 @@ const PickerScreen = props => {
     data = props.data;
   }
   const Item = Picker.Item;
-  console.log(props.data);
+  console.warn("__________________________________+++***********************",props.data?props.data:"===hi fariba");
   return (
     <View style={cs.pickerContainer}>
       <Picker

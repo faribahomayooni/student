@@ -103,6 +103,14 @@ export const commonStyle = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
   },
+
+  loading:{
+    zIndex: 2,
+    width: screenWidth,
+    height: screenHeight,
+    backgroundColor: 'lightgray',
+    opacity: 0.5,
+  },
   textLoginModalContainer: {
     flex: 1,
     marginTop: 20,
@@ -755,6 +763,7 @@ export const commonStyle = StyleSheet.create({
   },
   profileInfo: {
     alignItems: 'center',
+    justifyContent:"center"
   },
   BoldProfileInfo: {
     color: COLORS.primaryTextColor,

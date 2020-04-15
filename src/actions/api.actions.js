@@ -23,6 +23,7 @@ export const apiActions = {
   loadMonthAttendance,
   forgotPassword,
   loadStudentInfo,
+ 
 };
 
 let url = 'http://192.168.1.46:3100/';
@@ -544,7 +545,7 @@ function loadMonthAttendance(groupId, userId, monthId) {
         {
           groupId: groupId,
           userId: userId,
-          monthId: 2,
+          monthId: monthId,
         },
         {
           headers: {

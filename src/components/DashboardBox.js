@@ -1,9 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, Image} from 'react-native';
+import React, {Component,useState,useEffect} from 'react';
+import {Text, View, TouchableOpacity, Image,AsyncStorage} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import {apiActions} from '../actions';
 import {connect} from 'react-redux';
+import messaging from '@react-native-firebase/messaging';
+
 
 class DashboardBox extends Component {
   constructor(props) {
@@ -11,9 +13,49 @@ class DashboardBox extends Component {
   }
 
   componentDidMount() {
-    console.warn('hi hi');
+    
+    this.checkPermission();
     const {dispatch} = this.props;
     dispatch(apiActions.loadBasicList(30));
+  }
+
+
+
+   registerAppWithFCM=async ()=> {
+    await messaging().registerDeviceForRemoteMessages();
+  }
+
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+        this.getToken();
+    } else {
+        this.requestPermission();
+    }
+  }
+  
+    //3
+  async getToken() {
+    let fcmToken = await AsyncStorage.getItem('fcmToken');
+    if (!fcmToken) {
+        fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            // user has a device token
+            await AsyncStorage.setItem('fcmToken', fcmToken);
+        }
+    }
+  }
+  
+    //2
+  async requestPermission() {
+    try {
+        await firebase.messaging().requestPermission();
+        // User has authorised
+        this.getToken();
+    } catch (error) {
+        // User has rejected permissions
+        console.log('permission rejected');
+    }
   }
 
   render() {

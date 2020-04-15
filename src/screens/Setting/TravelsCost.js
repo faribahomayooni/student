@@ -10,7 +10,6 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import axios from 'axios';
 import {Button} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Modal from 'react-native-modal';
@@ -20,7 +19,9 @@ import {apiActions} from '../../actions';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const TravelsCostSetting = props => {
-  const [selected, changeSelected] = useState();
+  const [selected, changeSelected] = useState(
+    props.navigation.getParam('basicListData')!==undefined &&  props.navigation.getParam('basicListData')[0].code,
+  );
   const [isModalVisible, updateModalVisible] = useState(false);
   const [fileData, updateFileData] = useState('');
   const [fileUri, updateFileUri] = useState('');
@@ -150,34 +151,6 @@ const TravelsCostSetting = props => {
         });
       }
     });
-  };
-
-  useEffect = async () => {
-    axios
-      .post(
-        global.url + 'api/student/loadMonthAttendance',
-        {
-          groupId: groupId,
-          userId: userId,
-          monthId: monthId,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-access-token': await AsyncStorage.getItem('@token'),
-          },
-        },
-      )
-      .then(res => {
-        console.warn('responseeee', res);
-        if (res.data.msg === 'success') {
-          // dispatch(NavigationService.navigate('Presence'));
-          return;
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
   };
 
   const toggleModal = () => {

@@ -18,22 +18,18 @@ import moment from 'moment';
 
 var count = 0;
 const {width, height} = Dimensions.get('window');
+const _format = 'YYYY-MM-DD'
+const _today = moment().format(_format)
+const _maxDate = moment().add(15, 'days').format(_format)
+// It is not possible to reserve some to current day.
+let _markedDates = {
+    [_today]: {disabled: true},disableTouchEvent: true 
+}
 class CalendarsScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      nextDays: [
-        {date: '2020-02-01', type: 1},
-        {date: '2020-02-05', type: 3},
-        {date: '2020-02-08', type: 3},
-        {date: '2020-02-07', type: 1},
-        {date: '2020-02-18', type: 2},
-        {date: '2020-02-17', type: 2},
-        {date: '2020-02-28', type: 1},
-        {date: '2020-02-29', type: 1},
-      ],
-
       selected: '',
       dynamicdate: [],
       abdate: null,
@@ -167,7 +163,7 @@ class CalendarsScreen extends Component {
             return <Text>{items}</Text>;
           })}
         </View> */}
-        <Calendar
+        {/* <Calendar
           onMonthChange={month => {
             this.onDayPress(month);
           }}
@@ -200,9 +196,9 @@ class CalendarsScreen extends Component {
           current={this.state.selected}
           minDate={'2019-02-01'}
           markingType={'custom'}
-          markedDates={this.state.dynamicdate}
+          markedDates={_markedDates}
           hideArrows={false}
-        />
+        /> */}
       </ScrollView>
     );
   }

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "563348177292",
+    "firebase_url": "https://nt2student-e6808.firebaseio.com",
+    "project_id": "nt2student-e6808",
+    "storage_bucket": "nt2student-e6808.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563348177292:android:bf85246096af75d67ed6a9",
+        "android_client_info": {
+          "package_name": "com.NT2Student"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563348177292-q0nc8c4ren4r02698qrgja7qchvrnvev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCd8XV5x0zRZwr_l1ymyF7vraVCjKknYzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563348177292-q0nc8c4ren4r02698qrgja7qchvrnvev.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

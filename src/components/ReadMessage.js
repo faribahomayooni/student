@@ -11,6 +11,11 @@ import {connect} from 'react-redux';
 import {commonStyle as cs} from './../styles/common/styles';
 
 function ReadMessage(props) {
+  const { params } = props.navigation.state;
+  const itemId = params ? params.itemId : null;
+  const otherParam = params ? params.otherParam : null;
+console.warn("**************$$$$$$$$$$$$$$",itemId)
+
   return (
     <View style={{backgroundColor: '#F2F3F7'}}>
       <View style={cs.messageContainer}>
@@ -26,6 +31,7 @@ function ReadMessage(props) {
             Er gaat een nieuwe ONA cursus beginnen in December 2019. Geef jezelf
             op!
           </Text>
+          {/* <Text>itemId: {JSON.stringify(itemId)}</Text> */}
           <Text style={cs.messageText}>
             De cursus is de laatste van dit jaar. Er is plaats voor 12 cursisten
             maximaal.

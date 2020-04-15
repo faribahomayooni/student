@@ -1,6 +1,6 @@
 /* eslint-disable radix */
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import React, {Component, useDebugValue} from 'react';
 import {connect} from 'react-redux';
 import {
   View,
@@ -9,7 +9,9 @@ import {
   ActivityIndicator,
   Dimensions,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage,
+  ToastAndroid
 } from 'react-native';
 import {commonStyle as cs} from '../../styles/common/styles';
 import CalendarsScreen from './../../components/CalendarGroup';
@@ -17,7 +19,7 @@ import CalendarsScreen from './../../components/CalendarGroup';
 import {Button} from './../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {apiActions} from '../../actions';
-import AsyncStorage from '@react-native-community/async-storage';
+// import AsyncStorage from '@react-native-community/async-storage';
 import PickerScreen from './../../components/Picker';
 import axios from 'axios';
 
@@ -28,6 +30,7 @@ class PresenceCalendar extends Component {
     this.state = {
       group: 0,
       count: 0,
+      changedata:[],
       selected: '',
       groupName: '',
       groupId: '',
@@ -35,21 +38,36 @@ class PresenceCalendar extends Component {
       type:3,
       id:"",
       change:false,
+      dateserver:"",
+      teacherName:"",
+      studentName:"",
+      modify:true,
+      teacherlastname:"",
+      targetName:'',
+      studentInfo:null,
       month: parseInt(
-        this.props.navigation.getParam('date').dateString.substring(5, 7),
+         this.props.navigation.getParam('date').dateString.substring(5, 7),
         10,
       ),
     };
     // this.getGroupFunction = this.getGroupFunction.bind(this);
   }
 
+  changegroup=(mode)=>{
+    setTimeout(()=>{this.setState({modify: false})},10000);
+    // console.warn("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+    // this.setState({modify:mode===1?false:true})
+
+  }
+
    getGroupFunction= async(newGroup)=> {
-  console.warn("********************************************************************hihi")
+     this. getTeacherName()
+  // console.warn("********************************************************************hihi")
    
     this.setState({group: this.state.group + 1});
     this.setState({change:true})
     const userId = parseInt(await AsyncStorage.getItem('@userId'));
-    console.warn('userId', userId);
+    // console.warn('userId', userId);
     if(this.state.id!==newGroup.FLD_FK_GROUP){
       this.setState({id:newGroup.FLD_FK_GROUP})
       this.setState({count:this.state.count+1})
@@ -59,7 +77,7 @@ class PresenceCalendar extends Component {
       groupId: newGroup.FLD_FK_GROUP,
     });
     // this.setState({id:newGroup.FLD_FK_GROUP})
-    console.warn('dsfdf', newGroup.FLD_FK_GROUP, userId, this.state.month);
+    // console.warn('dsfdf', newGroup.FLD_FK_GROUP, userId, this.state.month);
     // this.loadMonthAttendance(newGroup.FLD_FK_GROUP, userId, this.state.month);
     this.props.dispatch(
       apiActions.loadMonthAttendance(
@@ -101,11 +119,133 @@ class PresenceCalendar extends Component {
   // };
 
   async componentDidMount() {
+
+  this.loadStudentInfo()
+  
     // this.loadStudentGroup(-1);
     this.props.dispatch(apiActions.loadStudentGroup(-1));
     this.loadMonthAttendance();
   }
 
+
+  getTeacherName=async()=>{
+    console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
+    axios
+    .post(
+      global.url + 'api/school/loadGroupInfo',
+      {
+        groupId: this.state.id,
+       
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+  
+      console.warn("++++++++++++++++++++++++",res.data.data[0])
+      if (res.data.msg === 'success') {
+       
+          this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
+        
+        
+      }
+    })
+    .catch(error => {
+      console.warn(error);
+    });
+  
+  }
+ 
+
+  savedate=async(date,type,dateinfo)=>{
+    
+    this.props.loadMonthAttendance.filter(obj=>{
+    // console.warn("****************************************",obj)
+   
+    if((obj.FLD_DATE.slice(0, 10)===date)===true){
+     
+    
+      type===1 &&  (obj['obj.FLD_IS_LATE ']=1);
+      type===3 &&(obj['FLD_ISPRESENT']=1)
+      type===2 &&( obj['FLD_ISPRESENT']=0) || (obj['FLD_IS_LATE']=0) 
+      // console.warn("2222222222222222222",obj)
+      this.state.changedata.push(obj)
+    }
+  
+   
+  })
+//  console.warn("======================+++++++++",this.state.changedata)
+
+  
+
+  }
+
+  loadStudentInfo = async () => {
+    axios
+      .get(global.url + 'api/student/loadInfo', {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      })
+      .then(res => {
+        this.setState({studentInfo: res.data});
+        console.warn('===>res when call twice for component', res);
+        if (res.data.msg === 'success') {
+        }
+        if (res.data.msg === 'fail') {
+          console.warn('fail', res.data);
+          return;
+        }
+      })
+      .catch(error => {
+        console.warn('error', error);
+      });
+  };
+  
+
+
+  SaveBtn=async()=>{
+    for(var i=0;i<this.state.changedata.length;i++){
+    
+      var info=this.state.changedata[i]
+      // console.warn("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",info)
+     
+        axios
+        .post(
+          global.url + 'api/student/saveAttendance',
+          {
+            id: this.state.changedata[i].FLD_PK_STUDENT_ATTENDANCE,
+            isPresent:this.state.changedata[i].FLD_ISPRESENT,
+            isLate:this.state.changedata[i].FLD_IS_LATE
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': await AsyncStorage.getItem('@token'),
+            },
+          },
+        )
+        .then(res => {
+        //  console.warn("ffffffffffffffffffffffff",res.data)
+          if (res.data.msg === 'success') {
+            ToastAndroid.show(
+              'Twoje zmiany zostały pomyślnie zarejestrowane',
+              ToastAndroid.SHORT,
+            );
+            this.props.navigation.navigate('Presence')
+           
+          }
+        })
+        .catch(error => {
+          console.warn(error);
+        });
+      }
+  }
   // loadStudentGroup = async studentId => {
   //   console.warn('ttttttttttttttttttttt', await AsyncStorage.getItem('@token'));
   //   axios
@@ -132,16 +272,42 @@ class PresenceCalendar extends Component {
   // };
 
   render() {
+  
     const {loadMonthAttendance} = this.props;
-    console.warn('count in parent', this.state.count);
-    console.warn('loadMonthAttendance', loadMonthAttendance);
+    // console.warn('count in parent', this.state.count);
+    // console.warn('loadMonthAttendance', loadMonthAttendance);
     return (
       <ScrollView>
+       
         <View
-          style={
-            this.props.loadMonthAttendance !== undefined ? null : styles.overlay
-          }>
+        pointerEvents={(this.props.loadMonthAttendance===undefined || this.state.modify===true) ? 'none':null}
+         style={{
+            ...(  this.props.loadMonthAttendance === undefined  || this.state.modify===true  &&  {
+             
+              zIndex: 2,
+              width: width,
+              height: height,
+              backgroundColor: 'lightgray',
+              opacity: 0.5,
+            }),
+          }}>
           <View style={cs.mainContainer}>
+          {this.props.loadMonthAttendance === undefined || this.state.modify===true  && (
+            <View
+              style={{
+                position:"absolute",
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: width -width/10,
+                marginLeft:width/2-45,
+                zIndex: 3,
+              }}>
+              <ActivityIndicator size="large" color="#2e7d32" />
+              <Text style={{color: '#2e7d32', textAlign: 'center'}}>
+                please wait
+              </Text>
+            </View>
+          )}
             <View style={cs.profileInfo} />
             {/* <View
             style={{
@@ -169,10 +335,19 @@ class PresenceCalendar extends Component {
             <View>
               <View style={{alignItems: 'center', marginTop: 20}}>
                 <View style={{alignItems: 'center', direction: 'row'}}>
+                
+                    {/* <View>
+                        <Text style={cs.RegularProfileInfo}> Imię nauczyciela:</Text> 
+                        <Text style={cs.BoldProfileInfo}>
+                     
+                      {this.state.teacherName}  {this.state.teacherlastname}
+                    </Text>
+                    </View> */}
+                   
                   <Text>
-                    <Text style={cs.BoldProfileInfo}>
-                      {/* TODO: */}
-                      Rania
+                  <Text style={cs.BoldProfileInfo}>
+                  {this.state.studentInfo !== null &&
+                  this.state.studentInfo.data[0].firstname}{' '}
                     </Text>
                     <Text style={cs.RegularProfileInfo}>, jouw groep </Text>
                   </Text>
@@ -221,6 +396,10 @@ class PresenceCalendar extends Component {
                     groupId={this.state.id}
                     change={this.state.change}
                     count={this.state.count}
+                    dateinmonth={this.props.loadMonthAttendance!==undefined && this.props.loadMonthAttendance}
+                    month={this.state.month}
+                    savedate={this.savedate}
+                    changegroup={this.changegroup}
                   />
                 </View>
               </View>
@@ -233,8 +412,8 @@ class PresenceCalendar extends Component {
                   name="AANWEZIG"
                   imgSource={require('./../../assets/images/student/presence/saveImge.png')}
                   colorButton="#CD51C9"
-                  onClick={() =>
-                    this.props.navigation.navigate('PresenceCalendar')
+                  onClick={()=>
+                    this.SaveBtn()
                   }
                 />
                 <View
