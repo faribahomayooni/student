@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.inlocomedia.android:android-sdk-core:4.7.0@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/766bc9071d6929b9ec912ddf520cb7da/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/766bc9071d6929b9ec912ddf520cb7da/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/766bc9071d6929b9ec912ddf520cb7da/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.inlocomedia.android/android-sdk-core/4.7.0/1dc57e14754f5dde98155399af324ed5a2e24679/android-sdk-core-4.7.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
