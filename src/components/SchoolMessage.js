@@ -87,7 +87,7 @@ export default class SchoolMessage extends Component {
     .post(
       global.url + 'api/school/loadUserNotification',
       {
-        type:2,
+        type:1,
       },
       {
         headers: {
@@ -97,13 +97,13 @@ export default class SchoolMessage extends Component {
       },
     )
     .then(res => {
-      console.warn("%%%%%%%%%%%%%%%%%%%%%%%%%%",res.data)
+      console.warn("%%%%%%%%%%%%%%%%%%%%%%%%%%",res)
       if(res.data.msg=="success"){
       this.setState({allMessage:res.data.data})}
      
     })
     .catch(error => {
-      console.log(error);
+      console.warn("ssssssssss",error);
     });
   }
   render() {

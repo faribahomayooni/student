@@ -3,6 +3,7 @@ import React from 'react';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import Home from './../screens/Home';
+import messaging from '@react-native-firebase/messaging';
 import SplashScreen from './../components/Loader';
 // import Login from './screens/Login';
 import Presence from './../screens/Presence/Presence';
@@ -11,6 +12,7 @@ import Messages from './../screens/Messages';
 import Profile from '../screens/Profile/Profile';
 import ProfileSetting from '../screens/Profile/ProfileSetting';
 import ReadMessage from '../components/ReadMessage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import SchoolMessage from '../components/SchoolMessage';
 import SendMessage from '../components/SendMessageLogin';
 import SignIn from '../screens/Login/SignIn';
@@ -25,9 +27,16 @@ import AboutApp from '../screens/Setting/AboutApp';
 import HelpCentre from '../screens/Setting/helpCentre';
 import HelpCentreOpen from '../screens/Setting/helpCentreOpen';
 import {createAppContainer} from 'react-navigation';
-import {Image, View} from 'react-native';
+import {Image, View,Text,Animated, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import IconBadge from 'react-native-icon-badge';
 
+var unsubscribe = messaging().onMessage( remoteMessage => {
+  return remoteMessage
+  // const data = JSON.stringify(remoteMessage);
+  // Alert.alert('qqqqqqqqqqqqqqqqqqqq!',data);
+ });
+   console.warn("!!!!!!!!!!!!",unsubscribe)
 // let RootStack;
 // let tokenValue;
 // // (async () => {
@@ -249,6 +258,7 @@ const MessageStack = createStackNavigator(
         textAlign: 'center',
         flex: 1,
       },
+      
       tabBarStyle: {
         padding: 20,
       },
@@ -470,28 +480,63 @@ const AppTabNavigator = createBottomTabNavigator(
     },
     berichten: {
       screen: MessageStack,
-      navigationOptions: () => ({
+      navigationOptions: ({screenProps} ) => ({
+        
         title: 'berichten',
         tabBarIcon: ({focused, tintColor}) =>
-          focused ? (
-            <Image
-              style={{
-                tintColor: global.brandColor,
-                padding: 15,
-                margin: 10,
-              }}
-              source={require('./../assets/images/common/mail001-E02D-active.png')}
-            />
-          ) : (
-            <Image
-              style={{padding: 15, margin: 10}}
+        <View>
+          {console.warn("this is screen props",screenProps)}
+        {screenProps.notification !==undefined && focused==false ?<IconBadge
+        MainElement={ <Image
+          style={{padding: 15, margin: 10,color:{tintColor}}}
+          source={require('./../assets/images/common/mail001-E02D.png')}
+        /> }
+        BadgeElement={<Text style={{ color: 'white' }}>{"1" }</Text>}
+        // Hidden={screenProps.unreadMessagesCount === 0}
+      />:
+      <Image
+         style={{tintColor: global.brandColor}}
               source={require('./../assets/images/common/mail001-E02D.png')}
             />
-          ),
+      }
+         
+        </View>
+          // focused ? (
+          //   <Image
+          //     style={{
+          //       tintColor: global.brandColor,
+          //       padding: 15,
+          //       margin: 10,
+          //     }}
+          //     source={require('./../assets/images/common/mail001-E02D-active.png')}
+          //   />
+           
+            
+          // ) : (
+          //   <View>
+          //  {console.warn("############",unsubscribe)}
+          // <View>
+          //     <View style={{ justifyContent:"center",alignItems:"center",position:"absolute",width:25,height:25,borderRadius:20,backgroundColor:"red",bottom:30}}>  
+          //         <Text style={{color:"white",zIndex:5}}>2</Text>
+          //     </View>
+          //       <Image
+          //         style={{padding: 15, margin: 10,tintColor:"red",zIndex:-1}}
+          //         source={require('./../assets/images/common/mail001-E02D.png')}
+          //       />
+          //   </View>
+            
+             
+            
+            
+            
+          //    </View> 
+          // ),
       }),
       tabBarOptions: {
         activeTintColor: global.brandColor,
+      
         labelStyle: {color: '#0f0'},
+        recivealert:"red",
       },
     },
     profiel: {
@@ -526,8 +571,10 @@ const AppTabNavigator = createBottomTabNavigator(
         borderTopWidth: 0,
         borderTopColor: 'transparent',
       },
+    
       activeTintColor: '#5467FD',
       inactiveTintColor: '#31455E',
+      recivealert:"red",
     },
   },
   (RootStack.navigationOptions = ({navigation}) => {

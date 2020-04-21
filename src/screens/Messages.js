@@ -23,6 +23,7 @@ export default class Messages extends React.Component {
   }
   state = {
     index: 0,
+    currentRoute:"first",
     routes: [
       {key: 'first', title: 'NIEUW'},
       {key: 'second', title: 'ARCHIEF'},
@@ -45,8 +46,18 @@ export default class Messages extends React.Component {
       <SchoolMessage navigation={this.props.navigation} />
     </View>
   );
+  
 
   _handleIndexChange = index => this.setState({index});
+  onpresstabs=(i)=>{
+    this.setState({index: i})
+  
+    const currentRoute =  this.state.routes[i].key;
+    console.warn("%%%current rouyes",currentRoute)
+    this.setState({
+      currentRoute:currentRoute
+    });
+  }
 
   _renderTabBar = props => {
     const inputRange = props.navigationState.routes.map((x, i) => i);
@@ -68,11 +79,21 @@ export default class Messages extends React.Component {
 
           return (
             <TouchableOpacity
-              style={
-                route.title === 'ARCHIEF' ? styles.tabItem3 : styles.tabItem
-              }
-              onPress={() => this.setState({index: i})}>
-              <Animated.Text style={({color}, styles.tabStyle)}>
+              style={{
+               backgroundColor : '#FFFFFF',
+              //  backgroundColor: '#FFFFFF',
+               flex: 1,
+               alignItems: 'center',
+               padding: 10,
+               borderLeftWidth: 1,
+               borderRightWidth: 1,
+               borderColor: '#eee',
+            
+              }}
+              onPress={() =>this.onpresstabs(i)}>
+              <Animated.Text style={{color:(this.state.currentRoute === route.key) ? '#293A54' : 'lightgray', borderRadius: 12,
+               marginRight: 10,
+               marginLeft: 10,}}>
                 {route.title}
               </Animated.Text>
             </TouchableOpacity>
@@ -93,6 +114,7 @@ export default class Messages extends React.Component {
       <View style={cs.mainContainer}>
         <TabView
           // navigation={this.props.navigation}
+          activeColor="blue"
           navigationState={this.state}
           renderScene={this._renderScene}
           renderTabBar={this._renderTabBar}

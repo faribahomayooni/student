@@ -11,10 +11,14 @@ import AppNavigator from './routers/AppNavigator';
 // window.$test = 'medisa';
 // const store = cfgStore();
 export default class App extends Component {
+  state={
+    notification:""
+  }
+
   render() {
     return (
       <>
-        <AppNavigator />
+        <AppNavigator  />
       </>
     );
   }

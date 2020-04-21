@@ -35,10 +35,10 @@ class Splash extends React.Component {
     return (
       <>
         <View style={styles.viewStyles}>
-          <StatusBar 
-          backgroundColor="#4f6d7a"
+          {/* <StatusBar 
+          backgroundColor="#293A54"
           barStyle='light-content'
-          />
+          /> */}
           {/* <Image
             style={cs.stretch}
             source={require('./../assets/images/common/Logo.png')}
@@ -58,7 +58,7 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#546E7A',
+    backgroundColor: '#293A54',
   
   },
 };

@@ -155,10 +155,11 @@ class PresenceCalendar extends Component {
 
   savedate=async(date,type,dateinfo)=>{
     
-    this.props.loadMonthAttendance.filter(obj=>{
-    console.warn("****************************************",obj['FLD_IS_LATE'])
+    dateinfo.filter(obj=>{
+    console.warn("****************************************",obj)
    
     if((obj.FLD_DATE.slice(0, 10)===date)===true){
+      console.warn("000000000000000000000000000000000000000000000000000000000000000")
      
       // obj['FLD_IS_LATE']=1
     
@@ -178,7 +179,7 @@ class PresenceCalendar extends Component {
     for(var i=0;i<this.state.changedata.length;i++){
     
       var info=this.state.changedata[i]
-      // console.warn("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",info)
+       console.warn("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",info)
      
         axios
         .post(
@@ -196,18 +197,18 @@ class PresenceCalendar extends Component {
           },
         )
         .then(res => {
-        //  console.warn("ffffffffffffffffffffffff",res.data)
+          console.warn("ffffffffffffffffffffffff",res.data)
           if (res.data.msg === 'success') {
             ToastAndroid.show(
               'Twoje zmiany zostały pomyślnie zarejestrowane',
               ToastAndroid.SHORT,
             );
             // this.props.navigation.navigate('Presence')
-           this.setState({editpage:false})
+          //  this.setState({editpage:false})
           }
         })
         .catch(error => {
-          console.warn(error);
+          console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@error",error);
         });
       }
   }
