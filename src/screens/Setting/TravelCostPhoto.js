@@ -28,6 +28,12 @@ const   addTravel=async(
   costFileName,
   studentId,
 ) =>{
+  console.warn("data for image in react native",id,
+  costTypeId,
+  date,
+  costFile,
+  costFileName,
+  studentId)
     axios
       .post(
         global.url + 'api/student/addTravelCost',
@@ -47,29 +53,32 @@ const   addTravel=async(
         },
       )
       .then(res => {
-        console.warn('result', res);
+      console.warn('result', res);
         if (res.data.msg === 'success') {
+          props.navigation.navigate('TravelsCostSetting');
           ToastAndroid.show(
             'Travel cost add successful',
             ToastAndroid.SHORT,
           );
-          setCost(false)
-        //   showToast('Travel cost add successful');
-         NavigationService.navigate('TravelsCostSetting');
+    setCost(false)
+          console.warn("!!!navigation in travel cost",props.navigation.navigate("TravelsCost"))
+          // showToast('Travel cost add successful');
+      
          
-        }
+          }
       })
-      .catch(error => {
-        setCost(false)
-        ToastAndroid.show(
-         error,
-          ToastAndroid.SHORT,
-        );
+    .catch(error => {
+      console.warn("danger!!!!!!!!!!!!!!!!!!!",error)
+       setCost(false)
+    //     ToastAndroid.show(
+    //      error,
+    //       ToastAndroid.SHORT,
+    //     );
          
-        // );
-         showToast(error);
-        console.warn('error2', error);
-      });
+    //     // );
+    //      showToast(error);
+    //     // console.warn('error2', error);
+     });
 
    
 
@@ -78,8 +87,8 @@ const   addTravel=async(
 
   const addTravelCost = () => {
    setCost(true)
-    console.warn('costTypeId', costTypeId);
-    console.warn('date', date);
+    // console.warn('costTypeId', costTypeId);
+    // console.warn('date', date);
     addTravel(id,
       costTypeId,
       date,

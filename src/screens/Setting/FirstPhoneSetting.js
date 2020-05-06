@@ -39,12 +39,12 @@ const PhoneSetting1 = props => {
           return;
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
       .catch(error => {
-        console.warn('error3', error);
+        // console.warn('error3', error);
       });
   };
   return (

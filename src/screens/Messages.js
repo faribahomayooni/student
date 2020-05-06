@@ -53,7 +53,7 @@ export default class Messages extends React.Component {
     this.setState({index: i})
   
     const currentRoute =  this.state.routes[i].key;
-    console.warn("%%%current rouyes",currentRoute)
+    // console.warn("%%%current rouyes",currentRoute)
     this.setState({
       currentRoute:currentRoute
     });
@@ -109,7 +109,11 @@ export default class Messages extends React.Component {
     third: this.ThirdRoute,
   });
 
+
+
+  
   render() {
+   
     return (
       <View style={cs.mainContainer}>
         <TabView

@@ -1,5 +1,9 @@
 import {allConstants} from '../constants';
+import {combineReducers} from 'redux'
 import AsyncStorage from '@react-native-community/async-storage';
+import { act } from 'react-test-renderer';
+import { State } from 'react-native-gesture-handler';
+import { connectAdvanced } from 'react-redux';
 
 const initialState = [
   {
@@ -17,6 +21,7 @@ const initialState = [
     loadMonthAttendance: '',
     forgotPass: '',
     studentInfo: '',
+    // notificationfirebae:"",
   },
 ];
 
@@ -109,7 +114,23 @@ export function api(state = initialState, action) {
       return {
         studentInfo: action.data,
       };
+      // case 'notification_data':
+      //   return{ notificationfirebae: [...state,action.data]}
+      case 'TOGGLE_TODO':
     default:
       return state;
   }
 }
+//  export function  notification (state=[],action){
+//    console.warn("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH,",action)
+//    switch(action.type){
+//       case allConstants.notification_data:
+//        return {
+//          ...state,
+//          notificationdata:action.payload}
+//      default:
+//       return state
+//    }
+ 
+//  }
+ 

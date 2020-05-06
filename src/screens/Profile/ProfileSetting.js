@@ -13,6 +13,10 @@ import {commonStyle as cs} from '../../styles/common/styles';
 import SettingItem from '../../components/SettingItem';
 import {apiActions} from '../../actions';
 import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
+// import {LogOut} from '../../actions/ProfileAction'
+import Form from '../../../native-base-theme/components/Form';
+import {removeprofile} from '../../actions/ProfileAction'
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -24,23 +28,49 @@ class ProfileSetting extends Component {
       lastname: this.props.navigation.getParam('lastname'),
       password: this.props.navigation.getParam('password'),
     };
-    const {dispatch} = this.props;
-    dispatch(apiActions.loadStudentInfo());
+    // const {dispatch} = this.props;
+    // dispatch(apiActions.loadStudentInfo());
   }
 
   componentDidMount() {
+    console.warn("!!!!!!!!!!",this.props.Profile.data)
     // window.scrollTo(0, 0);
-    const {dispatch} = this.props;
+    // const {dispatch} = this.props;
     // dispatch(apiActions.loadMobilePerson());
     // dispatch(apiActions.loadAppContactInfo());
     // dispatch(apiActions.loadMobileAddress());
-    dispatch(apiActions.loadAppSetting());
-    dispatch(apiActions.loadBasicList(30));
+    // dispatch(apiActions.loadAppSetting());
+    // dispatch(apiActions.loadBasicList(30));
   }
 
+  // loadStudentInfo = async () => {
+  //   axios
+  //     .get(global.url + 'api/student/loadInfo', {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'x-access-token': await AsyncStorage.getItem('@token'),
+  //       },
+  //     })
+  //     .then(res => {
+  //       this.setState({studentInfo: res.data});
+  //       console.warn('===>res when call twice for component', res);
+  //       if (res.data.msg === 'success') {
+  //       }
+  //       if (res.data.msg === 'fail') {
+  //         // console.warn('fail', res.data);
+  //         return;
+  //       }
+  //     })
+  //     .catch(error => {
+  //       // console.warn('error', error);
+  //     });
+  // };
+
   logout() {
+    this.props.removeprofile()
     AsyncStorage.setItem('@token', '');
     this.props.navigation.navigate('SignIn');
+   
   }
 
   static navigationOptions = {
@@ -70,30 +100,30 @@ class ProfileSetting extends Component {
           <View style={cs.pageTitleWrapper}>
             <View style={cs.settingContainer}>
               <View style={cs.settingWrapper}>
-                {this.props.studentInfo !== undefined ? (
+                { this.props.Profile.data !== undefined ? (
                   <SettingItem
                     routeNavigationName="nothing"
                     navigation={this.props.navigation}
                     title="Naam"
                     desc={
-                      this.props.studentInfo.firstname +
+                      this.props.Profile.data[0]!== undefined &&      (this.props.Profile.data[0].firstname +
                       ' ' +
-                      this.props.studentInfo.FLD_LASTNAME
+                         this.props.Profile.data[0].FLD_LASTNAME)
                     }
                     settingImg={require('./../../assets/images/student/setting/user.png')}
                   />
                 ) : null}
-                {this.props.studentInfo !== undefined ? (
+                { this.props.Profile.data!== undefined ? (
                   <SettingItem
                     routeNavigationName="EmailSetting"
                     navigation={this.props.navigation}
                     title="E-mail"
-                    desc={this.props.studentInfo.FLD_EMAIL}
+                    desc={ this.props.Profile.data[0].FLD_EMAIL}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/email.png')}
                   />
                 ) : null}
-                {this.props.studentInfo !== undefined ? (
+                { this.props.Profile.data !== undefined ? (
                   <SettingItem
                     routeNavigationName="PasswordSetting"
                     navigation={this.props.navigation}
@@ -103,12 +133,12 @@ class ProfileSetting extends Component {
                     settingImg={require('./../../assets/images/student/setting/unlock.png')}
                   />
                 ) : null}
-                {this.props.studentInfo !== undefined ? (
+                { this.props.Profile.data !== undefined ? (
                   <SettingItem
                     routeNavigationName="PhoneSetting1"
                     navigation={this.props.navigation}
                     title="Telefoonnummer"
-                    desc={this.props.studentInfo.FLD_PHONE_NUMBER1}
+                    desc={this.props.Profile.data[0] !== undefined && this.props.Profile.data[0].FLD_PHONE_NUMBER1}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/smartphone.png')}
                   />
@@ -206,7 +236,13 @@ const mapStateToProps = state => {
     loadAppSetting: state.api.loadSetting,
     loadBasicList: state.api.loadBasic,
     studentInfo: state.api.studentInfo,
+    Profile:state.Profile
   };
 };
 
-export default connect(mapStateToProps)(ProfileSetting);
+const mapDispatchToProps= {
+ 
+  removeprofile
+ }
+
+export default connect(mapStateToProps,mapDispatchToProps)(ProfileSetting);

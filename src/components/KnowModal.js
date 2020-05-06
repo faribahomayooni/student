@@ -52,7 +52,7 @@ const KnowModal = props => {
         }
       })
       .catch(error => {
-        console.warn('error5', error);
+        // console.warn('error5', error);
       });
 
     // const {dispatch} = props;

@@ -59,10 +59,10 @@ class PresenceCalendar extends Component {
         // timestamp: 1519862400000,
         // dateString: '2018-03-01',
         year: 2018,
-        month: 3,
+        month: 4,
         day: 1,
         timestamp: 1519862400000,
-        dateString: '2018-03-01',
+        dateString: '2018-04-01',
       },
     };
     this.getMonthFunction = this.getMonthFunction.bind(this);
@@ -77,7 +77,7 @@ class PresenceCalendar extends Component {
   }
 
   changegroup=(mode)=>{
-    setTimeout(()=>{this.setState({modify: false})},3000);
+    setTimeout(()=>{this.setState({modify: false})},1000);
     // console.warn("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
     // this.setState({modify:mode===1?false:true})
 
@@ -121,7 +121,7 @@ class PresenceCalendar extends Component {
 
 
   getTeacherName=async()=>{
-    console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
+    // console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
     axios
     .post(
       global.url + 'api/school/loadGroupInfo',
@@ -138,7 +138,7 @@ class PresenceCalendar extends Component {
     )
     .then(res => {
   
-      console.warn("++++++++++++++++++++++++",res)
+      // console.warn("++++++++++++++++++++++++",res)
       if (res.data.msg === 'success') {
        
           this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
@@ -147,7 +147,7 @@ class PresenceCalendar extends Component {
       }
     })
     .catch(error => {
-      console.warn(error);
+      // console.warn(error);
     });
   
   }
@@ -156,17 +156,17 @@ class PresenceCalendar extends Component {
   savedate=async(date,type,dateinfo)=>{
     
     dateinfo.filter(obj=>{
-    console.warn("****************************************",obj)
+    // console.warn("****************************************",obj)
    
     if((obj.FLD_DATE.slice(0, 10)===date)===true){
-      console.warn("000000000000000000000000000000000000000000000000000000000000000")
+      // console.warn("000000000000000000000000000000000000000000000000000000000000000")
      
       // obj['FLD_IS_LATE']=1
     
       type===3 &&(obj['FLD_ISPRESENT']=1 )
       type===2 &&( obj['FLD_ISPRESENT']=0) || (obj['FLD_IS_LATE']=0) 
       type===1 && ( obj['FLD_IS_LATE']=1);
-      console.warn("2222222222222222222",obj)
+      // console.warn("2222222222222222222",obj)
       this.state.changedata.push(obj)
     }
   
@@ -176,10 +176,11 @@ class PresenceCalendar extends Component {
 
 
   SaveBtn=async()=>{
+    this.setState({editpage:false})
     for(var i=0;i<this.state.changedata.length;i++){
     
       var info=this.state.changedata[i]
-       console.warn("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",info)
+      //  console.warn("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",info)
      
         axios
         .post(
@@ -197,7 +198,7 @@ class PresenceCalendar extends Component {
           },
         )
         .then(res => {
-          console.warn("ffffffffffffffffffffffff",res.data)
+          // console.warn("ffffffffffffffffffffffff",res.data)
           if (res.data.msg === 'success') {
             ToastAndroid.show(
               'Twoje zmiany zostały pomyślnie zarejestrowane',
@@ -208,7 +209,7 @@ class PresenceCalendar extends Component {
           }
         })
         .catch(error => {
-          console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@error",error);
+          // console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@error",error);
         });
       }
   }
@@ -223,13 +224,13 @@ class PresenceCalendar extends Component {
         },
       })
       .then(res => {
-        console.warn("===============name@@@@@@@@@@@@@@@@@",res.data)
+        // console.warn("===============name@@@@@@@@@@@@@@@@@",res.data)
         this.setState({studentInfo: res.data});
-        console.warn('===>res when call twice for component', res);
+        // console.warn('===>res when call twice for component', res);
         if (res.data.msg === 'success') {
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
@@ -239,13 +240,13 @@ class PresenceCalendar extends Component {
   };
   
   activeEditPage=(status)=>{
-    console.warn("++++++++++++++",status)
+    // console.warn("++++++++++++++",status)
     this.setState({editpage:status})
 
   }
 
   render() {
-  console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.state.changedata)
+  // console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.state.changedata)
     const {loadMonthAttendance} = this.props;
    
     return (
@@ -366,8 +367,8 @@ class PresenceCalendar extends Component {
               <TouchableOpacity
                
                 onPress={() => {
-                  console.log(this.state.date);
-                  this.setState({editpage:true})
+                  // console.log(this.state.date);
+                   this.setState({editpage:true})
                   // this.props.navigation.navigate('PresenceCalendar', {
                   //   date: this.state.date,
                   // });
@@ -458,9 +459,10 @@ class PresenceCalendar extends Component {
                  name="AANWEZIG"
                  imgSource={require('./../../assets/images/student/presence/saveImge.png')}
                  colorButton="#CD51C9"
-                 onClick={()=>
+                 onClick={()=>{
                    this.SaveBtn()
-                 }
+                  //  this.setState({editpage:false})
+                 }}
                />
                <View
                  style={{

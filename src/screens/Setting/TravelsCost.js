@@ -15,12 +15,13 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Modal from 'react-native-modal';
 import DateTimePicker from './../../components/DatePicker';
 import ImagePicker from 'react-native-image-picker';
+import axios from 'axios';
 import {apiActions} from '../../actions';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const TravelsCostSetting = props => {
   const [selected, changeSelected] = useState(
-    props.navigation.getParam('basicListData')!==undefined &&  props.navigation.getParam('basicListData')[0].code,
+    props.navigation.getParam('basicListData')!==undefined &&  props.navigation.getParam('basicListData').data[0].code,
   );
   const [isModalVisible, updateModalVisible] = useState(false);
   const [fileData, updateFileData] = useState('');
@@ -34,7 +35,7 @@ const TravelsCostSetting = props => {
     updateDate(newDate);
   };
   const changeDateFormat = selectDate => {
-    console.warn('date', selectDate.split('-').join('/'));
+    // console.warn('date', selectDate.split('-').join('/'));
     return selectDate.split('-').join('/');
   };
 
@@ -72,6 +73,8 @@ const TravelsCostSetting = props => {
     }
   };
 
+ 
+
   const renderFileUri = () => {
     if (fileUri) {
       return <Image source={{uri: fileUri}} style={cs.imagesSelected} />;
@@ -101,6 +104,7 @@ const TravelsCostSetting = props => {
         console.log('User tapped custom button: ', response.customButton);
       } else {
         const source = {uri: `data:image/jpeg;base64,${response.data}`};
+        console.warn("@@@@@@@@@@@@@@@@sorce", source.uri)
         updateModalVisible(!isModalVisible);
         updateFilePath(response);
         updateFileData(response.data);
@@ -111,7 +115,7 @@ const TravelsCostSetting = props => {
           id: id,
           costTypeId: selected,
           date: changeDateFormat(date),
-          costFile: response.data,
+          costFile: source.uri,
           costFileName: response.fileName,
           studentId: -1,
         });
@@ -145,7 +149,7 @@ const TravelsCostSetting = props => {
           id: id,
           costTypeId: selected,
           date: changeDateFormat(date),
-          costFile: source.uri,
+          costFile:source.uri,
           costFileName: response.fileName,
           studentId: -1,
         });
@@ -156,7 +160,7 @@ const TravelsCostSetting = props => {
   const toggleModal = () => {
     updateModalVisible(!isModalVisible);
   };
-
+ 
   return (
     <View style={cs.mainContainer}>
       <View style={cs.textLoginContainer}>
@@ -173,15 +177,15 @@ const TravelsCostSetting = props => {
             selectedValue={selected}
             onValueChange={value => {
               changeSelected(value);
-              console.warn('selected', selected);
+              // console.warn('selected', selected);
             }}
             itemStyle={{backgroundColor: '#5467FD'}}>
             {basicListData
-              ? basicListData.map(item => {
-                  return (
+             ? basicListData.data.map(item => {
+                 return (
                     <Item color="#fff" label={item.title} value={item.code} />
-                  );
-                })
+                );
+               })
               : ''}
           </Picker>
           <View style={cs.dropDownBtn}>

@@ -12,6 +12,7 @@ import {Row, Col} from 'native-base';
 import {InputField, Button, Header} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import KnowModal from '../../components/KnowModal';
+import {getprofileInfo} from '../../actions/ProfileAction'
 const sha256 = require('sha256');
 class StudentSignIn extends Component {
   constructor(props) {
@@ -55,9 +56,10 @@ class StudentSignIn extends Component {
             },
           },
         )
-        .then(user => {
+        .then(async(user) => {
           if (user.data.msg === 'success') {
-            console.warn(user.data);
+         
+            // console.warn(user.data);
             try {
               AsyncStorage.setItem('@token', user.data.data.token);
               AsyncStorage.setItem('@type', user.data.data.type);
@@ -65,6 +67,7 @@ class StudentSignIn extends Component {
                 '@userId',
                 JSON.stringify(user.data.data.userId),
               );
+           await   this.loadStudentInfo()
               AsyncStorage.setItem('@username', user.data.data.username);
               AsyncStorage.setItem('@name', user.data.data.name);
               // showToast('Login success.');
@@ -98,7 +101,33 @@ class StudentSignIn extends Component {
       //   apiActions.login(this.state.username, this.state.password, 2),
       // );
     }
+   
   }
+
+  loadStudentInfo = async () => {
+    axios
+      .get(global.url + 'api/student/loadInfo', {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      })
+      .then(res => {
+        this.setState({studentInfo: res.data});
+        this.props.getprofileInfo(res.data)
+        console.warn('===>res when call twice for component', res);
+        if (res.data.msg === 'success') {
+        }
+        if (res.data.msg === 'fail') {
+          // console.warn('fail', res.data);
+          return;
+        }
+      })
+      .catch(error => {
+        // console.warn('error', error);
+      });
+  };
+
 
   toggleModal = () => {
     this.setState(prevState => ({
@@ -246,4 +275,10 @@ const mapStateToProps = state => {
   return {studentInfo: state.api.studentInfo};
 };
 
-export default connect(mapStateToProps)(StudentSignIn);
+
+const mapDispatchToProps= {
+  getprofileInfo,
+
+ }
+
+export default connect(mapStateToProps,mapDispatchToProps)(StudentSignIn);

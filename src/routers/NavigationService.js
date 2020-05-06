@@ -19,7 +19,7 @@ function navigate(routeName, params) {
 //   navigator.dispatch (
 //     NavigationActions.replace({ routeName, params })
 //   );
-// }
+// }\
 
 export default {
   navigate,

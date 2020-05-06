@@ -7,32 +7,29 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Progress from './../../components/Progress';
 import axios from 'axios';
 import {apiActions} from '../../actions';
+import {getprofileInfo} from '../../actions/ProfileAction'
 
 const {width,height}=Dimensions.get('window')
 
 class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+ 
+  
+   state = {
       studentInfo: null,
       groupname:"",
       groupid:"",
       TeacherLastName:'',
       TeacherLastName:"",
       targetName:""
-    };
-  }
-  componentDidMount=async()=> {
- await  this.loadStudentGroup(-1);
+    }
   
-    const {dispatch} = this.props;
-     dispatch(apiActions.loadStudentInfo());
-    // console.warn(info);
-    this.loadStudentInfo();
-    // console.warn("!!!!!!!!!!!",this.props.loadStudentGroup &&  this.props.loadStudentGroup)
-  // this.getTeacherName()
+  componentDidMount=async()=> {
+    this.loadStudentInfo()
+   this.loadStudentGroup(-1);
+
     
   }
+
 
    loadStudentGroup=async(studentId) =>{  
       axios
@@ -49,7 +46,7 @@ class Profile extends Component {
           },
         )
         .then(async(res) => {
-          console.warn("***********",res.data.data[0].FLD_FK_GROUP)
+          // console.warn("***********",res.data.data[0].FLD_FK_GROUP)
           if (res.data.msg === 'success') {
             this.setState({groupname:res.data.data[0].FLD_GROUP_NAME,groupid:await res.data.data[0].FLD_FK_GROUP})   
            this. getTeacherName(res.data.data[0].FLD_FK_GROUP)
@@ -62,38 +59,7 @@ class Profile extends Component {
     
     
   }
-  getTeacherName=async(id)=>{
-    console.warn("{{{{{{{{{{{{{{{{{{",this.state.groupid)
-    axios
-    .post(
-      global.url + 'api/school/loadGroupInfo',
-      {
-        groupId: id,
-       
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': await AsyncStorage.getItem('@token'),
-        },
-      },
-    )
-    .then(res => {
   
-      console.warn("++++++++++++++++++++++++",res)
-      if (res.data.msg === 'success') {
-       
-          this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
-        
-        
-      }
-    })
-    .catch(error => {
-      console.warn("99999999999",error);
-    });
-  
-  }
-
   loadStudentInfo = async () => {
     axios
       .get(global.url + 'api/student/loadInfo', {
@@ -104,21 +70,26 @@ class Profile extends Component {
       })
       .then(res => {
         this.setState({studentInfo: res.data});
+        this.props.getprofileInfo(res.data)
         console.warn('===>res when call twice for component', res);
         if (res.data.msg === 'success') {
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
       .catch(error => {
-        console.warn('error', error);
+        // console.warn('error', error);
       });
   };
 
+  // componentWillUnmount(){
+  //   this.setState({studentInfo:null})
+  // }
+
   render() {
-    console.warn(this.props.loadStudentGroup &&this.props.loadStudentGroup[0].FLD_GROUP_NAME ,"================.load student group")
+    //  console.warn("================.load student group",this.props.Profile.data[0])
     const {studentInfo} = this.props;
     return (
       <ScrollView>
@@ -126,8 +97,8 @@ class Profile extends Component {
           <View style={[cs.profileInfo]}>
             <Text>
               <Text style={cs.BoldProfileInfo}>
-                {this.state.studentInfo !== null &&
-                  this.state.studentInfo.data[0].firstname}
+                { this.props.Profile.data!==undefined  &&
+                  this.props.Profile.data[0].firstname}
               </Text>
               <Text style={cs.RegularProfileInfo}>, je zit in groep </Text>
                  
@@ -155,8 +126,8 @@ class Profile extends Component {
             <Text style={cs.progressText}>
               <Text style={[cs.BoldProgressInfo]}>
                 {' '}
-                {this.state.studentInfo !== null &&
-                  this.state.studentInfo.data[0].firstname}{' '}
+                { this.props.Profile.data!==undefined &&
+                 this.props.Profile.data[0].firstname}{' '}
               </Text>
               <Text style={cs.RegularProgressInfo}>, je bent</Text>
             </Text>
@@ -179,7 +150,7 @@ class Profile extends Component {
               onClick={() => {
               
                   this.props.navigation.navigate('ProfileSetting', {
-                      studentInfo: this.state.studentInfo,
+                      // studentInfo: this.props.Profile,
                     })
                  
               }}
@@ -200,12 +171,23 @@ class Profile extends Component {
   }
 }
 
+
+
+
 const mapStateToProps = state => {
   return {
     studentInfo: state.api.studentInfo,
     user: state.api.user,
     loadStudentGroup: state.api.loadStudentGroup,
+    Profile:state.Profile
   };
 };
 
-export default connect(mapStateToProps)(Profile);
+
+const mapDispatchToProps= {
+  getprofileInfo,
+
+ }
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(Profile);

@@ -1,49 +1,79 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component,useState,useEffect} from 'react';
-import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert} from 'react-native';
+import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert,TouchableHighlight,Modal,StyleSheet, Dimensions,ScrollView} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
-import {apiActions} from '../actions';
+import {getnotification} from '../actions/notificationAction';
+import {getGroupStudent} from '../actions/TravelcostAction'
 import {connect} from 'react-redux';
+import COLORS from '../styles/variables';
+import { bindActionCreators } from 'redux';
 // import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging';
 
-
+const {width,height}=Dimensions.get("window")
 class DashboardBox extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      modalVisible:false
+    }
   }
 
 async componentDidMount() {
-    
+await  this.getGroupList()
+  // console.warn("************************fariba",this.props.loadBasicList)
+ this.props.notification.length!==0 && this.setState({modalVisible:true})
+   
     this.checkPermission();
     const {dispatch} = this.props;
-    dispatch(apiActions.loadBasicList(30));
     this.SaveTokenwithapi()
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      this.setState({modalVisible:true})
+      this.props.getnotification(remoteMessage)
+      
      });
       messaging().setBackgroundMessageHandler(async remoteMessage => {
-       console.warn('Message handled in the background!', remoteMessage);
+       
+        this.props.getnotification(remoteMessage)
+        this.setState({modalVisible:true})
+        ;
       });
-      // messaging().onNotificationOpenedApp(remoteMessage => {
-      //  Alert.alert(
-      //     'Notification caused app to open from background state:',
-      //     remoteMessage.notification,
-      //   );
-      // });
-      
-      // const notificationOpen = await firebase.notifications().getInitialNotification();
-      // console.warn("notification",notificationOpen)
-      // if (notificationOpen) {
-      //   this.onPressNotification(notificationOpen.notification.data);    
-      //   firebase.notifications().removeDeliveredNotification(notificationOpen.notification.notificationId) 
-      // }
+    
    
   }
 
 
+  getGroupList=async()=>{
+    axios
+      .post(
+        global.url + 'api/admin/loadBasicList',
+        {
+          id:30,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        },
+      )
+      .then(res => {
+        if (res.data.msg === 'success') {
+          // console.warn("%%%%%data for get group",res.data)
+          this.props.getGroupStudent(res.data)
+          // console.warn(res.data)
+       
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+   
+  
+}
 
    registerAppWithFCM=async ()=> {
     await messaging().registerDeviceForRemoteMessages();
@@ -61,7 +91,7 @@ async componentDidMount() {
     //3
   async getToken() {
     let fcmToken = await AsyncStorage.getItem('fcmToken');
-    console.warn("@@@@@@@@@@@@@@@@@",fcmToken)
+    // console.warn("@@@@@@@@@@@@@@@@@",fcmToken)
     if (!fcmToken) {
         fcmToken = await messaging().getToken();
         if (fcmToken) {
@@ -79,7 +109,7 @@ async componentDidMount() {
         this.getToken();
     } catch (error) {
         // User has rejected permissions
-        console.log('permission rejected');
+        // console.log('permission rejected');
     }
   }
 
@@ -98,24 +128,26 @@ SaveTokenwithapi= async()=>{
     },
   )
   .then(res => {
-    console.warn("tokenfcm",res.data)
+    // console.warn("tokenfcm",res.data)
     if (res.data.msg === 'success') {
       messaging().onNotificationOpenedApp(remoteMessage => {
         alert(remoteMessage.notification)
-        console.warn(
-          'Notification caused app to open from background state:',
-          remoteMessage.notification,
-        );
+        // console.warn(
+        //   'Notification caused app to open from background state:',
+        //   remoteMessage.notification,
+        // );
       });
       
     }
   })
   .catch(error => {
-    console.warn("####3333333333333",error);
+    // console.warn("####3333333333333",error);
   });
 }
 
   render() {
+    // console.warn("???????****",this.props.GroupStudent)
+      let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
     let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
     let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
     let help_Img = require('./../assets/images/student/dashboard/Image220.png');
@@ -124,8 +156,39 @@ SaveTokenwithapi= async()=>{
     const {loadBasicList} = this.props;
     return (
       <View style={{padding: 20}}>
+       
+   
+         <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.modalVisible}
+        onRequestClose={() => {
+          // Alert.alert("Modal has been closed.");
+        }}
+      >
+        <ScrollView>
+       { this.props.notification.length!==0 && <View style={styles.centeredView}>
+        
+          <View style={styles.modalView}>
+         {this.props.notification[0].data.image!==undefined && <Image   style={styles.messageProfile} source={{uri:global.url+`/app/setting/notify/nt-${this.props.notification[0].data.image}`}}/>}
+            <Text style={styles.modalTitleText}>{this.props.notification.length!==0 && this.props.notification[0].notification.title}</Text>
+            <Text style={styles.modalText}>{this.props.notification.length!==0 &&data.slice(4,150) }</Text>
+            <TouchableHighlight
+              style={{ ...styles.openButton }}
+              onPress={() => {
+                this.props.navigation.navigate('Messages')
+                this.setState({modalVisible:!(this.state.modalVisible)});
+              }}
+            >
+              <Text style={styles.textStyle}>Show Message</Text>
+            </TouchableHighlight>
+          </View>
+        </View>}
+        </ScrollView>
+      </Modal>
         <TouchableOpacity
           onPress={() => {
+  
             this.props.navigation.navigate('Presence');
           }}
           style={cs.boxesWrapper}>
@@ -159,7 +222,7 @@ SaveTokenwithapi= async()=>{
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('TravelsCostSetting', {
-                basicListData: loadBasicList,
+                basicListData: this.props.GroupStudent,
               });
             }}
             style={cs.boxesPairWrapper}>
@@ -168,14 +231,99 @@ SaveTokenwithapi= async()=>{
           </TouchableOpacity>
         </View>
       </View>
+      
     );
   }
 }
 
 const mapStateToProps = state => {
-  return {
-    loadBasicList: state.api.loadBasic,
-  };
+  // console.warn(state,"stateaaaaaaaaaaaaaaaaaaaaaaaa")
+  
+ 
+ return { loadBasicList: state.api.loadBasic,
+         notification:state.notification,
+         GroupStudent:state.GroupStudent
+        }
 };
 
-export default connect(mapStateToProps)(DashboardBox);
+
+const mapDispatchToProps= {
+ getnotification,
+ getGroupStudent
+}
+
+const styles = StyleSheet.create({
+  centeredView: {
+    marginTop:height/3,
+    // flex: 0.5,
+    justifyContent: "center",
+    alignItems: "center",
+  justifyContent:"center"
+,    // width:200,
+    backgroundColor: "white",
+    margin: 20,
+    borderRadius: 20,
+     padding:35,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width:0,
+        height: 2,
+    
+    },
+   
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+   
+  },
+  modalView: {
+    // margin: 20,
+    // borderRadius: 20,
+    //  paddingRight:10,
+    //  paddingLeft:10,
+    //  paddingBottom:30,
+    // alignItems: "center",
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width:0,
+    //   height: 2,
+    
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
+    // elevation: 5
+  },
+  openButton: {
+    marginTop:10,
+    backgroundColor: COLORS.primaryColor,
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2
+  },
+  messageProfile:{
+    width:width/2,
+    height:width/5,
+    resizeMode:"contain"
+  },
+  modalTitleText:{
+   fontWeight:"bold",
+  //  color:"white",
+   textAlign: "center",
+   fontSize:18,
+   marginTop:10
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    // textAlign: "center",
+    // color:"white",
+    fontSize:18
+  }
+});
+
+export default connect(mapStateToProps,mapDispatchToProps)(DashboardBox);

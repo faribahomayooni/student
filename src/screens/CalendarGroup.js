@@ -43,7 +43,7 @@ class CalendarsScreen extends Component {
       this.state.studentstatus.pop();
     }
     this.state.studentstatus.pop();
-    console.warn('dfddddddddddddddddddddd', this.props.loadMonthAttendance);
+    // console.warn('dfddddddddddddddddddddd', this.props.loadMonthAttendance);
     // var datalenght = this.props.loadMonthAttendance.length;
     this.props.loadMonthAttendance !== undefined &&
       this.props.loadMonthAttendance.filter(obj => {
@@ -68,11 +68,11 @@ class CalendarsScreen extends Component {
     count = this.state.studentstatus.length;
     // this.state.studentstatus.remove();
 
-    console.warn(
-      'studentstatus*****',
+    // console.warn(
+    //   'studentstatus*****',
 
-      this.state.studentstatus,
-    );
+    //   this.state.studentstatus,
+    // );
     if (count !== 0 && monthinfo !== this.props.loadMonthAttendance) {
       var monthinfo = this.props.loadMonthAttendance;
       this.setState({group: this.props.group});
@@ -80,7 +80,7 @@ class CalendarsScreen extends Component {
     }
   };
   componentDidMount() {
-    console.warn('month in group calendar', this.props.loadMonthAttendance);
+    // console.warn('month in group calendar', this.props.loadMonthAttendance);
     let today = new Date();
     let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
     // const [selected, changeSelected] = React.useState(mydate);
@@ -90,7 +90,7 @@ class CalendarsScreen extends Component {
 
   anotherFunc = () => {
     // this.state.studentstatus.pop();
-    console.warn('ooooooooooooooooofff', this.state.studentstatus);
+    // console.warn('ooooooooooooooooofff', this.state.studentstatus);
     var obj = this.state.studentstatus.reduce(
       (c, v) =>
         Object.assign(c, {
@@ -115,7 +115,7 @@ class CalendarsScreen extends Component {
     );
     this.setState({studentstatus: []});
     this.setState({dynamicdate: obj});
-    console.warn('obj', obj);
+    // console.warn('obj', obj);
   };
 
   // const test = () => {

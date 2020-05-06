@@ -38,7 +38,7 @@ const EmailSetting = props => {
         },
       )
       .then(res => {
-        console.warn('success', res.data.data);
+        // console.warn('success', res.data.data);
         if (res.data.msg === 'success') {
           // dispatch({
           //   type: allConstants.EDIT_EMAIL,
@@ -53,12 +53,12 @@ const EmailSetting = props => {
           return;
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
       .catch(error => {
-        console.warn('error1', error);
+        // console.warn('error1', error);
       });
   };
 

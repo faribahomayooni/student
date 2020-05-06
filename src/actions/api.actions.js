@@ -24,6 +24,7 @@ export const apiActions = {
   forgotPassword,
   loadStudentInfo,
  
+ 
 };
 
 let url = 'http://192.168.1.46:3100/';
@@ -58,7 +59,7 @@ function login(username, password, type) {
       )
       .then(user => {
         if (user.data.msg === 'success') {
-          console.warn(user.data);
+          // console.warn(user.data);
           try {
             AsyncStorage.setItem('@token', user.data.data.token);
             AsyncStorage.setItem('@type', user.data.data.type);
@@ -246,6 +247,7 @@ function loadAppSetting() {
 }
 
 function editEmail(email) {
+  // console.warn("+++++++test in edit emain function")
   return async dispatch => {
     dispatch(request());
     axios
@@ -262,7 +264,7 @@ function editEmail(email) {
         },
       )
       .then(res => {
-        console.warn('success', res.data.data);
+        // console.warn('success', res.data.data);
         if (res.data.msg === 'success') {
           dispatch({
             type: allConstants.EDIT_EMAIL,
@@ -282,7 +284,7 @@ function editEmail(email) {
         }
       })
       .catch(error => {
-        console.warn('error1', error);
+        // console.warn('error1', error);
       });
 
     function request(res) {
@@ -293,7 +295,8 @@ function editEmail(email) {
 
 function editMobile(mobile) {
   return async dispatch => {
-    dispatch(request());
+    
+    (request());
     axios
       .post(
         global.url + 'api/student/editMobile',
@@ -321,12 +324,12 @@ function editMobile(mobile) {
           return;
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
       .catch(error => {
-        console.warn('error3', error);
+        // console.warn('error3', error);
       });
 
     function request(res) {
@@ -476,7 +479,7 @@ function addTravelCost(
         },
       )
       .then(res => {
-        console.warn('result', res);
+        // console.warn('result', res);
         if (res.data.msg === 'success') {
           dispatch({
             type: allConstants.ADD_TRAVEL_COST,
@@ -488,7 +491,7 @@ function addTravelCost(
         }
       })
       .catch(error => {
-        console.warn('error2', error);
+        // console.warn('error2', error);
       });
 
     function request(res) {
@@ -555,7 +558,7 @@ function loadMonthAttendance(groupId, userId, monthId) {
         },
       )
       .then(res => {
-        console.warn('responseeee', res);
+        // console.warn('responseeee', res);
         if (res.data.msg === 'success') {
           dispatch({
             type: allConstants.LOAD_MONTH_ATTENDANCE,
@@ -592,7 +595,7 @@ function forgotPassword(BSNNumber) {
         },
       )
       .then(res => {
-        console.warn('resulttt', res.data.data[0]);
+        // console.warn('resulttt', res.data.data[0]);
         if (res.data.msg === 'success') {
           dispatch({
             type: allConstants.FORGOT_PASSWORD,
@@ -602,7 +605,7 @@ function forgotPassword(BSNNumber) {
         }
       })
       .catch(error => {
-        console.warn('error5', error);
+        // console.warn('error5', error);
       });
 
     function request(res) {
@@ -612,6 +615,7 @@ function forgotPassword(BSNNumber) {
 }
 
 function loadStudentInfo() {
+  // console.warn("++++++++++++++++++++++++++++++++++++++++++++++notificationdata in redux test****************")
   return async dispatch => {
     dispatch(request());
     axios
@@ -631,12 +635,12 @@ function loadStudentInfo() {
           return;
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })
       .catch(error => {
-        console.warn('error', error);
+        // console.warn('error', error);
       });
 
     function request(res) {
@@ -644,3 +648,9 @@ function loadStudentInfo() {
     }
   };
 }
+
+
+
+    
+
+

@@ -587,6 +587,7 @@ export const commonStyle = StyleSheet.create({
     paddingLeft: 10,
   },
   chatWrapper: {
+    padding:20,
     borderRadius: 10,
     backgroundColor: '#fff',
     height: 'auto',
@@ -628,16 +629,67 @@ export const commonStyle = StyleSheet.create({
     padding: 15,
     marginLeft: 10,
   },
-  messageProfile: {
-    width: 32,
-    height: 32,
+  notificationText:{
+    color: '#707070',
+    fontSize: 17,
+    fontWeight: '100',
+    padding: 15,
+    marginLeft: 10,
+    marginTop:20
+
   },
+  messageProfile: {
+    width: 60,
+    height:60,
+    marginTop:10,
+    resizeMode:"contain"
+  },
+  dynamicTeacherImage: {
+    width: 70,
+    height: 60,
+  },
+  defaultTeacherImage: {
+    width:65,
+    height: 65,
+    // backgroundColor:"red",
+    // borderRadius:20,
+    // borderColor:"gray"
+  },
+  infoandimage:{
+
+  },
+  notificationImage:{
+    width:300,
+    height:200,
+    padding:10,
+    borderRadius:5,
+    resizeMode:"contain"
+  },
+
   infoSenderMessage: {
     flexDirection: 'row',
     margin: 10,
     marginBottom: -10,
     alignSelf: 'flex-start',
     width: '100%',
+  
+  },
+ contentmessage: {
+  // flexDirection: 'row',
+  margin: 10,
+  marginBottom: -10,
+  alignSelf: 'flex-start',
+  width: '100%',
+
+  },
+  titleimage:{
+   flexDirection: 'row',
+   justifyContent:'space-around',
+  // margin: 10,
+  // marginBottom: -10,
+  //  alignSelf: 'center',
+  // width: '100%',
+
   },
   infoAddress: {
     flexDirection: 'row',
@@ -659,6 +711,10 @@ export const commonStyle = StyleSheet.create({
     margin: 10,
     marginVertical: 5,
     alignSelf: 'flex-start',
+  },
+  schoolLogo:{
+ width:60,height:60,
+ resizeMode:"contain"
   },
   iconSettingName: {
     fontSize: 20,
@@ -717,12 +773,12 @@ export const commonStyle = StyleSheet.create({
   messageDateWrapper: {
     flex: 1,
     alignItems: 'flex-end',
-    margin: 20,
+    margin: 10,
   },
   messageContainer: {
     paddingRight: 15,
     paddingLeft: 15,
-    marginTop: -10,
+  //  marginTop: -30,
   },
   settingContainer: {
     paddingRight: 15,

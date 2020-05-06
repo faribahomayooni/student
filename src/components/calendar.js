@@ -21,7 +21,7 @@ const CalendarsScreen = props => {
   //   props.getMonth(selected);
   // };
   const onDayPress = day => {
-    console.log(day);
+    // console.log(day);
     changeSelected(day);
     props.getMonth(day);
   };

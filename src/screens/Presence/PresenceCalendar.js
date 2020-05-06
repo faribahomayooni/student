@@ -129,7 +129,7 @@ class PresenceCalendar extends Component {
 
 
   getTeacherName=async()=>{
-    console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
+    // console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
     axios
     .post(
       global.url + 'api/school/loadGroupInfo',
@@ -146,7 +146,7 @@ class PresenceCalendar extends Component {
     )
     .then(res => {
   
-      console.warn("++++++++++++++++++++++++",res.data.data[0])
+      // console.warn("++++++++++++++++++++++++",res.data.data[0])
       if (res.data.msg === 'success') {
        
           this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
@@ -194,11 +194,11 @@ class PresenceCalendar extends Component {
       })
       .then(res => {
         this.setState({studentInfo: res.data});
-        console.warn('===>res when call twice for component', res);
+        // console.warn('===>res when call twice for component', res);
         if (res.data.msg === 'success') {
         }
         if (res.data.msg === 'fail') {
-          console.warn('fail', res.data);
+          // console.warn('fail', res.data);
           return;
         }
       })

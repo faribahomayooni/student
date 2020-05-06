@@ -57,7 +57,7 @@ loadmonth=async()=>{
     {
       groupId: this.props.groupId,
       userId: userId,
-      monthId: this.state.month===""? await this.props.month:this.state.month,
+      monthId: this.state.month===""? new Date().getMonth()+1:this.state.month,
     },
     {
       headers: {
@@ -93,7 +93,7 @@ loadmonth=async()=>{
     }
   })
   .catch(error => {
-    console.log(error);
+    // console.log(error);
   });
 
 
@@ -142,12 +142,12 @@ loadmonth=async()=>{
           }
         
           if (res.data.msg === 'fail') {
-            console.warn('fail', res.data);
+            // console.warn('fail', res.data);
             return;
           }
         })
         .catch(error => {
-          console.warn('error', error);
+          // console.warn('error', error);
         });
   
   };
@@ -165,6 +165,8 @@ loadmonth=async()=>{
   componentDidMount(){
     this.setState({month:this.props.month})
     const {loadMonthAttendance} = this.props;
+    this.loadStudentInfo()
+    // this.loadmonth()
  
   }
   
@@ -173,25 +175,26 @@ loadmonth=async()=>{
    if(this.state.counter!==this.props.count)
  {  
    
- this.loadStudentInfo()
- this.setState({disabledate:[]})
- if(this.state.studentid!==nexxt.groupId){
+ 
+//  this.setState({disabledate:[]})
+  if(this.state.studentid!==nexxt.groupId){
+    this.loadStudentInfo()
   this.setState({changedisablemode:true})
   this.setState({disable:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']});
  
-  this.setState({modify:1})
-  this.props.changegroup(this.state.modify)
-   this.setState({studentid:nexxt.groupId})
+  this.setState({modify:true})
+   this.props.changegroup(this.state.modify)
+  this.setState({studentid:nexxt.groupId})
     this.setState({studentstatus:[]})
     this.setState({dynamicdate:[]})
-   this.setState({disabledate:[]})
+//    this.setState({disabledate:[]})
   
  }
- this.setState({dateinmonth:nexxt.loadMonthAttendance})
+// this.setState({dateinmonth:nexxt.loadMonthAttendance})
  this.setState({press:false})
 if(this.state.press!==true){
   // this.setState({dynamicdate:[]})
-this.loadmonth()
+  this.loadmonth()
 
 }
  
@@ -204,10 +207,10 @@ getDaysInMonth(month, year, days) {
   let pivot =moment.utc([year, month])
   let firstDay = moment(pivot).startOf('month')
   const dow = firstDay.day()
-  console.warn("===.warn",dow)
+  // console.warn("===.warn",dow)
   let endDay = moment(pivot).endOf('month')
   let dates = {}
-  const disabled = { disabled: true,disableTouchEvent: true }
+  const disabled = {disabled:true,disableTouchEvent:true }
   while(pivot.isBefore(endDay)) {
    days.forEach((day) => {  
       dates[pivot.day(day).format("YYYY-MM-DD")] = disabled
@@ -216,14 +219,14 @@ getDaysInMonth(month, year, days) {
   }
 var data=  Object.keys(dates)
 var filterdate=data.filter(obj=>obj===this.state.studentstatus.date)
-  console.warn("&&&&&&&&&&&&&&&&&&&&&&&0",filterdate)
+  // console.warn("&&&&&&&&&&&&&&&&&&&&&&&0",filterdate)
  
   return dates
 }
 
 
 anotherFunc = async() => {
-  console.warn("66666666666666666666666666666")
+ 
   var obj = await this.state.studentstatus.reduce(
     (c, v) =>
       Object.assign(c, {
@@ -249,15 +252,16 @@ anotherFunc = async() => {
     {},
   );
     
-   this.setState({dynamicdate:obj})
-   this.setState({markedDates:{...this.state.markedDates,...this.state.dynamicdate}})
-    if(this.props.loadMonthAttendance){
-   this.setState({counter:this.state.counter+1})}
+   this.setState({dynamicdate:obj,changedisablemode:false})
+   this.setState({markedDates:{...this.state.markedDates,...obj}})
+   console.warn("66666666666666666666666666666",this.state.markedDates)
+  //   if(this.props.loadMonthAttendance){
+  //  this.setState({counter:this.state.counter+1})}
 };
   edit=async(day)=>{
-    console.warn("####################",day)
-    // this.setState({press:true})
-    var data=  this.state.studentstatus.filter(obj=>obj.date!==day.dateString)
+   
+     this.setState({press:true})
+     var data=  this.state.studentstatus.filter(obj=>obj.date!==day.dateString)
        
      await   this.setState({studentstatus:data})
        
@@ -291,17 +295,16 @@ anotherFunc = async() => {
              }),
            {},
          );
-     
+       
          await   this.setState({dynamicdate:{...this.state.dynamicdate,...obj}})
-         //  this.setState({dynamicdate:obj});
-           this.loadStudentInfo2()
-         this.setState({markedDates:{...this.state.dynamicdate,...this.state.markedDates}})
-        
+         this.setState({markedDates:{...this.state.markedDates,...this.state.dynamicdate}})
+          //  this.loadStudentInfo2()
            var change=  this.state.changemodedate.filter(obj=>obj.date!==day.dateString)
          this.setState({changemodedate:change})
          this.state.changemodedate.push({date:day.dateString,
            type:this.props.type})
            this.props.savedate(day.dateString,this.props.type,this.state.resloadmonthattendance)
+           console.warn("####################",this.state.studentstatus,this.state.dynamicdate)
   }
 
   componentDidMount() {
@@ -311,7 +314,7 @@ anotherFunc = async() => {
 
  
   render() {
-    console.warn("dynamic date",this.state.dynamicdate,"************student status********",this.state.studentstatus)
+    // console.warn("dynamic date",this.state.dynamicdate,"************student status********",this.state.studentstatus)
     const {loadMonthAttendance} = this.props;
     return (
       <ScrollView style={styles.container}>
@@ -348,7 +351,7 @@ anotherFunc = async() => {
                this.loadmonth()
                this.setState({month:date.month})
                this.setState({year:date.year})
-               await   this.props.loadMonthAttendance.filter(obj => {
+        await   this.props.loadMonthAttendance.filter(obj => {
         if (obj.FLD_IS_LATE === 1) {
             this.state.studentstatus.push({
             date: obj.FLD_DATE.slice(0, 10),
@@ -371,7 +374,7 @@ anotherFunc = async() => {
         markedDates: this.getDaysInMonth(date.month - 1, date.year, this.state.disable)
       })
       this.anotherFunc();
-            console.warn("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>load month attendanc", await this.state.dateinmonth)
+            // console.warn("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>load month attendanc", await this.state.dateinmonth)
             
           }}
           style={styles.calendar}
@@ -405,7 +408,7 @@ anotherFunc = async() => {
             this.props.edit!==true  ?
          this.props.activeEditPage(true)
        :
-      this.edit(day)
+     this.edit(day)
           }} 
            current={this.state.selected}
           minDate={'2018-02-01'}

@@ -1,32 +1,37 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View, Image, TouchableOpacity, ScrollView,AsyncStorage,FlatList} from 'react-native';
+import {Text, View, Image, TouchableOpacity, ScrollView,AsyncStorage,FlatList,RefreshControl,ActivityIndicator} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import axios from 'axios';
+import {getMessageData} from '../actions/MessageAction'
+import {getIcondata} from '../actions/notificationAction';
+import {connect} from 'react-redux';
+import { State } from 'react-native-gesture-handler';
 
 
-Data=(props )=> {
- 
+Data=(props,item )=> {
+  // {console.warn(props.item.FLD_date.toString())}
 return(
-  <View>
+  <View index={props.item.FLD_PK_push_notification}>
+     
        <View style={cs.messageContainer}>
             <View style={cs.chatWrapper}>
               <View style={cs.infoSenderMessage}>
-                <Image
-                  style={cs.messageProfile}
-                  source={require('./../assets/images/student/message/kt-test.png')}
-                />
-                <Text style={cs.messageProfileName}>ONA Cursus</Text>
+                <Image   style={cs.schoolLogo} source={{uri:global.url+`school/favicon/fv-${props.Icon}`}}/>
+                <Text style={cs.messageProfileName}>{props.item.Sender}</Text>
               </View>
-              <Text style={cs.messageText}>
-                Er gaat een nieuwe ONA cursus beginnen in December 2019. Geef
-                jezelf op! ...
-              </Text>
+              <View>
+                  <Text style={cs.noMessageSecondTitle}>{props.item.FLD_title}</Text>
+              </View>
+                <Text style={cs.messageText}>
+                {props.item.FLD_content}
+                </Text>
               <TouchableOpacity
                 style={{alignSelf: 'flex-end'}}
                 onPress={() => {
                  props.navigation.navigate('ReadMessage', {
                   itemId: props.item,
+                  school:true,
                   
                 });
                 }}>
@@ -36,58 +41,64 @@ return(
             </View>
           </View>
           <View style={cs.messageDateWrapper}>
-            <Text style={cs.messageDateText}>Geplaatst op 05-10-2018</Text>
+              <Text style={cs.messageDateText}>{props.item.FLD_date.toString().slice(0,10)}  {props.item.FLD_date.toString().slice(11,16)}</Text>
           </View>
-          {/* <View style={cs.messageContainer}>
-            <View style={cs.chatWrapper}>
-              <View style={cs.infoSenderMessage}>
-                <Image
-                  style={cs.messageProfile}
-                  source={require('./../assets/images/student/message/kt-test.png')}
-                />
-                <Text style={cs.messageProfileName}>Extra Training</Text>
-                <Image
-                  style={cs.messageImg}
-                  source={require('./../assets/images/student/message/kn_nieuwlogo_2017_topgoed.png')}
-                />
-              </View>
-              <Text style={cs.messageText}>
-                Er gaat een nieuwe training beginnen in augustus 2018. Geef
-                jezelf op! ...
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('ReadMessage');
-                }}
-                style={{alignSelf: 'flex-end'}}>
-                <Text style={cs.moreBtn}>lees meer...</Text>
-              </TouchableOpacity>
-              <View style={cs.messageBoxTriangle} />
-            </View>
-          </View>
-          <View style={cs.messageDateWrapper}>
-            <Text style={cs.messageDateText}>Geplaatst op 05-10-2018</Text>
-          </View> */}
   </View>
 
 );}
-export default class SchoolMessage extends Component {
+ class SchoolMessage extends Component {
   constructor(props) {
     super(props);
-    this.state={allMessage:[]}
+    this.page = 1;
+    this.state={allMessage:[],
+      loading: false, // user list loading
+      isRefreshing: false, //for pull to refresh
+      data: [], //user list
+      error: '',
+      totalPage:""
+    }
   }
 
 
   componentDidMount(){
-    this.getMessage()
+    this.getMessage(this.page)
+   this.getDynamicIcon()
   }
    
-  getMessage=async()=>{
+
+  getDynamicIcon=async()=>{
+    axios
+    .post(
+      global.url + 'api/school/loadInfo',
+      {},
+      
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+      this.props.getIcondata(res.data)
+       console.warn("=>res data icob" ,res.data.data[0].FLD_LOGO)
+      if(res.data.msg=="success"){
+       this.setState({Icon:res.data.data[0].FLD_Favicon})
+    }
+     
+    })
+    .catch(error => {
+    });
+
+  }
+  getMessage=async(page)=>{
+    this.setState({ loading: true })  
     axios
     .post(
       global.url + 'api/school/loadUserNotification',
       {
         type:1,
+        page:page
       },
       {
         headers: {
@@ -97,28 +108,122 @@ export default class SchoolMessage extends Component {
       },
     )
     .then(res => {
-      console.warn("%%%%%%%%%%%%%%%%%%%%%%%%%%",res)
+      console.warn("response in user notification",res.data.data[0])
       if(res.data.msg=="success"){
-      this.setState({allMessage:res.data.data})}
+        this.props.getMessageData(res.data.data)
+        this.setState({allMessage:[...this.state.allMessage,...res.data.data]})}
+        this.setState({totalPage:res.data.data[0].CountPage})
+        this.setState({loading:false})
      
     })
     .catch(error => {
-      console.warn("ssssssssss",error);
+      this.setState({loading:false})
+      console.warn("error user notification",error);
     });
   }
+
+  async onRefresh() {
+    this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator
+    axios
+    .post(
+      global.url + 'api/school/loadUserNotification',
+      {
+        type:1,
+        page:this.pag
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+      if(res.data.msg=="success"){
+        const {allMessage}=this.state
+        for(let i=0;i<this.state.totalPage;i++){
+          if(this.state.allMessage[i].FLD_PK_push_notification!==res.data.data[i].FLD_PK_push_notification){
+            this.state.allMessage= [
+              Object.assign({}, res.data.data[i]),...this.state.allMessage
+             
+            ];
+            
+          }
+        }
+        this.setState({totalPage:res.data.data[0].CountPage})
+        this.setState({isRefreshing:false})
+      }
+   
+    })
+    .catch(error => {
+      this.setState({ isRefreshing:false })
+      console.warn("error user notification",error);
+    });
+    
+  }
+  renderSeparator = () => {
+    return (
+      <View
+        style={{
+          height: 2,
+          width: '100%',
+          backgroundColor: '#CED0CE'
+        }}
+      />
+    );
+  };
+   componentWillUnmount(){
+     this.setState({allMessage:[]})
+   }
+  renderFooter = () => {
+     if (!this.state.loading) return null;
+     return (
+       <View style={{alignItems:"center"}}>
+          { (this.state.totalPage!==this.page) ? 
+                                               <View>
+                                                    <ActivityIndicator
+                                                      style={{ color: '#000' }}
+                                                    />
+                                                    <Text>Load More</Text>
+                                                </View>:
+                                               < View>
+                                                    <Text>there arent any item</Text>
+                                               </View>
+          }
+       </View>
+       
+     );
+   };
+    
+  
+   handleLoadMore = () => {
+    if (!this.state.loading && this.state.totalPage!==this.page) {
+      this.page = this.page + 1; // increase page by 1
+      this.getMessage(this.page); // method for API call 
+    }
+  };
   render() {
+  console.warn("*****it is message for schools*****",this.props.Message)
     let {} = this.props;
     return (
-      <ScrollView>
+      <ScrollView 
+      refreshControl={
+        <RefreshControl refreshing={this.state.isRefreshing} onRefresh={this.onRefresh.bind(this)} /> }
+      >
         <View>
           <Text style={cs.archiveText}>
             Hieronder staan alle berichten van je docent. Hier kun je alles
             makkelijk teruglezen.
           </Text>
           <FlatList
-              data={this.state.allMessage}
-              renderItem={({ item }) => <Data item={item} navigation={this.props.navigation} />}
-              keyExtractor={item => item.id}
+              data={this.props.Message}
+              renderItem={({ item }) => <Data item={item} navigation={this.props.navigation}  Icon={this.state.Icon} />}
+              keyExtractor={item =>  item.FLD_PK_push_notification}
+              ListFooterComponent={this.renderFooter.bind(this)}
+              ItemSeparatorComponent={this.renderSeparator}
+              onEndReachedThreshold={0.4}
+              onEndReached={this.handleLoadMore.bind(this)}
+              
       />
          
         </View>
@@ -126,3 +231,17 @@ export default class SchoolMessage extends Component {
     );
   }
 }
+const mapStateToProps = state => {
+  console.warn(state,"stateaaaaaaaaaaaaaaaaaaaaaaaa")
+  
+  return {
+    Icons:state.Icons,
+    Message:state.Message
+  };
+};
+
+const mapDispatchToProps= {
+  getIcondata,getMessageData
+ }
+
+export default connect(mapStateToProps,mapDispatchToProps)(SchoolMessage);

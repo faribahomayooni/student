@@ -17,5 +17,12 @@ export const allConstants = {
   LOAD_MONTH_ATTENDANCE: 'LOAD_MONTH_ATTENDANCE',
   FORGOT_PASSWORD: 'FORGOT_PASSWORD',
   LOAD_STUDENT_INFO: 'LOAD_STUDENT_INFO',
-  group_id:'group-id'
+  group_id:'group-id',
+  notification_data:'notification_data',
+  Icon_data:"Icon_data",
+  STUDENT_GROUP:"STUDENT_GROUP",
+  student_Data:"student_Data",
+  LOG_OUT:"LOG_OUT",
+  student_remove:"student_remove",
+  Message_data:"Message_data"
 };
