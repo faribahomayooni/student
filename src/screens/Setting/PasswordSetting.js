@@ -16,7 +16,7 @@ import {InputField, Button, Header} from '../../components/widgets';
 import {apiActions} from './../../actions';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import SimpleCrypto from 'simple-crypto-js';
+// import SimpleCrypto from 'simple-crypto-js';
 const sha256 = require('sha256');
 
 const PasswordSetting = props => {
@@ -28,9 +28,9 @@ const PasswordSetting = props => {
   const changePass = async () => {
     // dispatch(apiActions.loadStudentInfo());
     var _secretKey = 'apple2020Nt2';
-    var simpleCrypto = new SimpleCrypto(_secretKey);
+    // var simpleCrypto = new SimpleCrypto(_secretKey);
     updatePassword(password);
-    let password2 = simpleCrypto.encrypt(password);
+    // let password2 = simpleCrypto.encrypt(password);
     // dispatch(apiActions.editPassword(password, password2));
     axios
       .post(

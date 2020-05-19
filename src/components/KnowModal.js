@@ -9,7 +9,7 @@ import {Row, Col} from 'native-base';
 import axios from 'axios';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {apiActions} from './../actions';
-import SimpleCrypto from 'simple-crypto-js';
+//  import SimpleCrypto from 'simple-crypto-js';
 import {showToast} from './utility';
 
 const KnowModal = props => {
@@ -45,8 +45,8 @@ const KnowModal = props => {
             updateToggleModal(true);
             const pass = res.data.data[0].Fld_Pass2;
             var _secretKey = 'apple2020Nt2';
-            var simpleCrypto = new SimpleCrypto(_secretKey);
-            pass2 = simpleCrypto.decrypt(pass);
+            // var simpleCrypto = new SimpleCrypto(_secretKey);
+            // pass2 = simpleCrypto.decrypt(pass);
             SETPASS2(pass2);
           }
         }

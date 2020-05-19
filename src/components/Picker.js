@@ -15,7 +15,7 @@ const PickerScreen = props => {
     data = props.data;
   }
   const Item = Picker.Item;
-  console.warn("__________________________________+++***********************",props.data?props.data:"===hi fariba");
+  console.warn("__________________________________+++***********************",selected);
   return (
     <View style={cs.pickerContainer}>
       <Picker
@@ -26,8 +26,10 @@ const PickerScreen = props => {
         selectedValue={selected}
         onValueChange={changeSelected}
         itemStyle={{backgroundColor: '#5467FD'}}>
+         
         {data
           ? data.map(item => {
+            {console.warn("asaaaaaaaaaaaaaaaaa",item.FLD_GROUP_NAME)}
               return (
                 <Item
                   color="#fff"

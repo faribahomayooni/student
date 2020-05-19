@@ -121,6 +121,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+   
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {
@@ -130,7 +131,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-
+        targetSdkVersion 28
         applicationId "com.NT2Student"
         minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -196,12 +197,16 @@ android {
     }
 }
 
+
 dependencies {
+     def  version = "2.0.1"
+    implementation "androidx.multidex:multidex:$version"
     implementation fileTree(dir: "libs", include: ["*.jar"])
 //    implementation "com.android.support:appcompat-v7:27.1.0" <--- Here
     implementation "com.facebook.react:react-native:+"
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
-
+implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
 //    implementation project(':react-native-fcm')
   implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-messaging'

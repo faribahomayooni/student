@@ -17,7 +17,9 @@ import qs from 'qs'
 import {Button} from './../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {commonStyle as cs} from './../styles/common/styles';
+import { withNavigationFocus } from 'react-navigation';
 import moment from 'moment';
+import {month} from '../../src/actions/api.actions'
 var DISABLED_DAYS = []
 var count = 0;
 const {width, height} = Dimensions.get('window');
@@ -43,19 +45,20 @@ class CalendarsScreen extends Component {
      month:'',
      year:'',
      changemodedate:[],
-     resloadmonthattendance:"",
+    //  resloadmonthattendance:"",
      modify:0,
      changedisablemode:false,
     };
   }
 
 loadmonth=async()=>{
+  console.warn("**************",this.props.groupId)
   var userId=  parseInt(await AsyncStorage.getItem('@userId'))
   axios
   .post(
     global.url + 'api/student/loadMonthAttendance',
     {
-      groupId: this.props.groupId,
+      groupId:this.props.groupId,
       userId: userId,
       monthId: this.state.month===""? new Date().getMonth()+1:this.state.month,
     },
@@ -66,30 +69,36 @@ loadmonth=async()=>{
       },
     },
   )
-  .then(res => {
+  .then(async(res )=> {
     if (res.data.msg === 'success') {
-      console.warn("==================>",res.data)
+      console.warn("==================>11",res.data.data !== undefined,res.data)
       this.setState({resloadmonthattendance:res.data.data})
+      // this.props.getMonthdata(res.data.data)
       res.data.data !== undefined &&
       res.data.data.filter(obj => {
+        console.warn("aaaaaaaaaaaa",res.data)
         if (obj.FLD_IS_LATE === 1) {
+          
           this.state.studentstatus.push({
             date: obj.FLD_DATE.slice(0, 10),
             type: 1,
           });
         } else if (obj.FLD_ISPRESENT === 1) {
+          console.warn("bbbbbbbbbbbbbbbb")
           this.state.studentstatus.push({
             date: obj.FLD_DATE.slice(0, 10),
             type: 3,
           });
         } else if (obj.FLD_ISPRESENT === 0) {
+          console.warn("cccccccccccccccccc")
           this.state.studentstatus.push({
             date: obj.FLD_DATE.slice(0, 10),
             type: 2,
           });
         } 
       });
-      this.anotherFunc();
+      console.warn("###################################")
+        this.anotherFunc();
     }
   })
   .catch(error => {
@@ -163,28 +172,38 @@ loadmonth=async()=>{
   }
 
   componentDidMount(){
-    this.setState({month:this.props.month})
+    let today = new Date();
+    let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
+    // this.setState({month:this.props.month})
     const {loadMonthAttendance} = this.props;
     this.loadStudentInfo()
     // this.loadmonth()
- 
-  }
+    
+   }
+
+  // groupdata=(a,b,c)=>{
+  //   console.warn("&&&&&&&&&&&&&&",a,b,c)
+  // }
+// func=async()=>{
+//   var userId=  parseInt(await AsyncStorage.getItem('@userId'))
+//   var  id=this.props.groupId
+//   var token= await AsyncStorage.getItem('@token')
+//  var mont = this.state.month===""? new Date().getMonth()+1:this.state.month
+//   month(userId,id,mont,token)
+// }
+
   
  componentWillReceiveProps=async(nexxt,dat)=>{
- 
+  // this.func()
    if(this.state.counter!==this.props.count)
  {  
-   
- 
-//  this.setState({disabledate:[]})
   if(this.state.studentid!==nexxt.groupId){
     this.loadStudentInfo()
-  this.setState({changedisablemode:true})
-  this.setState({disable:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']});
- 
-  this.setState({modify:true})
-   this.props.changegroup(this.state.modify)
-  this.setState({studentid:nexxt.groupId})
+    this.setState({changedisablemode:true})
+    this.setState({disable:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']});
+    this.setState({modify:true})
+    this.props.changegroup(this.state.modify)
+    this.setState({studentid:nexxt.groupId})
     this.setState({studentstatus:[]})
     this.setState({dynamicdate:[]})
 //    this.setState({disabledate:[]})
@@ -226,7 +245,7 @@ var filterdate=data.filter(obj=>obj===this.state.studentstatus.date)
 
 
 anotherFunc = async() => {
- 
+ console.warn("tessssssssssssssssssssssssssssssssssssst")
   var obj = await this.state.studentstatus.reduce(
     (c, v) =>
       Object.assign(c, {
@@ -307,10 +326,30 @@ anotherFunc = async() => {
            console.warn("####################",this.state.studentstatus,this.state.dynamicdate)
   }
 
-  componentDidMount() {
-    let today = new Date();
-    let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
-  }
+  // componentDidMount() {
+   
+  // }
+
+  componentWillUpdate(prevProps) {
+    
+    console.warn("sdssssssssssssss",prevProps , this.props.isFocused)
+     if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({id:""})
+       this.setState({studentstatus:[],dynamicdate:[]})
+       this.setState({markedDates:[]})
+       this.loadmonth()
+      //  this.anotherFunc()
+
+      //  this.loadStudentInfo()
+      //  this.groupStudent(-1)
+       // this.props.dispatch(apiActions.loadStudentGroup(-1));
+       // this.loadMonthAttendance();
+       //Call any action to update you view
+       //fetch data when the component is focused
+       //To prevent extra component re-renders, you may need to write some logic in shouldComponentUpdate
+       }
+     }
+ 
 
  
   render() {
@@ -320,7 +359,7 @@ anotherFunc = async() => {
       <ScrollView style={styles.container}>
         <View
           style={{
-            ...((this.state.changedisablemode || this.props.loadMonthAttendance === undefined  ) && {
+            ...(( this.state.resloadmonthattendance=== undefined  ) && {
               
               position: 'absolute',
               zIndex: 2,
@@ -330,7 +369,7 @@ anotherFunc = async() => {
               opacity: 0.5,
             }),
           }}>
-          {(this.state.changedisablemode || this.props.loadMonthAttendance === undefined  ) && (
+          {( this.state.resloadmonthattendance === undefined  ) && (
             <View
               style={{
                 alignItems: 'center',
@@ -351,7 +390,7 @@ anotherFunc = async() => {
                this.loadmonth()
                this.setState({month:date.month})
                this.setState({year:date.year})
-        await   this.props.loadMonthAttendance.filter(obj => {
+        await   this.state.resloadmonthattendance.filter(obj => {
         if (obj.FLD_IS_LATE === 1) {
             this.state.studentstatus.push({
             date: obj.FLD_DATE.slice(0, 10),
@@ -426,10 +465,12 @@ anotherFunc = async() => {
 
 const mapStateToProps = state => {
   return {
-    loadMonthAttendance: state.api.loadMonthAttendance,
+    // loadMonthAttendance: state.api.loadMonthAttendance,
   };
 };
-export default connect(mapStateToProps)(CalendarsScreen);
+
+
+export default   connect (mapStateToProps) && withNavigationFocus (CalendarsScreen);
 
 const styles = StyleSheet.create({
   calendar: {

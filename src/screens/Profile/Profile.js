@@ -148,7 +148,7 @@ class Profile extends Component {
               colorButton="#5467fd"
               name="INSTELLINGEN"
               onClick={() => {
-              
+              console.warn("!!!!!!!!!!!!!!!!!!",this.props.navigation)
                   this.props.navigation.navigate('ProfileSetting', {
                       // studentInfo: this.props.Profile,
                     })

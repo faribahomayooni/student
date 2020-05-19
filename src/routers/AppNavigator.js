@@ -32,140 +32,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import IconBadge from 'react-native-icon-badge';
 import {connect} from 'react-redux';
 
-// var unsubscribe = messaging().onMessage( remoteMessage => {
-//   return remoteMessage
-//   // const data = JSON.stringify(remoteMessage);
-//   // Alert.alert('qqqqqqqqqqqqqqqqqqqq!',data);
-//  });
-//    console.warn("!!!!!!!!!!!!",unsubscribe)
-// let RootStack;
-// let tokenValue;
-// // (async () => {
-// //   tokenValue = await AsyncStorage.getItem('@token');
-// // })();
 
-// // AsyncStorage.getItem('@token').then(value => {
-// //   tokenValue = value;
-// //   return value;
-// // });
-
-// console.log(tokenValue);
-// if (tokenValue !== undefined || tokenValue !== null) {
-//   RootStack = createStackNavigator(
-//     {
-//       SplashScreen: {
-//         screen: SplashScreen,
-//         navigationOptions: ({navigation}) => ({
-//           tabBarVisible: false,
-//           title: 'Loader',
-//           headerStyle: {
-//             display: 'none',
-//           },
-//         }),
-//       },
-
-//       // SignIn: {
-//       //   screen: SignIn,
-//       //   navigationOptions: ({navigation}) => ({
-//       //     tabBarVisible: false,
-//       //     title: 'SignIn',
-//       //     headerStyle: {
-//       //       display: 'none',
-//       //     },
-//       //   }),
-//       // },
-//       Home: {
-//         screen: Home,
-//         navigationOptions: {
-//           title: 'Dashboard',
-//         },
-//       },
-//       SendMessage: {
-//         screen: SendMessage,
-//         navigationOptions: {
-//           title: 'SendMessage',
-//           /* No more header config here! */
-//         },
-//       },
-//     },
-//     {
-//       defaultNavigationOptions: {
-//         headerStyle: {
-//           backgroundColor: '#F2F3F7',
-//           elevation: 0, // remove shadow on Android
-//           shadowOpacity: 0,
-//         },
-//         headerTitleStyle: {
-//           fontSize: 22,
-//           textAlign: 'center',
-//           flex: 1,
-//         },
-//         tabBarStyle: {
-//           padding: 20,
-//         },
-//         headerTintColor: '#31455E',
-//         headerForceInset: {top: 'never', bottom: 'never'},
-//       },
-//     },
-//   );
-// } else {
-//   RootStack = createStackNavigator(
-//     {
-//       SplashScreen: {
-//         screen: SplashScreen,
-//         navigationOptions: ({navigation}) => ({
-//           tabBarVisible: false,
-//           title: 'Loader',
-//           headerStyle: {
-//             display: 'none',
-//           },
-//         }),
-//       },
-//       SignIn: {
-//         screen: SignIn,
-//         navigationOptions: ({navigation}) => ({
-//           tabBarVisible: false,
-//           title: 'SignIn',
-//           headerStyle: {
-//             display: 'none',
-//           },
-//         }),
-//       },
-//       Home: {
-//         screen: Home,
-//         navigationOptions: {
-//           title: 'Dashboard',
-//         },
-//       },
-//       SendMessage: {
-//         screen: SendMessage,
-//         navigationOptions: {
-//           title: 'SendMessage',
-//           /* No more header config here! */
-//         },
-//       },
-//     },
-//     {
-//       defaultNavigationOptions: {
-//         headerStyle: {
-//           backgroundColor: '#F2F3F7',
-//           elevation: 0, // remove shadow on Android
-//           shadowOpacity: 0,
-//         },
-//         headerTitleStyle: {
-//           fontSize: 22,
-//           textAlign: 'center',
-//           flex: 1,
-//         },
-//         tabBarStyle: {
-//           padding: 20,
-//         },
-//         headerTintColor: '#31455E',
-//         headerForceInset: {top: 'never', bottom: 'never'},
-//       },
-//     },
-//   );
-// }
 const RootStack = createStackNavigator(
   {
     SplashScreen: {
@@ -431,6 +298,7 @@ const PresenceStack = createStackNavigator(
   },
 );
 
+
 const AppTabNavigator = createBottomTabNavigator(
  
   {
@@ -438,6 +306,7 @@ const AppTabNavigator = createBottomTabNavigator(
       screen: RootStack,
       navigationOptions: () => ({
         title: 'Dashboard',
+        
         tabBarIcon: ({focused, tintColor}) =>
           focused ? (
             <Image
@@ -457,8 +326,14 @@ const AppTabNavigator = createBottomTabNavigator(
     },
     Aanwezigheid: {
       screen: PresenceStack,
-      navigationOptions: () => ({
+      navigationOptions: ({navigation}) => ({
+      
         title: 'Aanwezigheid',
+    //     tabBarOnPress: (tab, jumpToIndex) => {
+    //       console.warn("****************************", navigation,tab)
+    //       console.warn("Tab Click",tab);
+         
+    // },
         tabBarIcon: ({focused, tintColor}) =>
           focused ? (
             <Image
@@ -472,6 +347,7 @@ const AppTabNavigator = createBottomTabNavigator(
             />
           ),
       }),
+   
       tabBarOptions: {
         activeTintColor: global.brandColor,
         labelStyle: {color: '#0f0'},

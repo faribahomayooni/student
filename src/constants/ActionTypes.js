@@ -24,5 +24,6 @@ export const allConstants = {
   student_Data:"student_Data",
   LOG_OUT:"LOG_OUT",
   student_remove:"student_remove",
-  Message_data:"Message_data"
+  Message_data:"Message_data",
+  Month_Data:"Month-Data"
 };

@@ -4,6 +4,7 @@ import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert,TouchableHighligh
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
+import { StackActions, NavigationActions } from 'react-navigation';
 import {connect} from 'react-redux';
 import COLORS from '../styles/variables';
 import { bindActionCreators } from 'redux';
@@ -22,6 +23,7 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
+  console.warn("test navigation action",NavigationActions)
 await  this.getGroupList()
   // console.warn("************************fariba",this.props.loadBasicList)
  this.props.notification.length!==0 && this.setState({modalVisible:true})
@@ -146,7 +148,7 @@ SaveTokenwithapi= async()=>{
 }
 
   render() {
-    // console.warn("???????****",this.props.GroupStudent)
+    console.warn("NavigationActions****",NavigationActions)
       let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
     let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
     let messages_Img = require('./../assets/images/student/dashboard/Image218.png');

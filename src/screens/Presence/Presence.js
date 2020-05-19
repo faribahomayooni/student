@@ -24,6 +24,7 @@ import {apiActions} from '../../actions';
 // import AsyncStorage from '@react-native-community/async-storage';
 import PickerScreen from './../../components/Picker';
 import axios from 'axios';
+import { withNavigationFocus } from 'react-navigation';
 
 const {width, height} = Dimensions.get('window');
 class PresenceCalendar extends Component {
@@ -43,9 +44,11 @@ class PresenceCalendar extends Component {
       dateserver:"",
       teacherName:"",
       studentName:"",
+      groupStudent:[],
       modify:true,
       teacherlastname:"",
       studentInfo:null,
+      changeid:"",
       targetName:'',
       editpage:false,
       month:  parseInt(
@@ -83,18 +86,20 @@ class PresenceCalendar extends Component {
 
   }
 
-  getGroupFunction= async(newGroup)=> {
+  getGroupFunction= (newGroup)=> {
     this. getTeacherName()
- // console.warn("********************************************************************hihi")
-  
+ console.warn("********************************************************************hihi",newGroup)
+  this.setState({id:""})
    this.setState({group: this.state.group + 1});
    this.setState({change:true})
-   const userId = parseInt(await AsyncStorage.getItem('@userId'));
-   // console.warn('userId', userId);
    if(this.state.id!==newGroup.FLD_FK_GROUP){
-     this.setState({id:newGroup.FLD_FK_GROUP})
+     this.setState({id:newGroup.FLD_FK_GROUP })
+     
      this.setState({count:this.state.count+1})
+ 
    }
+  //  this.setState({changeid:""})
+//  this.setState({id:newGroup.FLD_FK_GROUP})
    this.setState({
      groupName: newGroup.FLD_GROUP_NAME,
      groupId: newGroup.FLD_FK_GROUP,
@@ -102,21 +107,26 @@ class PresenceCalendar extends Component {
    // this.setState({id:newGroup.FLD_FK_GROUP})
    // console.warn('dsfdf', newGroup.FLD_FK_GROUP, userId, this.state.month);
    // this.loadMonthAttendance(newGroup.FLD_FK_GROUP, userId, this.state.month);
-   this.props.dispatch(
-     apiActions.loadMonthAttendance(
-       newGroup.FLD_FK_GROUP,
-       userId,
-       this.state.month,
-     ),
-   );
+   this.passGroupdata(newGroup.FLD_FK_GROUP,this.state.month)
+  //  this.props.dispatch(
+  //    apiActions.loadMonthAttendance(
+  //      newGroup.FLD_FK_GROUP,
+  //      userId,
+  //      this.state.month,
+  //    ),
+  //  );
  }
  
 
+ passGroupdata=(groupId,month)=>{
+   
+}
+
   async componentDidMount() {
-    
+    this.groupStudent(-1)
   this.loadStudentInfo()
     this.props.dispatch(apiActions.loadStudentGroup(-1));
-    this.loadMonthAttendance();
+    // this.loadMonthAttendance();
   }
 
 
@@ -245,17 +255,56 @@ class PresenceCalendar extends Component {
 
   }
 
+  groupStudent=async(studentId)=> {  
+      axios
+        .post(
+          global.url + 'api/student/loadStudentGroup',
+          {
+            studentId: studentId,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': await AsyncStorage.getItem('@token'),
+            },
+          },
+        )
+        .then(async(res) => {
+          if (res.data.msg === 'success') {
+            console.warn("grouppppppppppppppppppp",res.data.data[0].FLD_FK_GROUP)
+        this.setState({groupStudent:res.data.data})
+        this.getGroupFunction(res.data.data[0])
+            // this.setState({id:res.data.data[0].FLD_FK_GROUP})
+            
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  
+      
+    
+  }
+  componentWillUpdate(prevProps) {
+   console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps , this.props.isFocused)
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.loadStudentInfo()
+      this.groupStudent(-1)
+      
+      }
+    }
+
   render() {
-  // console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@",this.state.changedata)
+   console.warn("student groups@@@@%%%%",this.props.loadStudentGroup)
     const {loadMonthAttendance} = this.props;
    
     return (
       <ScrollView>
        
         <View
-        pointerEvents={(this.props.loadMonthAttendance===undefined || this.state.modify===true) ? 'none':null}
+        pointerEvents={(this.state.modify===true) ? 'none':null}
          style={{
-            ...(  this.props.loadMonthAttendance === undefined  || this.state.modify===true  &&  {
+            ...(   this.state.modify===true  &&  {
              
               zIndex: 2,
               width: width,
@@ -265,7 +314,7 @@ class PresenceCalendar extends Component {
             }),
           }}>
           <View style={cs.mainContainer}>
-          {this.props.loadMonthAttendance === undefined || this.state.modify===true  && (
+          {this.state.modify===true  && (
             <View
               style={{
                 position:"absolute",
@@ -343,7 +392,7 @@ class PresenceCalendar extends Component {
               <View>
                 <PickerScreen
                   getGroup={this.getGroupFunction}
-                  data={this.props.loadStudentGroup}
+                  data={this.state.groupStudent}
                 />
               </View>
             { this.state.editpage===true &&
@@ -400,12 +449,14 @@ class PresenceCalendar extends Component {
                     groupId={this.state.id}
                     change={this.state.change}
                     count={this.state.count}
-                    dateinmonth={this.props.loadMonthAttendance!==undefined && this.props.loadMonthAttendance}
+                    // dateinmonth={this.props.loadMonthAttendance!==undefined && this.props.loadMonthAttendance}
                     month={this.state.month}
                     savedate={this.savedate}
                     changegroup={this.changegroup}
                     getMonth={this.getMonthFunction}
                     edit={this.state.editpage}
+                    changeid={this.state.changeid}
+                    groupdata={this.passGroupdata()}
                     activeEditPage={(status)=>this.activeEditPage(status)}
                   />
                  
@@ -529,9 +580,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    loadStudentGroup: state.api.loadStudentGroup,
-    loadMonthAttendance: state.api.loadMonthAttendance,
+    // loadStudentGroup: state.api.loadStudentGroup,
+      // loadMonthAttendance: state.api.loadMonthAttendance,
   };
 };
 
-export default connect(mapStateToProps)(PresenceCalendar);
+
+export default   withNavigationFocus (PresenceCalendar);

@@ -13,6 +13,8 @@ import {InputField, Button, Header} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import KnowModal from '../../components/KnowModal';
 import {getprofileInfo} from '../../actions/ProfileAction'
+import { StackActions, NavigationActions } from 'react-navigation';
+
 const sha256 = require('sha256');
 class StudentSignIn extends Component {
   constructor(props) {
@@ -36,6 +38,8 @@ class StudentSignIn extends Component {
   }
 
   signIn() {
+  
+    
     this.setState({
       username: this.state.username,
       password: this.state.password,
@@ -76,6 +80,13 @@ class StudentSignIn extends Component {
             }
 
             this.props.navigation.navigate('Home');
+            const resetAction = StackActions.reset({
+              index: 0,
+             key:"SignUp",
+              actions: [NavigationActions.navigate({ routeName: 'Home' })],
+            });
+            this.props.navigation.dispatch(resetAction);
+
             // Toast.show({
             //   text: user.data.msg,
             //   buttonText: 'Okay',

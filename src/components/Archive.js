@@ -14,7 +14,7 @@ import {
 
 } from 'react-native';
 import axios from 'axios';
-
+import { withNavigationFocus } from 'react-navigation';
 import {commonStyle as cs} from '../styles/common/styles';
 
 Item=(props )=> {
@@ -31,7 +31,6 @@ Item=(props )=> {
               source={require('./../assets/images/teacher/teachedefault.jpg')}
             />:
             <Image   style={cs.defaultTeacherImage} source={{uri:global.url+`teachers/photo/img-${props.title.SenderImage}`}}/>
-          //  <Image   style={cs.defaultTeacherImage} source={{uri:global.url+`/app/setting/notify/nt-${props.title.FLD_image}`}}/>
         }
             <Text style={cs.messageProfileName}>{props.title.Sender} </Text>
           </View>
@@ -61,7 +60,7 @@ Item=(props )=> {
     </View>
   );}
 
-export default class Archive extends Component {
+ class Archive extends Component {
   constructor(props) {
     super(props);
     this.page = 1;
@@ -78,6 +77,16 @@ export default class Archive extends Component {
 componentDidMount(){
   this.getMessage(this.page)
 }
+
+
+componentWillUpdate(prevProps) {
+   
+  if (prevProps.isFocused !== this.props.isFocused) {
+    this.getMessage(this.page)
+    this.setState({allMessage:[]})
+ 
+    }
+  }
 
 getMessage=async(page)=>{
   // console.warn('page++++===============>',page)
@@ -263,6 +272,7 @@ renderFooter = () => {
   }
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -275,3 +285,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+export default   withNavigationFocus (Archive);

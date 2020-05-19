@@ -5,10 +5,11 @@ import {notification,Icons} from './notificationreducer'
 import {GroupStudent} from './TravelcostReducer'
 import {Profile} from './ProfileReducer'
 import {Message} from './MessageReducer'
+import { loadMonth } from './CalendarReducer';
 
 
 const rootReducer = combineReducers({
-  api,notification,Icons,GroupStudent,Profile,Message
+  api,notification,Icons,GroupStudent,Profile,Message,loadMonth
 
 });
 

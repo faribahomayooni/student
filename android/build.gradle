@@ -6,6 +6,7 @@ buildscript {
         minSdkVersion = 16
         compileSdkVersion = 28
         targetSdkVersion = 28
+        
     }
     repositories {
         google()
@@ -15,6 +16,8 @@ buildscript {
       
     }
     dependencies {
+        
+          classpath 'com.android.support:multidex:1.0.3'
         classpath( 'com.google.android.gms:play-services-auth:8.3.0')
         classpath("com.android.tools.build:gradle:3.4.2")
 //        classpath ('com.google.gms:google-services:4.2.0')
@@ -53,8 +56,7 @@ subprojects {
     afterEvaluate {project ->
         if (project.hasProperty("android")) {
             android {
-
-
+              
                 compileSdkVersion 28     // have to match with build.gradle and app/build.gradle ones
                 buildToolsVersion '28.0.3'  // have to match with build.gradle and app/build.gradle ones
                 variantFilter { variant ->

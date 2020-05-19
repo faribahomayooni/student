@@ -651,6 +651,22 @@ function loadStudentInfo() {
 
 
 
-    
-
-
+export function month (userId,groupId,monthId,token){
+   console.warn("**************")
+  // var userId=  parseInt(await AsyncStorage.getItem('@userId'))
+  axios
+  .post(
+    global.url + 'api/student/loadMonthAttendance',
+    {
+      groupId:groupId,
+      userId: userId,
+      monthId: monthId
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token':token ,
+      },
+    }
+    .then((res )=> {return  Promise.resolve( res.data)})
+  )}

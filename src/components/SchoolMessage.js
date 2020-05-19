@@ -1,10 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View, Image, TouchableOpacity, ScrollView,AsyncStorage,FlatList,RefreshControl,ActivityIndicator} from 'react-native';
+import {Text, View, Image, TouchableOpacity, ScrollView,AsyncStorage,FlatList,RefreshControl,ActivityIndicator,DeviceEventEmitter} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import axios from 'axios';
 import {getMessageData} from '../actions/MessageAction'
 import {getIcondata} from '../actions/notificationAction';
+import { withNavigationFocus } from 'react-navigation';
 import {connect} from 'react-redux';
 import { State } from 'react-native-gesture-handler';
 
@@ -62,9 +63,17 @@ return(
 
   componentDidMount(){
     this.getMessage(this.page)
-   this.getDynamicIcon()
+    this.getDynamicIcon()
+    // this.listener = DeviceEventEmitter.addListener('eventKey', e => console.warn(e));
+   // console.warn("*****it is message for schools*****",this.props.Message
+    
   }
    
+
+  // handleEvent=(event)=>{
+  //   console.warn("faribaaaaaaaaaaaaaaaaaa",event)
+  //   //Do something with event object
+  //  } 
 
   getDynamicIcon=async()=>{
     axios
@@ -80,7 +89,7 @@ return(
       },
     )
     .then(res => {
-      this.props.getIcondata(res.data)
+      // this.props.getIcondata(res.data)
        console.warn("=>res data icob" ,res.data.data[0].FLD_LOGO)
       if(res.data.msg=="success"){
        this.setState({Icon:res.data.data[0].FLD_Favicon})
@@ -108,9 +117,9 @@ return(
       },
     )
     .then(res => {
-      console.warn("response in user notification",res.data.data[0])
+      console.warn("response in user notification!!!!!!!!!!!!!!!!!",res.data.data)
       if(res.data.msg=="success"){
-        this.props.getMessageData(res.data.data)
+        // this.props.getMessageData(res.data.data)
         this.setState({allMessage:[...this.state.allMessage,...res.data.data]})}
         this.setState({totalPage:res.data.data[0].CountPage})
         this.setState({loading:false})
@@ -202,8 +211,33 @@ return(
       this.getMessage(this.page); // method for API call 
     }
   };
+
+
+  // componentWillUnmount(){
+  //   const resetAction = StackActions.reset({
+  //     key:'Messages',
+  //     index: 0,
+  //     actions: [NavigationActions.navigate({ routeName: 'Messages' })],
+  // });
+  // this.props.navigation.dispatch(resetAction);
+  // }
+
+
+  componentWillUpdate(prevProps) {
+   
+     if (prevProps.isFocused !== this.props.isFocused) {
+       this.setState({allMessage:[]})
+      this.getMessage(this.page)
+      this.getDynamicIcon()
+      console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@this is school page",prevProps , this.props.isFocused)
+    
+       }
+     }
+
+
   render() {
-  console.warn("*****it is message for schools*****",this.props.Message)
+  
+ 
     let {} = this.props;
     return (
       <ScrollView 
@@ -216,7 +250,7 @@ return(
             makkelijk teruglezen.
           </Text>
           <FlatList
-              data={this.props.Message}
+              data={this.state.allMessage}
               renderItem={({ item }) => <Data item={item} navigation={this.props.navigation}  Icon={this.state.Icon} />}
               keyExtractor={item =>  item.FLD_PK_push_notification}
               ListFooterComponent={this.renderFooter.bind(this)}
@@ -244,4 +278,5 @@ const mapDispatchToProps= {
   getIcondata,getMessageData
  }
 
-export default connect(mapStateToProps,mapDispatchToProps)(SchoolMessage);
+// export default connect(mapStateToProps,mapDispatchToProps)(SchoolMessage);
+export default   withNavigationFocus (SchoolMessage);

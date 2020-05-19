@@ -17,6 +17,9 @@ import axios from 'axios';
 // import {LogOut} from '../../actions/ProfileAction'
 import Form from '../../../native-base-theme/components/Form';
 import {removeprofile} from '../../actions/ProfileAction'
+import NavigationService from '../../routers/NavigationService';
+import { StackActions, NavigationActions } from 'react-navigation';
+import SplashScreen from 'react-native-splash-screen';
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -33,7 +36,7 @@ class ProfileSetting extends Component {
   }
 
   componentDidMount() {
-    console.warn("!!!!!!!!!!",this.props.Profile.data)
+    console.warn("!!!!!!!!!!",NavigationActions)
     // window.scrollTo(0, 0);
     // const {dispatch} = this.props;
     // dispatch(apiActions.loadMobilePerson());
@@ -70,6 +73,11 @@ class ProfileSetting extends Component {
     this.props.removeprofile()
     AsyncStorage.setItem('@token', '');
     this.props.navigation.navigate('SignIn');
+    // NavigationService.navigateReset('SignIn')
+    
+    // console.warn("++++++++++++++++++",StackActions.reset({index:0,key:"SignIn",actions:[NavigationActions.navigate("SignIn")]}))
+    // NavigationActions.reset({ index: 0, actions: [{type: NavigationActions.NAVIGATE, routeName: 'SignIn'}], key: null })
+   
    
   }
 
@@ -89,6 +97,7 @@ class ProfileSetting extends Component {
     ),
   };
   render() {
+    console.warn("@@@@&&&&& stackaction",StackActions)
     // const studentInfo = this.props.navigation.getParam('studentInfo');
     // console.warn('studentInfo', studentInfo);
     return (

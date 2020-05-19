@@ -8,10 +8,11 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
+import androidx.multidex.MultiDexApplication;
 import java.util.List;
 //import  io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends MultiDexApplication implements ReactApplication  {
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {

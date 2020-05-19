@@ -1,13 +1,15 @@
-import {NavigationActions} from 'react-navigation';
+import {NavigationActions,StackActions} from 'react-navigation';
 
-let navigator;
+let _navigator;;
 
 function setTopLevelNavigator(navigatorRef) {
-  navigator = navigatorRef;
+  console.warn("+++++++navigation props",navigatorRef)
+  _navigator = navigatorRef;
 }
 
 function navigate(routeName, params) {
-  navigator.dispatch(
+  console.warn(routeName,params,"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+  _navigator.dispatch(
     NavigationActions.navigate({
       routeName,
       params,
@@ -15,6 +17,21 @@ function navigate(routeName, params) {
   );
 }
 
+
+function navigateReset(routeName, params) {
+  console.warn("######################navigation reset")
+  _navigator.dispatch(
+    StackActions.reset({
+      index: 0,
+      actions: [
+        NavigationActions.navigate({
+          routeName,
+          params,
+        }),
+      ],
+    }),
+  );
+}
 // function replace(routeName, params) {
 //   navigator.dispatch (
 //     NavigationActions.replace({ routeName, params })
@@ -24,4 +41,5 @@ function navigate(routeName, params) {
 export default {
   navigate,
   setTopLevelNavigator,
+  navigateReset
 };

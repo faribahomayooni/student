@@ -5,9 +5,11 @@ import TeacherSignIn from './../Login/TeacherSignIn';
 import StudentSignIn from './../Login/StudentSignIn';
 import {connect} from 'react-redux';
 import getTheme from '../../../native-base-theme/components';
+import { StackActions, NavigationActions } from 'react-navigation';
 import commonColor from '../../../native-base-theme/variables/commonColor';
 class SignIn extends Component {
   render() {
+    console.warn("test navigation action",NavigationActions)
     return (
       <StyleProvider style={getTheme(commonColor)}>
         <Container>
