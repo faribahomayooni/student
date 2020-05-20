@@ -24,7 +24,7 @@ Item=(props )=> {
       <View style={cs.messageContainer}>
         <TouchableOpacity style={cs.chatWrapper}>
           <View style={cs.infoSenderMessage}>
-            {console.warn("&&&&***%%%,",props.title.FLD_image)}
+            {/* {console.warn("&&&&***%%%,",props.title.FLD_image)} */}
            {( props.title.SenderImage== null) ?
             <Image
               style={cs.defaultTeacherImage}
@@ -82,8 +82,10 @@ componentDidMount(){
 componentWillUpdate(prevProps) {
    
   if (prevProps.isFocused !== this.props.isFocused) {
-    this.getMessage(this.page)
+    
     this.setState({allMessage:[]})
+    this.page = 1
+    this.getMessage(this.page)
  
     }
   }
@@ -107,7 +109,7 @@ getMessage=async(page)=>{
     },
   )
   .then(res => {
-     console.warn("!!!!!!!!!!!!!!$$$$$$$$$$$$",res.data)
+    //  console.warn("!!!!!!!!!!!!!!$$$$$$$$$$$$",res.data)
     if(res.data.msg=="success"){
       this.setState({allMessage:[...res.data.data,...this.state.allMessage]})
       this.setState({totalPage:res.data.data[0].CountPage})
@@ -122,7 +124,7 @@ getMessage=async(page)=>{
 }
  async onRefresh() {
   
-   console.warn("fariiiiiiiiiiiiiiiiiiiiiiiiba",this.page)
+  //  console.warn("fariiiiiiiiiiiiiiiiiiiiiiiiba",this.page)
   this.setState({isRefreshing:true}); // true isRefreshing flag for enable pull to refresh indicator
   axios
   .post(
@@ -145,7 +147,7 @@ getMessage=async(page)=>{
       const {allMessage}=this.state
       for(let i=0;i<this.state.totalPage;i++){
         if(this.state.allMessage[i].FLD_PK_push_notification!==res.data.data[i].FLD_PK_push_notification){
-          console.warn("!!!!!!!!!!!=>test for new notification in teacher")
+          // console.warn("!!!!!!!!!!!=>test for new notification in teacher")
           this.state.allMessage= [
             Object.assign({}, res.data.data[i]),...this.state.allMessage
            

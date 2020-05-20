@@ -13,8 +13,7 @@ import { State } from 'react-native-gesture-handler';
 Data=(props,item )=> {
   // {console.warn(props.item.FLD_date.toString())}
 return(
-  <View index={props.item.FLD_PK_push_notification}>
-     
+  <View index={props.item.FLD_PK_push_notification}>  
        <View style={cs.messageContainer}>
             <View style={cs.chatWrapper}>
               <View style={cs.infoSenderMessage}>
@@ -63,17 +62,9 @@ return(
 
   componentDidMount(){
     this.getMessage(this.page)
-    this.getDynamicIcon()
-    // this.listener = DeviceEventEmitter.addListener('eventKey', e => console.warn(e));
-   // console.warn("*****it is message for schools*****",this.props.Message
-    
+    this.getDynamicIcon()    
   }
    
-
-  // handleEvent=(event)=>{
-  //   console.warn("faribaaaaaaaaaaaaaaaaaa",event)
-  //   //Do something with event object
-  //  } 
 
   getDynamicIcon=async()=>{
     axios
@@ -89,8 +80,6 @@ return(
       },
     )
     .then(res => {
-      // this.props.getIcondata(res.data)
-       console.warn("=>res data icob" ,res.data.data[0].FLD_LOGO)
       if(res.data.msg=="success"){
        this.setState({Icon:res.data.data[0].FLD_Favicon})
     }
@@ -117,9 +106,8 @@ return(
       },
     )
     .then(res => {
-      console.warn("response in user notification!!!!!!!!!!!!!!!!!",res.data.data)
+      // console.warn("response in user notification!!!!!!!!!!!!!!!!!",res.data.data)
       if(res.data.msg=="success"){
-        // this.props.getMessageData(res.data.data)
         this.setState({allMessage:[...this.state.allMessage,...res.data.data]})}
         this.setState({totalPage:res.data.data[0].CountPage})
         this.setState({loading:false})
@@ -127,7 +115,7 @@ return(
     })
     .catch(error => {
       this.setState({loading:false})
-      console.warn("error user notification",error);
+      // console.warn("error user notification",error);
     });
   }
 
@@ -166,7 +154,7 @@ return(
     })
     .catch(error => {
       this.setState({ isRefreshing:false })
-      console.warn("error user notification",error);
+      // console.warn("error user notification",error);
     });
     
   }
@@ -189,15 +177,15 @@ return(
      return (
        <View style={{alignItems:"center"}}>
           { (this.state.totalPage!==this.page) ? 
-                                               <View>
-                                                    <ActivityIndicator
-                                                      style={{ color: '#000' }}
-                                                    />
-                                                    <Text>Load More</Text>
-                                                </View>:
-                                               < View>
-                                                    <Text>there arent any item</Text>
-                                               </View>
+                <View>
+                    <ActivityIndicator
+                      style={{ color: '#000' }}
+                    />
+                    <Text>Load More</Text>
+                </View>:
+                < View>
+                    <Text>there arent any item</Text>
+                </View>
           }
        </View>
        
@@ -213,24 +201,15 @@ return(
   };
 
 
-  // componentWillUnmount(){
-  //   const resetAction = StackActions.reset({
-  //     key:'Messages',
-  //     index: 0,
-  //     actions: [NavigationActions.navigate({ routeName: 'Messages' })],
-  // });
-  // this.props.navigation.dispatch(resetAction);
-  // }
-
-
+  
   componentWillUpdate(prevProps) {
-   
+  //  console.warn("page when update page again",this.page)
      if (prevProps.isFocused !== this.props.isFocused) {
+       console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
        this.setState({allMessage:[]})
+       this.page = 1
       this.getMessage(this.page)
       this.getDynamicIcon()
-      console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@this is school page",prevProps , this.props.isFocused)
-    
        }
      }
 
@@ -266,7 +245,7 @@ return(
   }
 }
 const mapStateToProps = state => {
-  console.warn(state,"stateaaaaaaaaaaaaaaaaaaaaaaaa")
+  // console.warn(state,"stateaaaaaaaaaaaaaaaaaaaaaaaa")
   
   return {
     Icons:state.Icons,
@@ -278,5 +257,4 @@ const mapDispatchToProps= {
   getIcondata,getMessageData
  }
 
-// export default connect(mapStateToProps,mapDispatchToProps)(SchoolMessage);
 export default   withNavigationFocus (SchoolMessage);

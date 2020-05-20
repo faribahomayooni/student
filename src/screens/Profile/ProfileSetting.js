@@ -13,6 +13,7 @@ import {commonStyle as cs} from '../../styles/common/styles';
 import SettingItem from '../../components/SettingItem';
 import {apiActions} from '../../actions';
 import AsyncStorage from '@react-native-community/async-storage';
+import {removeNotification} from '../../actions/notificationAction'
 import axios from 'axios';
 // import {LogOut} from '../../actions/ProfileAction'
 import Form from '../../../native-base-theme/components/Form';
@@ -36,6 +37,7 @@ class ProfileSetting extends Component {
   }
 
   componentDidMount() {
+     this.props.removeNotification()
     console.warn("!!!!!!!!!!",NavigationActions)
     // window.scrollTo(0, 0);
     // const {dispatch} = this.props;
@@ -250,7 +252,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps= {
- 
+  removeNotification,
   removeprofile
  }
 

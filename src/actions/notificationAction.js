@@ -11,3 +11,7 @@ export function getIcondata (data){
 
     return {type:allConstants.Icon_data,payload:data}
 }
+
+export function  removeNotification(data){
+    return {type:allConstants.remove_notification}
+}

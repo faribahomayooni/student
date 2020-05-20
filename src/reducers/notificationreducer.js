@@ -7,6 +7,8 @@ export function  notification (state=[],action){
             Object.assign({}, action.payload), ...state
            
           ];
+          case 'remove_notification':
+            return []
       default:
        return state
     }

@@ -142,14 +142,14 @@ SaveTokenwithapi= async()=>{
       
     }
   })
-  .catch(error => {
+  .catch(error => {س
     // console.warn("####3333333333333",error);
   });
 }
 
   render() {
     console.warn("NavigationActions****",NavigationActions)
-      let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
+    let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
     let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
     let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
     let help_Img = require('./../assets/images/student/dashboard/Image220.png');

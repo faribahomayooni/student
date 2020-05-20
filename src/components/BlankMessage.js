@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, ActivityIndicator, Image,TouchableOpacity,Alert,ScrollView, Dimensions} from 'react-native';
+import {Text, View, StyleSheet, ActivityIndicator, Image,TouchableOpacity,Alert,ScrollView, Dimensions,AsyncStorage} from 'react-native';
 import {commonStyle as cs} from '../styles/common/styles';
 import messaging from '@react-native-firebase/messaging';
 import {getnotification} from '../actions/notificationAction'
+import { withNavigationFocus } from 'react-navigation';
 import {connect} from 'react-redux';
 
 
@@ -16,38 +17,34 @@ const {width,height}=Dimensions.get("window")
 
   }
   componentDidMount(){
-  
+    // var data=   AsyncStorage.getItem('@notification')
+    // console.warn("@@@@@@@@@@@@@@@@notification async",data)
     for(let i=0;i<this.props.notification.length;i++){
       this.state.textStatus[i]=false
-      // console.warn("+++++++++++1",this.state.textStatus)
     }
-
   }
-  componentDidUpdate=()=>{
-  
-    // for(let i=0;i<this.props.notification.length;i++){
-    //   this.state.textStatus[i]=false
-    //   console.warn("+++++++++++1",this.state.textStatus)
-    // }
 
-  }
-  // componentDidUpdate(){
-  //   this.handleMoreLess()
-  // }
+ componentWillReceiveProps(){
+  var data=   AsyncStorage.getItem('@notification')
+  console.warn("@@@@@@@@@@@@@@@@sdasdsdsd async",data)
+ }
+
+  componentWillUpdate(prevProps) {
+    console.warn("hiiiiiiiiiiiiiiiiiiiii")
+    //  console.warn("page when update page again",this.page)
+       if (prevProps.isFocused !== this.props.isFocused) {
+       
+        this.props.getnotification([])
+         }
+       }
+ 
 
   handleMoreLess=(index,item)=>{
-const {textStatus}=this.state
-    
+    const {textStatus}=this.state
      this.state.textStatus[index]==true?this.state.textStatus[index]=false:this.state.textStatus[index]=true
-     this.setState({textStatus})
-    // console.warn("&&&**",this.state.textStatus, this.state.textStatus[index])
-   
-    
+     this.setState({textStatus}) 
   }
   render() {
-    
-// console.warn("test redux in react native project &&&*****",this.props.notification)
-   
     return (
       <ScrollView>
       <View>
@@ -61,16 +58,10 @@ const {textStatus}=this.state
                       docent.
                 </Text>
             </View>
-      </View>
-        
-        
-      :
-    
-     
+      </View>    
+      :   
         this.props.notification.map((item,index)=>{
-          // this.state.textStatus[index]=false
-          let  data=item.notification.body.toString()
-          // console.warn("SSSSSSSSSSSSSSSSSSSSSSSSS",index,this.state.textStatus)
+        let  data=item.notification.body.toString()
           return(
             <View>
               <View style={cs.messageContainer}> 
@@ -153,9 +144,6 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => {
-  // console.warn(state,"stateaaaaaaaaaaaaaaaaaaaaaaaa")
-  
- 
  return { loadBasicList: state.api.loadBasic,
          notification:state.notification}
 };
@@ -164,4 +152,6 @@ const mapDispatchToProps= {
   getnotification
  }
 
-export default connect(mapStateToProps,mapDispatchToProps)(BlankMessage);
+
+ export default  connect(mapStateToProps,mapDispatchToProps)(BlankMessage) ;
+// export default connect(mapStateToProps,mapDispatchToProps)(BlankMessage);

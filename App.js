@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View,AsyncStorage} from 'react-native';
 import {Provider} from 'react-redux';
 import {store} from './src/helper';
 import Toast from './src/components/Toast';
@@ -29,7 +29,8 @@ export default class App extends Component {
   
 
   
-  componentDidMount=()=>{
+  componentDidMount=async()=>{
+    console.warn("**********************navigation",this.props.navigation)
      
     messaging().onMessage( remoteMessage => {
       
@@ -38,7 +39,7 @@ export default class App extends Component {
         Object.assign({}, remoteMessage), ...this.state.notification
        
       ]})
-   
+      AsyncStorage.setItem('@notification', this.state.notification.length.toString())
      
     });
     messaging().setBackgroundMessageHandler(async remoteMessage => {
@@ -47,7 +48,10 @@ export default class App extends Component {
         Object.assign({}, remoteMessage), ...this.state.notification
        
       ]})
+     await AsyncStorage.setItem('@notification', this.state.notification)
     });
+ var data=   AsyncStorage.getItem('@notification')
+    console.warn("@@@@@@@@@@@@@@@@notification async", this.state.notification)
  }
 
 
