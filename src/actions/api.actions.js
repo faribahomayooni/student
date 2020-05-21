@@ -122,7 +122,7 @@ function loadMobilePerson() {
         },
       })
       .then(res => {
-        console.log(res.data.data);
+        console.warn("sdfsdfsdf",res.data.data);
         if (res.data.msg === 'success') {
           dispatch({
             type: allConstants.LOAD_Mobile_PERSON,
@@ -652,8 +652,6 @@ function loadStudentInfo() {
 
 
 export function month (userId,groupId,monthId,token){
-   console.warn("**************")
-  // var userId=  parseInt(await AsyncStorage.getItem('@userId'))
   axios
   .post(
     global.url + 'api/student/loadMonthAttendance',

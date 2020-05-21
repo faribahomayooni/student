@@ -24,8 +24,8 @@ const {width,height}=Dimensions.get("window")
     }
   }
 
- componentWillReceiveProps(){
-  var data=   AsyncStorage.getItem('@notification')
+ componentWillReceiveProps=async()=>{
+  var data= await  AsyncStorage.getItem('@notification')
   console.warn("@@@@@@@@@@@@@@@@sdasdsdsd async",data)
  }
 

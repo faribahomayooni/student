@@ -23,27 +23,25 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
-  console.warn("test navigation action",NavigationActions)
-await  this.getGroupList()
+  var data= await AsyncStorage.getItem('@notification')
+    console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
+    //  console.warn("test navigation action",NavigationActions)
+     await  this.getGroupList()
   // console.warn("************************fariba",this.props.loadBasicList)
- this.props.notification.length!==0 && this.setState({modalVisible:true})
-   
-    this.checkPermission();
-    const {dispatch} = this.props;
-    this.SaveTokenwithapi()
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
+     this.props.notification.length!==0 && this.setState({modalVisible:true})  
+      this.checkPermission();
+      const {dispatch} = this.props;
+      this.SaveTokenwithapi()
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
       this.setState({modalVisible:true})
       this.props.getnotification(remoteMessage)
       
      });
-      messaging().setBackgroundMessageHandler(async remoteMessage => {
-       
+        messaging().setBackgroundMessageHandler(async remoteMessage => {   
         this.props.getnotification(remoteMessage)
         this.setState({modalVisible:true})
         ;
-      });
-    
-   
+      });  
   }
 
 
@@ -71,10 +69,7 @@ await  this.getGroupList()
       })
       .catch(error => {
         console.log(error);
-      });
-
-   
-  
+      }); 
 }
 
    registerAppWithFCM=async ()=> {
@@ -142,7 +137,7 @@ SaveTokenwithapi= async()=>{
       
     }
   })
-  .catch(error => {س
+  .catch(error => {
     // console.warn("####3333333333333",error);
   });
 }

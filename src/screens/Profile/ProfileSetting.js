@@ -31,6 +31,11 @@ class ProfileSetting extends Component {
       firstname: this.props.navigation.getParam('firstname'),
       lastname: this.props.navigation.getParam('lastname'),
       password: this.props.navigation.getParam('password'),
+      mobilePerson:[],
+      address:[],
+      setting:[],
+      basicList:[]
+      
     };
     // const {dispatch} = this.props;
     // dispatch(apiActions.loadStudentInfo());
@@ -39,15 +44,153 @@ class ProfileSetting extends Component {
   componentDidMount() {
      this.props.removeNotification()
     console.warn("!!!!!!!!!!",NavigationActions)
+    this.loadMobilePerson()
+    this.loadAppContactInfo()
+    this.loadMobileAddress()
+    this.loadAppSetting()
+    this.loadBasicList(30)
     // window.scrollTo(0, 0);
     // const {dispatch} = this.props;
-    // dispatch(apiActions.loadMobilePerson());
-    // dispatch(apiActions.loadAppContactInfo());
-    // dispatch(apiActions.loadMobileAddress());
-    // dispatch(apiActions.loadAppSetting());
-    // dispatch(apiActions.loadBasicList(30));
+  //  this.props.dispatch(apiActions.loadMobilePerson());
+    //  dispatch(apiActions.loadAppContactInfo());
+    //  dispatch(apiActions.loadMobileAddress());
+    //  dispatch(apiActions.loadAppSetting());
+    //  dispatch(apiActions.loadBasicList(30));
   }
 
+
+   loadAppSetting=async()=> {
+      axios
+        .get(global.url + 'api/school/loadAppSetting', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        })
+        .then(res => {
+          if (res.data.msg === 'success') {
+          this.setState({setting:res.data.data})
+           
+          }
+          if (res.data.msg === 'fail') {
+            console.log(res.data);
+           
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    
+  }
+
+
+   loadMobilePerson=async()=> {
+      axios
+        .get(global.url + 'api/school/loadMobilePerson', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        })
+        .then(res => {
+          console.warn("*****this is mobile person*******",res.data.data);
+          if (res.data.msg === 'success') {
+        this.setState({mobilePerson:res.data.data})
+         
+          }
+          if (res.data.msg === 'fail') {
+            console.log(res.data);
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  }
+
+   loadAppContactInfo=async() =>{
+      axios
+        .get(global.url + 'api/school/loadAppContactInfo', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        })
+        .then(res => {
+          console.log(res.data.data);
+          if (res.data.msg === 'success') {
+            this.setState({AppContactInfo:res.data.data})
+           
+          }
+          if (res.data.msg === 'fail') {
+           
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  
+     
+   
+  }
+
+   loadMobileAddress=async() =>{
+ 
+     
+      axios
+        .get(global.url + 'api/school/loadMobileAddress', {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': await AsyncStorage.getItem('@token'),
+          },
+        })
+        .then(res => {
+          console.warn("++++++++++++++++++++++",res.data.data);
+          if (res.data.msg === 'success') {
+            this.setState({address:res.data.data})
+            
+          }
+          if (res.data.msg === 'fail') {
+            console.log(res.data);
+            alert('fail');
+            return;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  }
+
+
+   loadBasicList =async(id)=> {
+    
+     
+      axios
+        .post(
+          global.url + 'api/admin/loadBasicList',
+          {
+            id: id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-access-token': await AsyncStorage.getItem('@token'),
+            },
+          },
+        )
+        .then(res => {
+          if (res.data.msg === 'success') {
+            this.setState({basicList:res.data})
+         
+            
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+  
+      
+  }
   // loadStudentInfo = async () => {
   //   axios
   //     .get(global.url + 'api/student/loadInfo', {
@@ -75,12 +218,7 @@ class ProfileSetting extends Component {
     this.props.removeprofile()
     AsyncStorage.setItem('@token', '');
     this.props.navigation.navigate('SignIn');
-    // NavigationService.navigateReset('SignIn')
     
-    // console.warn("++++++++++++++++++",StackActions.reset({index:0,key:"SignIn",actions:[NavigationActions.navigate("SignIn")]}))
-    // NavigationActions.reset({ index: 0, actions: [{type: NavigationActions.NAVIGATE, routeName: 'SignIn'}], key: null })
-   
-   
   }
 
   static navigationOptions = {
@@ -159,7 +297,7 @@ class ProfileSetting extends Component {
             <View style={cs.settingContainer}>
               <View style={cs.settingWrapper}>
                 <SettingItem
-                  basicListData={this.props.loadBasicList}
+                  basicListData={this.state.basicList}
                   routeNavigationName="TravelsCostSetting"
                   navigation={this.props.navigation}
                   title="Reiskosten sturen"
@@ -180,7 +318,7 @@ class ProfileSetting extends Component {
                   settingImg={require('./../../assets/images/student/setting/light-bulb.png')}
                 />
                 <SettingItem
-                  appSettingData={this.props.loadAppSetting}
+                  appSettingData={this.state.setting}
                   routeNavigationName="Privacy"
                   navigation={this.props.navigation}
                   title="Privacy & Klachten"
@@ -189,9 +327,9 @@ class ProfileSetting extends Component {
                   settingImg={require('./../../assets/images/student/setting/document.png')}
                 />
                 <SettingItem
-                  personData={this.props.loadMobilePerson}
-                  infoData={this.props.loadAppContactInfo}
-                  addressData={this.props.loadMobileAddress}
+                  personData={this.state.mobilePerson}
+                  infoData={this.state.AppContactInfo}
+                  addressData={this.state.address}
                   routeNavigationName="MySchool"
                   navigation={this.props.navigation}
                   title="Over jouw school"

@@ -7,11 +7,7 @@ import AppNavigator from './src/routers/AppNavigator';
 import NavigationService from './src/routers/NavigationService';
 import messaging from '@react-native-firebase/messaging';
  import firebase from "react-native-firebase";
-// import { StackActions } from '@react-navigation/native';
 
-
-
-// import SplashScreen from 'react-native-splash-screen';
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -19,25 +15,20 @@ export default class App extends Component {
       notification:[],
       // count:0,
     }
-      global.url = 'http://192.168.1.46:3100/';
+       global.url = 'http://192.168.1.46:3100/';
     // global.url = 'http://192.168.1.33:3100/';
-  //  global.url='http://85.214.123.68:3100/'
-  // global.url = 'http://94.101.128.11:3100/';
+    //  global.url='http://85.214.123.68:3100/'
+   // global.url = 'http://94.101.128.11:3100/';
     global.App = this;
   }
 
   
-
   
   componentDidMount=async()=>{
-    console.warn("**********************navigation",this.props.navigation)
-     
-    messaging().onMessage( remoteMessage => {
-      
-      // console.warn("remotemessaging",remoteMessage)
+    console.warn("**********************navigation",this.props.navigation)  
+    messaging().onMessage( remoteMessage => {     
       this.setState({notification:[
-        Object.assign({}, remoteMessage), ...this.state.notification
-       
+        Object.assign({}, remoteMessage), ...this.state.notification   
       ]})
       AsyncStorage.setItem('@notification', this.state.notification.length.toString())
      
@@ -48,24 +39,21 @@ export default class App extends Component {
         Object.assign({}, remoteMessage), ...this.state.notification
        
       ]})
-     await AsyncStorage.setItem('@notification', this.state.notification)
+     await AsyncStorage.setItem('@notification', this.state.notification.lenght)
     });
- var data=   AsyncStorage.getItem('@notification')
-    console.warn("@@@@@@@@@@@@@@@@notification async", this.state.notification)
+ var data= AsyncStorage.getItem('@notification')
+    console.warn("111111111111111111111",this.state.notification.length)
  }
 
 
  
  async createNotificationListeners() {
-  
   this.notificationOpenedListener = messaging
     .notifications()
     .onNotificationOpened(async (notificationOpen) => {
       NavigationService.navigate('Message');
     });
-
   this.messageListener = messaging().onMessage(message => {
-    // console.log(JSON.stringify(message));
   });
 }
   

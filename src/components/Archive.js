@@ -18,14 +18,14 @@ import { withNavigationFocus } from 'react-navigation';
 import {commonStyle as cs} from '../styles/common/styles';
 
 Item=(props )=> {
-  // console.warn("***********",props.title.FLD_PK_push_notification)
+   console.warn("***********senderimage",props.title.SenderImage)
   return (
     <View index={props.title.FLD_PK_push_notification}>
       <View style={cs.messageContainer}>
         <TouchableOpacity style={cs.chatWrapper}>
           <View style={cs.infoSenderMessage}>
             {/* {console.warn("&&&&***%%%,",props.title.FLD_image)} */}
-           {( props.title.SenderImage== null) ?
+           {( props.title.SenderImage== null || props.title.SenderImage==="Teacher") ?
             <Image
               style={cs.defaultTeacherImage}
               source={require('./../assets/images/teacher/teachedefault.jpg')}

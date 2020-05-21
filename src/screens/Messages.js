@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  AsyncStorage
 } from 'react-native';
 import {TabView, SceneMap} from 'react-native-tab-view';
 import Animated from 'react-native-reanimated';
@@ -30,6 +31,8 @@ export default class Messages extends React.Component {
       {key: 'third', title: 'SCHOOL'},
     ],
   };
+
+ 
 
   FirstRoute = () => (
     <View>

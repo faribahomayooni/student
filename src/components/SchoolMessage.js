@@ -32,6 +32,7 @@ return(
                  props.navigation.navigate('ReadMessage', {
                   itemId: props.item,
                   school:true,
+                  Icons:props.Icon
                   
                 });
                 }}>

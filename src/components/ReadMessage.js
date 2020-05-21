@@ -20,15 +20,16 @@ function ReadMessage(props) {
   const [icon,seticon]=useState("")
   const { params } = props.navigation.state;
   const itemId = params ? params.itemId : null;
+  const Icons = params ? params.Icons : null;
   const page =params ?params.page:null ||  undefined;
   const school =params ?params.school:null ;
   const otherParam = params ? params.otherParam : null;
-// console.warn("**************$$$$$$$$$$$$$$",icon)
+ console.warn("**************$$$$$$$$$$$$$$",itemId.SenderImage)
 
 
   return (
     <View style={{backgroundColor: '#F2F3F7',minHeight:windowHeight}}>
-    {console.warn("******props.cons",props.Icons.data[0].FLD_LOGO)} 
+    {/* {console.warn("******props.cons",props.Icons.data[0].FLD_LOGO)}  */}
 
      { showdetail==true ?
      (<View>
@@ -39,7 +40,12 @@ function ReadMessage(props) {
               style={cs.messageProfile}
               source={require('./../assets/images/student/message/kt-test.png')}
             /> */}
-       { school && school!=undefined && <Image   style={cs.schoolLogo} source={{uri:`http://192.168.1.46:3100/school/favicon/fv-${props.Icons.data[0].FLD_Favicon}`}}/>}
+       { school && school!=undefined && <Image   style={cs.schoolLogo} source={{uri:`http://192.168.1.46:3100/school/favicon/fv-${Icons}`}}/>}
+       {( itemId.SenderImagee== null  && itemId.SenderImage==="Teacher") &&
+            <Image
+              style={cs.defaultTeacherImage}
+              source={require('./../assets/images/teacher/teachedefault.jpg')}
+            />}
              <Image  style={cs.schoolLogo} source={{uri:global.url+`teachers/photo/img-${itemId.SenderImage}`}}/>
            
             <Text style={cs.messageProfileName}>{itemId.sender}</Text>
