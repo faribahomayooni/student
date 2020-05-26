@@ -31,6 +31,7 @@ import {Image, View,Text,Animated, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import IconBadge from 'react-native-icon-badge';
 import {connect} from 'react-redux';
+import MyTabBar from '../../src/components/MyTabBar'
 
 
 const RootStack = createStackNavigator(
@@ -359,21 +360,22 @@ const AppTabNavigator = createBottomTabNavigator(
         screenProps:screenProps,
         title: 'berichten',
         tabBarIcon: ({focused, tintColor}) =>
-        <View>
-        {screenProps.length!==0  ?<IconBadge
-        MainElement={ <Image
-          style={{padding: 15, margin: 10,color:{tintColor}}}
-          source={require('./../assets/images/common/mail001-E02D.png')}
-        /> }
-        BadgeElement={<Text style={{ color: 'white' }}>{screenProps.length }</Text>}
-      />:
-      <Image
-         style={{tintColor: global.brandColor}}
-              source={require('./../assets/images/common/mail001-E02D.png')}
-            />
-      }
+     < MyTabBar tintColor={tintColor}/>
+      //   <View>
+      //   {screenProps.length!==0  ?<IconBadge
+      //   MainElement={ <Image
+      //     style={{padding: 15, margin: 10,color:{tintColor}}}
+      //     source={require('./../assets/images/common/mail001-E02D.png')}
+      //   /> }
+      //   BadgeElement={<Text style={{ color: 'white' }}>{screenProps.length }</Text>}
+      // />:
+      // <Image
+      //    style={{tintColor: global.brandColor}}
+      //         source={require('./../assets/images/common/mail001-E02D.png')}
+      //       />
+      // }
          
-        </View>
+      //   </View>
         
       }),
       tabBarOptions: {

@@ -25,9 +25,7 @@ class Profile extends Component {
   
   componentDidMount=async()=> {
     this.loadStudentInfo()
-   this.loadStudentGroup(-1);
-
-    
+    this.loadStudentGroup(-1);   
   }
 
 
@@ -54,10 +52,7 @@ class Profile extends Component {
         })
         .catch(error => {
           console.log(error);
-        });
-  
-    
-    
+        });   
   }
   
   loadStudentInfo = async () => {
@@ -84,9 +79,7 @@ class Profile extends Component {
       });
   };
 
-  // componentWillUnmount(){
-  //   this.setState({studentInfo:null})
-  // }
+
 
   render() {
     //  console.warn("================.load student group",this.props.Profile.data[0])

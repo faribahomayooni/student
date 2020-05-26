@@ -10,8 +10,6 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import {commonStyle as cs} from './../styles/common/styles';
-   
-
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

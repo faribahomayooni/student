@@ -143,7 +143,7 @@ SaveTokenwithapi= async()=>{
 }
 
   render() {
-    console.warn("NavigationActions****",NavigationActions)
+     console.warn("99999999999999999999999999999999999student",NavigationActions)
     let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
     let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
     let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
@@ -164,8 +164,7 @@ SaveTokenwithapi= async()=>{
         }}
       >
         <ScrollView>
-       { this.props.notification.length!==0 && <View style={styles.centeredView}>
-        
+       { this.props.notification.length!==0 && <View style={styles.centeredView}>       
           <View style={styles.modalView}>
          {this.props.notification[0].data.image!==undefined && <Image   style={styles.messageProfile} source={{uri:global.url+`/app/setting/notify/nt-${this.props.notification[0].data.image}`}}/>}
             <Text style={styles.modalTitleText}>{this.props.notification.length!==0 && this.props.notification[0].notification.title}</Text>

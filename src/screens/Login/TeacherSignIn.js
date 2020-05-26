@@ -3,7 +3,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {commonStyle as cs} from '../../styles/common/styles';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
+import {View, Text, TouchableOpacity, Image,AsyncStorage} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {Row, Col} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
@@ -24,7 +24,9 @@ class TeacherSignIn extends Component {
     this.signIn = this.signIn.bind(this);
   }
   signIn() {
-    this.props.navigation.navigate('Home');
+    this.props.navigation.navigate('Home',{typeofsignin:"teacher"});
+    AsyncStorage.setItem('@typeofsignin', "teacher");
+  
   }
 
   showActionSheet = () => {

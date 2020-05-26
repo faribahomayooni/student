@@ -63,7 +63,7 @@ class StudentSignIn extends Component {
         .then(async(user) => {
           if (user.data.msg === 'success') {
          
-            // console.warn(user.data);
+          //  console.warn("*&*&*&*&*&*&*&*&& student signin",user.data.data.type);
             try {
               AsyncStorage.setItem('@token', user.data.data.token);
               AsyncStorage.setItem('@type', user.data.data.type);
@@ -79,13 +79,14 @@ class StudentSignIn extends Component {
               console.log('Error saving data' + error);
             }
 
-            this.props.navigation.navigate('Home');
-            const resetAction = StackActions.reset({
-              index: 0,
-             key:"SignUp",
-              actions: [NavigationActions.navigate({ routeName: 'Home' })],
-            });
-            this.props.navigation.dispatch(resetAction);
+            this.props.navigation.navigate('Home',{typeofsignin:"student"});
+            AsyncStorage.setItem('@typeofsignin', "stundent");
+            // const resetAction = StackActions.reset({
+            //   index: 0,
+            //  key:"SignUp",
+            //   actions: [NavigationActions.navigate({ routeName: 'Home'})],
+            // });
+            // this.props.navigation.dispatch(resetAction);
 
             // Toast.show({
             //   text: user.data.msg,

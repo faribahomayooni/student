@@ -216,6 +216,7 @@ class ProfileSetting extends Component {
 
   logout() {
     this.props.removeprofile()
+    this.props.removeNotification()
     AsyncStorage.setItem('@token', '');
     this.props.navigation.navigate('SignIn');
     

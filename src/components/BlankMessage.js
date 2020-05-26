@@ -24,8 +24,8 @@ const {width,height}=Dimensions.get("window")
     }
   }
 
- componentWillReceiveProps=async()=>{
-  var data= await  AsyncStorage.getItem('@notification')
+ componentWillReceiveProps(){
+  var data=   AsyncStorage.getItem('@notification')
   console.warn("@@@@@@@@@@@@@@@@sdasdsdsd async",data)
  }
 
@@ -34,7 +34,7 @@ const {width,height}=Dimensions.get("window")
     //  console.warn("page when update page again",this.page)
        if (prevProps.isFocused !== this.props.isFocused) {
        
-        this.props.getnotification([])
+        // this.props.getnotification([])
          }
        }
  
