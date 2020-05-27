@@ -603,7 +603,7 @@ export const commonStyle = StyleSheet.create({
   },
   pairBoxTeacher: {
     flexDirection: 'row',
-     marginTop:50,
+     marginTop:0,
     alignSelf: 'center',
   },
   noMessageTitle: {
