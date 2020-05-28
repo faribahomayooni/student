@@ -646,10 +646,16 @@ export const commonStyle = StyleSheet.create({
     bottom: 5,
   },
   pairBox: {
-   
+  //  width:screenWidth/2,
     flexDirection: 'row',
     alignSelf: 'center',
   },
+  pairBoxarray: {
+    // flexWrap:"wrap",
+      width:screenWidth/2-30,
+       flexDirection: 'row',
+      alignSelf: 'center',
+    },
   pairBoxTeacher: {
     flexDirection: 'row',
      marginTop:0,

@@ -14,6 +14,12 @@ import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging';
 
 const {width,height}=Dimensions.get("window")
+
+    let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
+    let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
+    let help_Img = require('./../assets/images/student/dashboard/Image220.png');
+    let anything_Img = require('./../assets/images/student/dashboard/Image221.png');
+    let setting_Img = require('./../assets/images/student/dashboard/Setting.png');
 class DashboardBox extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +27,12 @@ class DashboardBox extends Component {
       modalVisible:false,
       showitems:false,
       counter:[1],
-      blueBoxFlex:1
+      blueBoxFlex:1,
+      dashboardItems:[{imageName:attendance_Img,ImageText:"Taking Attendance"},{imageName:messages_Img,ImageText:"Lees berichten"},
+      {imageName:setting_Img,ImageText:"Settings?"},{imageName:help_Img,ImageText:"Help"},{imageName:anything_Img,ImageText:"Nog iets?"},
+      
+      
+    ]
     }
   }
 
@@ -161,11 +172,6 @@ setDropZoneValues(event){
   render() {
     console.warn("blue box flex#############",this.state.blueBoxFlex)
     let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
-    let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
-    let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
-    let help_Img = require('./../assets/images/student/dashboard/Image220.png');
-    let anything_Img = require('./../assets/images/student/dashboard/Image221.png');
-    let setting_Img = require('./../assets/images/student/dashboard/Setting.png');
    
     return (
       <ScrollView>
@@ -176,23 +182,23 @@ setDropZoneValues(event){
                   <Text style={{marginTop:30,marginBottom:50}}>Voeg hieronder maximaal tot 5  snelkoppelingen toe</Text>
               </View>}
             {this.state.showitems===true &&
-           <View   onLayout={this.setDropZoneValues.bind(this)} style={{backgroundColor:"#5467fd",borderRadius:10,padding:5}}>
-              <View style={cs.pairBox}>     
-                    <Draggable image={attendance_Img}  changebuleboxSize={this.changebuleboxSize}  imagetext={"Taking Attendance"}/>
-                    <Draggable image={messages_Img}    changebuleboxSize={this.changebuleboxSize} imagetext={"Lees berichten"}/>
-              </View>
-              <View style={cs.pairBox}>
-                    <Draggable image={setting_Img}  changebuleboxSize={this.changebuleboxSize}  imagetext={"Settings?"}/>
-                    <Draggable image={help_Img}     changebuleboxSize={this.changebuleboxSize} imagetext={"Help"}/>
-              </View>
-              <View style={cs.pairBox}>
-                  <Draggable image={anything_Img}   changebuleboxSize={this.changebuleboxSize} imagetext={"Nog iets?"}/>
+           <View  style={{backgroundColor:"#5467fd",borderRadius:10,padding:5,flexDirection:"row",flexWrap:"wrap",alignItems:"center"}}>
+             {this.state.dashboardItems.map((items,index)=>{
+               return(
+                <View style={cs.pairBoxarray}  key={index}>     
+                    <Draggable image={items.imageName}  changebuleboxSize={this.changebuleboxSize}  imagetext={items.ImageText}/>
+                
+                </View>
+
+               )
+             })}
+             
                   <TouchableOpacity style={cs.borderTeachertop}>
                       <View Style={{alignItems:"center",backgroundColor:"red"}}>
                           <Text style={{color:"white",alignSelf:"center",marginLeft:30}}>Sleep de snelkoppelingen hierheen</Text>
                       </View>
                   </TouchableOpacity>
-              </View>
+              {/* </View> */}
            </View>
          }
        { this.state.showitems===false &&  <TouchableOpacity  onPress={()=>this.setState({showitems:true})} style={{justifyContent:"center",alignItems:'center',height:"17%",backgroundColor:"#5467fd",width:'20%',alignSelf:"center",borderRadius:15}}>
@@ -213,14 +219,7 @@ setDropZoneValues(event){
               
             />
         </TouchableOpacity>
-              {/* <Icon
-              name="plus"
-              color="#5467fd"
-              size={17}
-              style={{marginLeft: 5, marginTop: 5,position:"absolute",top:"86%",left:"97%"}}
-            /> */}
             <View>
-     
                     {this.state.counter.map(data=> {
                       return (
                         <View style={cs.pairBoxTeacher}>     
@@ -229,9 +228,9 @@ setDropZoneValues(event){
                               <View style={cs.borderTeacher}>
                               </View>     
                         </View>
-                      )
-            })}
-            </View>    
+                        )
+                  })}
+             </View>    
            <TouchableOpacity style={cs.buttondashbordStyle} onPress={()=> this.props.navigation.navigate('DashboardTeacher')}>
                <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
            </TouchableOpacity>
