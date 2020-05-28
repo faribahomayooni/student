@@ -498,6 +498,29 @@ export const commonStyle = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  boxesTeacherWrapper: {
+    borderRadius: 15,
+    backgroundColor: '#fff',
+    height: screenHeight * 0.08,
+    width: screenWidth * 0.230,
+   margin:5,
+    borderStyle:"dashed",
+    borderWidth:1,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  boxesTeacherWrapperdec:{
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    height: screenHeight * 0.06,
+    width: screenWidth * 0.1500,
+   margin:5,
+    borderStyle:"dashed",
+    borderWidth:1,
+    alignItems: 'center',
+    alignSelf: 'center',
+
+  },
   boxesPairWrapper: {
     borderRadius: 10,
     backgroundColor: '#fff',
@@ -516,6 +539,31 @@ export const commonStyle = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+  },
+  
+  boxtDashbordStyle:{
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    height: screenHeight * 0.15,
+    width: screenWidth * 0.357,
+    margin: 10,
+    borderStyle:"dashed",
+    borderWidth:1,
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  boxtDashbordStyletit:{
+    alignItems: 'center',
+    borderRadius: 5,
+    // borderColor:"gray",
+    height: screenHeight * 0.04,
+    width: screenWidth * 0.10,
+    // flex: 1,
+     margin: 5,
+    borderStyle:"dashed",
+    borderWidth:1,  
+    // alignSelf: 'center',
+    shadowRadius: 3.84,
   },
 
   borderTeacher:{
@@ -598,6 +646,7 @@ export const commonStyle = StyleSheet.create({
     bottom: 5,
   },
   pairBox: {
+   
     flexDirection: 'row',
     alignSelf: 'center',
   },
@@ -606,6 +655,17 @@ export const commonStyle = StyleSheet.create({
      marginTop:0,
     alignSelf: 'center',
   },
+  buttondashbordStyle:{
+    backgroundColor:"#5467fd",
+    borderRadius:10,
+    alignItems:"center",
+    justifyContent:"center",
+    padding:5,
+    width:"100%"
+    // justifyContent:"center"
+
+  }
+  ,
   noMessageTitle: {
     color: COLORS.primaryColor,
     alignSelf: 'center',

@@ -16,18 +16,19 @@ export default class Draggable extends Component {
     };
   }
 
-  componentWillMount() {
-    // Add a listener for the delta value change
+ 
+  componentWillMount() { 
+    // console.warn("paaaaaaaaaaaaaaaaaaaaaaaaaaaaaan",this.state.pan)
     this._val = { x:0, y:0 }
-    this.state.pan.addListener((value) => this._val = value);
-    // Initialize PanResponder with move handling
+   
+    this.state.pan.addListener((value) =>  {
+      this.props.changebuleboxSize(value)
+      this._val = value});
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (e, gesture) => true,
       onPanResponderMove: Animated.event([
         null, { dx: this.state.pan.x, dy: this.state.pan.y }
-      ])
-      // adjusting delta value
-    //   this.state.pan.setValue({ x:0, y:0})
+      ]),   
     });
   }
 

@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert,TouchableHighlight,Modal,StyleSheet, Dimensions,ScrollView, PanResponder,
-  Animated} from 'react-native';
+import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert,TouchableHighlight,Modal,StyleSheet, Dimensions,ScrollView, PanResponder, Animated} from 'react-native';
   import Draggable from "./Dragable";
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
@@ -21,15 +20,15 @@ class DashboardBox extends Component {
     this.state={
       modalVisible:false,
       showitems:false,
+      counter:[1],
+      blueBoxFlex:1
     }
   }
 
 async componentDidMount() {
   var data= await AsyncStorage.getItem('@notification')
     console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
-  
-     await  this.getGroupList()
-  
+     await  this.getGroupList() 
      this.props.notification.length!==0 && this.setState({modalVisible:true})  
       this.checkPermission();
       const {dispatch} = this.props;
@@ -46,6 +45,13 @@ async componentDidMount() {
       });  
   }
 
+
+  changebuleboxSize=(pan)=>{
+    // console.warn("paaaaaaaaaaaaan  in teacher dashboard",pan.x)
+   if(pan.x!==undefined && pan.x>= -178.65652465820312  && pan.y>= 147.81253051757812){
+     this.setState({blueBoxFlex:0.5})
+   }
+  }
 
   getGroupList=async()=>{
     axios
@@ -138,7 +144,22 @@ SaveTokenwithapi= async()=>{
   });
 }
 
+addItems=()=>{
+  // sthis.setState({counter:{...this.state.counter,...1}})
+  var joined = this.state.counter.concat('1');
+  this.setState({counter:joined})
+
+}
+
+setDropZoneValues(event){
+  console.warn("@@@@@@@@@@",event.nativeEvent.layout)
+  this.setState({
+      dropZoneValues : event.nativeEvent.layout
+  });
+}
+
   render() {
+    console.warn("blue box flex#############",this.state.blueBoxFlex)
     let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
     let attendance_Img = require('./../assets/images/student/dashboard/Image217.png');
     let messages_Img = require('./../assets/images/student/dashboard/Image218.png');
@@ -147,65 +168,35 @@ SaveTokenwithapi= async()=>{
     let setting_Img = require('./../assets/images/student/dashboard/Setting.png');
    
     return (
+      <ScrollView>
       <View style={{paddingRight:10,paddingLeft:10}}>
       {this.state.showitems===false &&  <View style={{alignItems:"center",marginTop:30}}>
-            <Text style={{fontSize:25}}>Dit is uw dashboard.</Text>
-            <Text style={{fontSize:25}}>Wat Will u zein?</Text>
-            <Text style={{marginTop:30,marginBottom:50}}>Voeg hieronder maximaal tot 5  snelkoppelingen toe</Text>
-         </View>}
-         {this.state.showitems===true &&
-         <View style={{backgroundColor:"#5467fd",borderRadius:10,padding:5}}>
-         <View style={cs.pairBox}>     
-           {/* <TouchableOpacity
-           onPress={() => {
-           }}
-           style={cs.boxesPairWrapper}>
-           <Image style={cs.boxPairImageStyle} source={attendance_Img} />
-           <Text style={cs.pairBoxFont}>Taking Attendance</Text>
-         </TouchableOpacity> */}
-         <Draggable image={attendance_Img}  imagetext={"Taking Attendance"}/>
-           {/* <TouchableOpacity
-             onPress={() => {
-             
-             }}
-             style={cs.boxesPairWrapper}>
-             <Image style={cs.boxPairImageStyle} source={messages_Img} />
-             <Text style={cs.pairBoxFont}>Lees berichten</Text>
-           </TouchableOpacity> */}
-            <Draggable image={messages_Img}  imagetext={"Lees berichten"}/>
-         </View>
-         <View style={cs.pairBox}>
-           {/* <TouchableOpacity style={cs.boxesPairWrapper}>
-             <Image style={cs.boxPairImageStyle} source={setting_Img} />
-             <Text style={cs.pairBoxFont}>Settings?</Text>
-           </TouchableOpacity> */}
-              <Draggable image={setting_Img}  imagetext={"Settings?"}/>
-             {/* <TouchableOpacity
-             onPress={() => {
-             
-             }}
-             style={cs.boxesPairWrapper}>
-             <Image style={cs.boxPairImageStyle} source={help_Img} />
-             <Text style={cs.pairBoxFont}>Help</Text>
-           </TouchableOpacity> */}
-            <Draggable image={help_Img}  imagetext={"Help"}/>
-           </View>
-           <View style={cs.pairBox}>
-           {/* <TouchableOpacity style={cs.boxesPairWrapper}>
-             <Image style={cs.boxPairImageStyle} source={anything_Img} />
-             <Text style={cs.pairBoxFont}>Nog iets?</Text>
-           </TouchableOpacity>  */}
-             <Draggable image={anything_Img}  imagetext={"Nog iets?"}/>
-               <TouchableOpacity style={cs.borderTeachertop}>
-                 <View Style={{alignItems:"center",backgroundColor:"red"}}>
-                 <Text style={{color:"white",alignSelf:"center",marginLeft:30}}>Sleep de snelkoppelingen hierheen</Text>
-                 </View>
-               </TouchableOpacity>
-           </View>
+                  <Text style={{fontSize:25}}>Dit is uw dashboard.</Text>
+                  <Text style={{fontSize:25}}>Wat Will u zein?</Text>
+                  <Text style={{marginTop:30,marginBottom:50}}>Voeg hieronder maximaal tot 5  snelkoppelingen toe</Text>
+              </View>}
+            {this.state.showitems===true &&
+           <View   onLayout={this.setDropZoneValues.bind(this)} style={{backgroundColor:"#5467fd",borderRadius:10,padding:5}}>
+              <View style={cs.pairBox}>     
+                    <Draggable image={attendance_Img}  changebuleboxSize={this.changebuleboxSize}  imagetext={"Taking Attendance"}/>
+                    <Draggable image={messages_Img}    changebuleboxSize={this.changebuleboxSize} imagetext={"Lees berichten"}/>
+              </View>
+              <View style={cs.pairBox}>
+                    <Draggable image={setting_Img}  changebuleboxSize={this.changebuleboxSize}  imagetext={"Settings?"}/>
+                    <Draggable image={help_Img}     changebuleboxSize={this.changebuleboxSize} imagetext={"Help"}/>
+              </View>
+              <View style={cs.pairBox}>
+                  <Draggable image={anything_Img}   changebuleboxSize={this.changebuleboxSize} imagetext={"Nog iets?"}/>
+                  <TouchableOpacity style={cs.borderTeachertop}>
+                      <View Style={{alignItems:"center",backgroundColor:"red"}}>
+                          <Text style={{color:"white",alignSelf:"center",marginLeft:30}}>Sleep de snelkoppelingen hierheen</Text>
+                      </View>
+                  </TouchableOpacity>
+              </View>
            </View>
          }
        { this.state.showitems===false &&  <TouchableOpacity  onPress={()=>this.setState({showitems:true})} style={{justifyContent:"center",alignItems:'center',height:"17%",backgroundColor:"#5467fd",width:'20%',alignSelf:"center",borderRadius:15}}>
-           <View style={{backgroundColor:"#5467fd",alignItems:"center",justifyContent:"center"}}>
+           <View style={{backgroundColor:"#5467fd",alignItems:"center",justifyContent:"center",flex:this.state.blueBoxFlex}}>
            <Icon
               name="plus"
               color="white"
@@ -214,30 +205,38 @@ SaveTokenwithapi= async()=>{
             />
            </View>
        </TouchableOpacity>}
+       <TouchableOpacity   onPress={()=>this.addItems()} style={{  position:"relative", margin:0, padding:0,top:60 }}>
             <Icon
               name="plus"
               color="#5467fd"
               size={17}
-              style={{marginLeft: 5, marginTop: 5,position:"absolute",top:"86%",right:"98%"}}
+              
             />
-              <Icon
+        </TouchableOpacity>
+              {/* <Icon
               name="plus"
               color="#5467fd"
               size={17}
               style={{marginLeft: 5, marginTop: 5,position:"absolute",top:"86%",left:"97%"}}
-            />
-        <View style={cs.pairBoxTeacher}>
-              <TouchableOpacity style={cs.borderTeacher}>
-           
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                 
-                }}
-                style={cs.borderTeacher}>
-              </TouchableOpacity>
-        </View>
+            /> */}
+            <View>
+     
+                    {this.state.counter.map(data=> {
+                      return (
+                        <View style={cs.pairBoxTeacher}>     
+                              <View style={cs.borderTeacher}>
+                              </View>  
+                              <View style={cs.borderTeacher}>
+                              </View>     
+                        </View>
+                      )
+            })}
+            </View>    
+           <TouchableOpacity style={cs.buttondashbordStyle} onPress={()=> this.props.navigation.navigate('DashboardTeacher')}>
+               <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
+           </TouchableOpacity>
       </View>
+      </ScrollView>
       
     );
   }

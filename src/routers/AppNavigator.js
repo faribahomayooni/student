@@ -14,6 +14,7 @@ import ProfileSetting from '../screens/Profile/ProfileSetting';
 import ReadMessage from '../components/ReadMessage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SchoolMessage from '../components/SchoolMessage';
+import SelectDashboardType from '../components/SelectDashboardType'
 import SendMessage from '../components/SendMessageLogin';
 import SignIn from '../screens/Login/SignIn';
 import EmailSetting from '../screens/Setting/EmailSetting';
@@ -32,6 +33,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import IconBadge from 'react-native-icon-badge';
 import {connect} from 'react-redux';
 import MyTabBar from '../../src/components/MyTabBar'
+import ChoosedDashboard from '../../src/components/ChoosedDashboard'
 
 
 const RootStack = createStackNavigator(
@@ -54,6 +56,26 @@ const RootStack = createStackNavigator(
         headerStyle: {
           display: 'none',
         },
+      }),
+    },
+    DashboardTeacher: {
+      screen: SelectDashboardType,
+      navigationOptions: ({navigation}) => ({
+        title: 'Home',
+        headerRight: () => <View style={{alignSelf: 'flex-end'}} />,
+        tabBarVisible: false,
+        
+        
+      }),
+    },
+    ChoosedDashboard: {
+      screen: ChoosedDashboard,
+      navigationOptions: ({navigation}) => ({
+        title: 'Home',
+        headerRight: () => <View style={{alignSelf: 'flex-end'}} />,
+        tabBarVisible: false,
+        
+        
       }),
     },
     Home: {
