@@ -22,7 +22,7 @@ export default class Draggable extends Component {
     this._val = { x:0, y:0 }
    
     this.state.pan.addListener((value) =>  {
-      this.props.changebuleboxSize(value)
+      this.props.changebuleboxSize(value,this.props.index)
       this._val = value});
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (e, gesture) => true,

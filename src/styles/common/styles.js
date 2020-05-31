@@ -539,6 +539,7 @@ export const commonStyle = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    
   },
   
   boxtDashbordStyle:{
@@ -666,6 +667,16 @@ export const commonStyle = StyleSheet.create({
     borderRadius:10,
     alignItems:"center",
     justifyContent:"center",
+    padding:5,
+    width:"100%"
+    // justifyContent:"center"
+
+  },
+  buttondashbord:{
+    backgroundColor:"#5467fd",
+    borderRadius:10,
+    alignItems:"center",
+    // justifyContent:"center",
     padding:5,
     width:"100%"
     // justifyContent:"center"

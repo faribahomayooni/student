@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity} from 'react-native';
+import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,ToastAndroid,Image} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
@@ -25,8 +25,45 @@ async componentDidMount() {
   
   }
 
+  CanSelected=()=>{
+    if(this.state.typeTemplate==="default" || this.state.typeTemplate==="Transfrom")
+    {
+      // console.warn("eeeeeeeeeeeeeee",this.props.navigation.state.params.selected.length)
+       if(this.props.navigation.state.params.selected.length<4){
+      console.warn("select 5 items")
+      ToastAndroid.show(
+        'you can`t select this type ',
+        ToastAndroid.SHORT,
+      );
+    
+    }else
+     { this.props.navigation.navigate('ChoosedDashboard',{typeTemplate:this.state.typeTemplate,selectedItems:this.props.navigation.state.params.selected})}
+    }if(this.state.typeTemplate==="TwoRow"){
+      if(this.props.navigation.state.params.selected.length<2 || this.props.navigation.state.params.selected.length>2){
+        console.warn("select 2 items")
+        ToastAndroid.show(
+          'you can`t select this type ',
+          ToastAndroid.SHORT,
+        );
+
+    }else{
+      this.props.navigation.navigate('ChoosedDashboard',{typeTemplate:this.state.typeTemplate,selectedItems:this.props.navigation.state.params.selected})
+    }
+    }
+    if(this.state.typeTemplate==="ThreeRow"){
+      if(this.props.navigation.state.params.selected.length<3 || this.props.navigation.state.params.selected.length>3){
+      ToastAndroid.show(
+        'you can`t select this type ',
+        ToastAndroid.SHORT,
+      );}
+    else{
+      this.props.navigation.navigate('ChoosedDashboard',{typeTemplate:this.state.typeTemplate,selectedItems:this.props.navigation.state.params.selected})
+    }
+  }
+  }
+
   render() {
-    // console.warn("sdsd",this.props.navigation.state)
+     console.warn("**this is selected dashboard ***",this.props.navigation.state.params.selected)
   
     return (
       <View style={{alignItems:"center",padding:15}}>
@@ -41,8 +78,8 @@ async componentDidMount() {
                                 <Text style={{fontSize:15,alignSelf:"center"}}>Home</Text>
                                 <View style={cs.pairBox}>
                                         <View
-                                    
                                         style={cs.boxesTeacherWrapper}>
+                                            
                                         </View>
                                 </View>
                                     <View style={cs.pairBox}>
@@ -136,7 +173,7 @@ async componentDidMount() {
                       </TouchableOpacity>
                   </View>
               </View>
-              <TouchableOpacity    style={[cs.buttondashbordStyle,{width:"90%"}]} onPress={()=> this.props.navigation.navigate('ChoosedDashboard',{typeTemplate:this.state.typeTemplate})}>
+              <TouchableOpacity    style={[cs.buttondashbordStyle,{width:"90%"}]} onPress={()=> this.CanSelected()}>
                   <Text style={{color:"white",marginBottom:10,alignSelf:"center",fontSize:16}}>Submit</Text>
               </TouchableOpacity>
       </View>
