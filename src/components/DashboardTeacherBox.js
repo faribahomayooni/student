@@ -34,7 +34,7 @@ class DashboardBox extends Component {
       DynamicItemDIS:width*0.65,
       blueBoxHeight:width,
       dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
-      {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:4,imageName:anything_Img,ImageText:"Nog iets?"},  
+      {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:3,imageName:anything_Img,ImageText:"Nog iets?"},  
     ]
     }
   }
@@ -43,7 +43,7 @@ async componentDidMount() {
   this.setState({conut:this.state.dashboardItems})
   var data= await AsyncStorage.getItem('@notification')
     // console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
-     await  this.getGroupList() 
+    //  await  this.getGroupList() 
      this.props.notification.length!==0 && this.setState({modalVisible:true})  
       this.checkPermission();
       const {dispatch} = this.props;
@@ -60,43 +60,9 @@ async componentDidMount() {
       });  
   }
 
-componentWillReceiveProps(){
-this.changebuleboxSize()
-}
-  changebuleboxSize=(pan,index)=>{
-    //  console.warn("******count items in drag items*****",index)
-  // this.pressDragItems()
-// var dataSelected= this.state.dashboardItems.filter(obj=>{obj.index!==index})
-
-var data=this.state.conut.filter(obj=>obj.index!==index)
-var selectedItems= this.state.conut.filter(obj=>obj.index===index)
-this.setState({selected:[...this.state.selected,...selectedItems]})
-// this.state.selected.push({selectedItems})
-// this.setState({selected:this.state.selected})
-this.setState({conut:data})
-//  console.warn("++++++Dataselected filter++++++++++",this.state.conut)
-if(this.state.conut.length<=2){
-  this.setState({addItem:this.state.addItem+1})
-  if(this.state.addItem===1){
-    this.setState({DynamicItemDIS:width*0.300})
-  //  this.addItems()
-  }
-  this.setState({blueBoxHeight:width*0.68})
-}
-if(this.state.conut.length===0){
-  this.setState({DynamicItemDIS:width*0.0020})
-  this.setState({blueBoxHeight:width*0.35})
-}
-
-  }
 
 
-  pressDragItems=(index)=>{
-//     console.warn("ggggggggggggggggggggggggggggggggg",index)
-//     if(index>=2){
-//     this.setState({blueBoxHeight:width*0.55})
-// }
-   }
+
 
 
 
@@ -164,10 +130,21 @@ SaveTokenwithapi= async()=>{
   });
 }
 
-addItems=()=>{
-  // sthis.setState({counter:{...this.state.counter,...1}})
-  var joined = this.state.counter.concat('1');
-  this.setState({counter:joined})
+addItems=(items)=>{
+  console.warn("indexxxxxxxxxxxxxxxxx",items)
+var selected= this.state.dashboardItems.filter(obj=>obj!==items)
+
+this.setState({dashboardItems:selected})
+//  this.setState({selectedItems:items})
+//  this.state.selectedItems.Concat(items)
+ this.setState({selectedItems:[items,...this.state.selectedItems]})
+}
+
+minusItems=(items)=>{
+  console.warn("indexxxxxxxxxxxxxxxxx",items)
+  var selected= this.state.selectedItems.filter(obj=>obj!==items)
+   this.setState({selectedItems:selected})
+   this.setState({dashboardItems:[items,...this.state.dashboardItems]})
 
 }
 
@@ -179,10 +156,11 @@ setDropZoneValues(event){
 }
 
   render() {
-     console.warn("selected items in dashboard#############",this.state.selected)
+     console.warn("selected items in dashboard#############",this.state.selectedItems)
     let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
    
     return (
+      <View>
       <ScrollView>
       <View style={{paddingRight:10,paddingLeft:10}}>
       {this.state.showitems===false &&  <View style={{alignItems:"center",marginTop:30}}>
@@ -191,12 +169,12 @@ setDropZoneValues(event){
                   <Text style={{marginTop:30,marginBottom:50}}>Voeg hieronder maximaal tot 5  snelkoppelingen toe</Text>
               </View>}
             {this.state.showitems===true &&
-           <View  style={{backgroundColor:"#5467fd",borderRadius:10,padding:5,flexDirection:"row",flexWrap:"wrap",alignItems:"center",height:this.state.blueBoxHeight}}>
+           <View  style={{backgroundColor:"#5467fd",borderRadius:10,padding:5,flexDirection:"row",flexWrap:"wrap",alignItems:"center"}}>
              {this.state.dashboardItems.map((items,index)=>{
              
                return(
                 <View style={cs.pairBoxarray}  key={index} > 
-                 <TouchableOpacity  onPress={()=>this.addItems()} style={{position:"absolute",top:25,left:0,zIndex:2,width:25,height:25,borderRadius:22,backgroundColor:"white",alignItems:"center",justifyContent:"center",padding:3}}>
+                 <TouchableOpacity  onPress={()=>this.addItems(items)} style={{position:"absolute",top:25,left:0,zIndex:2,width:25,height:25,borderRadius:22,backgroundColor:"white",alignItems:"center",justifyContent:"center",padding:3}}>
                                 <Icon
                                   name="plus"
                                   color="#5467fd"
@@ -204,24 +182,7 @@ setDropZoneValues(event){
                                   //  style={{zIndex:2 }}    
                                 />                 
                  </TouchableOpacity>   
-                 <View style={{   borderRadius: 10,
-    backgroundColor: '#fff',
-    height: height * 0.16,
-    width: '100%',
-    flex: 1,
-    margin: 10,
-    // marginTop: 50,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    alignItems: 'center',
-    alignSelf: 'center',
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    // elevation: 5,
-    zIndex:-1}}>
+                 <View style={cs.ShowBox}>
                     <Image style={[cs.boxPairImageStyle,{zIndex:-1}]} source={items.imageName} />
                     <Text style={cs.pairBoxFont}>{items.ImageText}</Text> 
                             {/* <Draggable image={items.imageName}  index={index} changebuleboxSize={this.changebuleboxSize}  imagetext={items.ImageText}/> */}
@@ -230,7 +191,7 @@ setDropZoneValues(event){
                </View>
                )
              })} 
-                  <View style={[cs.borderTeachertop,{position:"absolute",top:this.state.DynamicItemDIS,width:width*0.385,left:width*0.45}]}>
+                  <View style={[cs.borderTeachertop,]}>
                       <View Style={{alignItems:"center"}}>
                           <Text style={{color:"white",alignSelf:"center",marginLeft:30}}>Sleep de snelkoppelingen hierheen</Text>
                       </View>
@@ -238,32 +199,24 @@ setDropZoneValues(event){
             
            </View>
          }
-       { this.state.showitems===false &&  <TouchableOpacity  onPress={()=>this.setState({showitems:true})} style={{justifyContent:"center",alignItems:'center',height:"17%",backgroundColor:"#5467fd",width:'20%',alignSelf:"center",borderRadius:15}}>
-           <View style={{backgroundColor:"#5467fd",alignItems:"center",justifyContent:"center",flex:this.state.blueBoxFlex}}>
+       { this.state.showitems===false &&  <TouchableOpacity  onPress={()=>this.setState({showitems:true})} style={{justifyContent:"center",alignItems:'center',height:"20%",backgroundColor:"#5467fd",width:'20%',alignSelf:"center",borderRadius:10,padding:20}}>
+       <View style={{alignSelf:"center",justifyContent:"center"}}>
            <Icon
               name="plus"
               color="white"
               size={30}
-              style={{marginLeft: 5, marginTop: 5}}
+              style={{}}
             />
            </View>
        </TouchableOpacity>}
        
-            <View style={{flexDirection:"row",flexWrap:"wrap"}}>
+            <View style={{flexDirection:"row",flexWrap:"wrap",marginBottom:width*0.15}}>
               
-                    {/* {this.state.counter.map(data=> {
-                      return ( */}
+                    {this.state.selectedItems.map(items=> {
+                      return (
                         <View>
-                          <TouchableOpacity   onPress={()=>this.addItems()} style={{  position:"relative", margin:0, padding:0,top:60 }}>
-                                <Icon
-                                  name="plus"
-                                  color="#5467fd"
-                                  size={17}
-                                  
-                                />
-                                
-                            </TouchableOpacity>
-                            <TouchableOpacity   onPress={()=>this.addItems()} style={{  position:"relative", margin:0, padding:0,top:70,left:3 ,borderRadius:10,backgroundColor:"red",width:15,height:15,alignItems:"center"}}>
+                        
+                            <TouchableOpacity   onPress={()=>this.minusItems(items)} style={{zIndex:3 ,  position:"relative", margin:0, padding:0,top:40,left:3 ,borderRadius:10,backgroundColor:"red",width:15,height:15,alignItems:"center"}}>
                                 <Icon
                                   name="minus"
                                   color="white"
@@ -274,18 +227,41 @@ setDropZoneValues(event){
                             </TouchableOpacity>
                  
                               <View style={[cs.borderTeacher,{width:width*0.40}]}>
+                                   <Image style={[cs.boxPairImageStyle,{zIndex:-1}]} source={items.imageName} />
+                                   <Text style={cs.pairBoxFont}>{items.ImageText}</Text> 
                               </View>  
                              
                         </View>
-                        {/* )
-                  })} */}
+                        )
+                  })} 
              </View>    
-           <TouchableOpacity style={[cs.buttondashbordStyle,{marginTop:20}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selected})}>
-               <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
-           </TouchableOpacity>
+           
       </View>
       </ScrollView>
-      
+      {this.state.showitems===false &&
+           <View style={cs.pairBox}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate('Messages');
+                }}
+                style={[cs.borderTeacher,{width:width*0.40}]}>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate('HelpCentre');
+                }}
+                style={[cs.borderTeacher,{width:width*0.40}]}>
+              </TouchableOpacity>
+         </View>
+
+              
+              }
+               
+  
+          {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
+               <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
+           </TouchableOpacity>}
+      </View>
     );
   }
 }

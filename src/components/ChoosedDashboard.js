@@ -25,10 +25,9 @@ async componentDidMount() {
     console.warn("sdsd",this.props.navigation.state.params.typeTemplate)  
     return (
       <View style={{alignItems:"center",padding:15}}>
-                     <TouchableOpacity    style={[cs.buttondashbord,{width:"100%",alignSelf:"center"}]} onPress={()=> this.CanSelected()}>
-                                <Text style={{color:"white",alignSelf:"center",fontSize:16}}>Submit</Text>
-                     </TouchableOpacity>
-              <View style={{padding:10,justifyContent:"space-around",padding:10,width:width,marginTop:10}}>
+        
+        <ScrollView>
+              <View style={{justifyContent:"space-around",marginTop:10,}}>
                           {this.props.navigation.state.params.typeTemplate==="TwoRow" && <View style={{marginTop:width/5}} >
                               
                                 <View style={[cs.pairBox]}>
@@ -48,7 +47,7 @@ async componentDidMount() {
                                         </View>
                                     </View> 
                             </View> }
-                      {this.props.navigation.state.params.typeTemplate==="ThreeRow" &&  <View >
+                      {this.props.navigation.state.params.typeTemplate==="ThreeRow" &&  <View  style={{marginBottom:width*0.15}}>
                            
                             <View style={cs.pairBox}>
                                     <View
@@ -83,10 +82,10 @@ async componentDidMount() {
                                   <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[0].imageName} />
                                    <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[0].ImageText}</Text>
                          </View>
-                         <View style={cs.pairBox}>
+                         <View style={[cs.pairBox,{width:width*0.80}]}>
                                 <View
                                
-                                style={cs.boxesPairWrapper}>
+                                style={[cs.boxesPairWrapper,{width:width*0.20}]}>
                                   <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[1].ImageText}</Text>
                                 </View>
@@ -114,7 +113,7 @@ async componentDidMount() {
                      {this.props.navigation.state.params.typeTemplate==="Transfrom"  &&
                      <View >
                       
-                         <View style={cs.pairBox}>
+                         <View style={[cs.pairBox,{width:width*0.80}]}>
                                 <View 
                                 style={[cs.boxesPairWrapper,{  transform: [
                                
@@ -155,7 +154,12 @@ async componentDidMount() {
                     
                   </View>
               </View>
-             
+              </ScrollView> 
+            
+              <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15,height:width*0.023}]} onPress={()=> this.CanSelected()}>
+               <Text style={{color:"white"}}>Submit</Text>
+           </TouchableOpacity>
+            {/* </View> */}
       </View>
       
     );

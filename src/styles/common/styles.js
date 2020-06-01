@@ -11,6 +11,26 @@ export const commonStyle = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#293A54',
   },
+  ShowBox:{
+     borderRadius: 10,
+      backgroundColor: '#fff',
+      height: screenHeight * 0.16,
+      width: '100%',
+      flex: 1,
+      margin: 10,
+      // marginTop: 50,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      alignItems: 'center',
+      alignSelf: 'center',
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      // elevation: 5,
+      zIndex:-1
+  },
   activityIndicatorWrapper: {
     backgroundColor: 'transparent',
     borderRadius: 10,
