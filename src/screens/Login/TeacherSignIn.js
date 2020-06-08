@@ -1,14 +1,18 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import {connect, connectAdvanced} from 'react-redux';
 import {commonStyle as cs} from '../../styles/common/styles';
 import {View, Text, TouchableOpacity, Image,AsyncStorage} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import {Row, Col} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
+import axios from 'axios';
+import {showToast} from '../../components/utility';
+import {TypeSignIn} from '../../actions/ProfileAction'
 import {InputField, Button, Header} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
+const sha256 = require('sha256');
 var schoolOptions = [
   'De Taalkans',
   'Toekomst jaren',
@@ -19,13 +23,77 @@ var schoolOptions = [
 class TeacherSignIn extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      username:"",
+      password:""
+    };
     this.actionSheet = null;
     this.signIn = this.signIn.bind(this);
   }
   signIn() {
-    this.props.navigation.navigate('Home',{typeofsignin:"teacher"});
-    AsyncStorage.setItem('@typeofsignin', "teacher");
+  
+    
+    this.setState({
+      username: this.state.username,
+      password: this.state.password,
+      // showPassword: true,
+    });
+    if (this.state.username && this.state.password) {
+      axios
+        .post(
+          global.url + 'api/user/login',
+          {
+            username: this.state.username,
+            password: sha256(this.state.password),
+            type: 2,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        .then(async(user) => {
+          if (user.data.msg === 'success') {
+           
+         
+           console.warn("========================> teacher signin",user.data.data.token);
+            try {
+              AsyncStorage.setItem('@token', user.data.data.token);
+              AsyncStorage.setItem('@type', user.data.data.type);
+              AsyncStorage.setItem(
+                '@userId',
+                JSON.stringify(user.data.data.userId),
+              );
+          //  await   this.loadStudentInfo()
+              AsyncStorage.setItem('@username', user.data.data.username);
+              AsyncStorage.setItem('@name', user.data.data.name);
+              // showToast('Login success.');
+            } catch (error) {
+               
+           ;
+              console.warn('Error saving data' + error);
+            }
+            this.props.navigation.navigate('Home',{typeofsignin:"teacher"});
+            AsyncStorage.setItem('@typeofsignin', "teacher");
+            this.props.TypeSignIn("teacher")
+           
+           
+          }
+          if (user.data.msg === 'fail') {
+            console.warn(user.data);
+            showToast('Invalid username or password');
+
+          }
+        })
+        .catch(error => {
+          console.warn("++++++++++++++errro",error);
+        });
+
+      // this.props.dispatch(
+      //   apiActions.login(this.state.username, this.state.password, 2),
+      // );
+    }
   
   }
 
@@ -53,6 +121,7 @@ class TeacherSignIn extends Component {
     this.setState({user: user});
   };
   render() {
+    // console.warn("@@@@@@@@@@@@@@username and password",this.state.username, sha256(this.state.password))
     let {
       username,
       password,
@@ -183,7 +252,14 @@ class TeacherSignIn extends Component {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    TypeSign:state.TypeSign
+  };
 };
 
-export default connect(mapStateToProps)(TeacherSignIn);
+const mapDispatchToProps= {
+
+  TypeSignIn
+ }
+
+export default connect(mapStateToProps,mapDispatchToProps)(TeacherSignIn);

@@ -49,24 +49,24 @@ async componentDidMount() {
                             </View> }
                       {this.props.navigation.state.params.typeTemplate==="ThreeRow" &&  <View  style={{marginBottom:width*0.15}}>
                            
-                            <View style={cs.pairBox}>
+                            <View style={[cs.pairBox]}>
                                     <View
-                                    style={cs.boxesWrapper}>
+                                    style={[cs.boxesWrapperthree]}>
                                       <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[0].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[0].ImageText}</Text>
                                     </View>
                             </View>
-                                <View style={cs.pairBox}>
+                                <View style={[cs.pairBox]}>
                                     <View
                                 
-                                    style={cs.boxesWrapper}>
+                                style={[cs.boxesWrapperthree]}>
                                       <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[1].ImageText}</Text>
                                     </View>
                                 </View> 
-                                <View style={cs.pairBox}>
+                                <View style={[cs.pairBox]}>
                                     <View
-                                    style={cs.boxesWrapper}>
+                                    style={[cs.boxesWrapperthree]}>
                                       <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[2].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[2].ImageText}</Text>
                                     </View>

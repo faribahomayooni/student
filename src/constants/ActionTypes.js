@@ -26,5 +26,6 @@ export const allConstants = {
   student_remove:"student_remove",
   Message_data:"Message_data",
   Month_Data:"Month-Data",
-  remove_notification:"remove_notification"
+  remove_notification:"remove_notification",
+  Type_SignIn:"Type_SignIn"
 };

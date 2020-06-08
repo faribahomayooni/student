@@ -6,7 +6,7 @@ import Toast from './src/components/Toast';
 import AppNavigator from './src/routers/AppNavigator';
 import NavigationService from './src/routers/NavigationService';
 import messaging from '@react-native-firebase/messaging';
- import firebase from "react-native-firebase";
+//  import firebase from "react-native-firebase";
 
 export default class App extends Component {
   constructor(props) {
@@ -15,17 +15,17 @@ export default class App extends Component {
       notification:[],
       // count:0,
     }
-    global.url = 'http://192.168.1.46:3100/';
+     global.url = 'http://192.168.1.64:3100/';
     // global.url = 'http://192.168.1.33:3100/';
     //  global.url='http://85.214.123.68:3100/'
-    // global.url = 'http://94.101.128.11:3100/';
+   //  global.url = 'http://94.101.128.11:3100/';
     global.App = this;
   }
 
   
   
   componentDidMount=async()=>{
-    console.warn("**********************navigation",this.props.navigation)  
+    // console.warn("**********************navigation",this.props.navigation)  
     messaging().onMessage( remoteMessage => {     
       this.setState({notification:[
         Object.assign({}, remoteMessage), ...this.state.notification   

@@ -218,6 +218,7 @@ class ProfileSetting extends Component {
     this.props.removeprofile()
     this.props.removeNotification()
     AsyncStorage.setItem('@token', '');
+    AsyncStorage.setItem('@typeofsignin', '');
     this.props.navigation.navigate('SignIn');
     
   }
@@ -295,9 +296,22 @@ class ProfileSetting extends Component {
                 ) : null}
               </View>
             </View>
-            <View style={cs.settingContainer}>
+            <View style={[cs.settingContainer,{flexDirection:"column",paddingRight:30,paddingLeft:30}]}>
               <View style={cs.settingWrapper}>
                 <SettingItem
+                  basicListData={this.state.basicList}
+                  routeNavigationName="TravelsCostSetting"
+                  navigation={this.props.navigation}
+                  title="Verslagen"
+                  desc="Stuur de bonnetjes op!"
+                  nameIcon="angle-right"
+                  settingImg={require('./../../assets/images/teacher/analytics.png')}
+                />
+                
+              </View>
+              <View style={cs.settingWrapper}>
+               
+                 <SettingItem
                   basicListData={this.state.basicList}
                   routeNavigationName="TravelsCostSetting"
                   navigation={this.props.navigation}
@@ -306,8 +320,10 @@ class ProfileSetting extends Component {
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/metro.png')}
                 />
-              </View>
+              
             </View>
+            
+              </View>
             <View style={cs.settingContainer}>
               <View style={cs.settingWrapper}>
                 <SettingItem

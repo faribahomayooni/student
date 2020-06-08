@@ -31,9 +31,9 @@ class Splash extends React.Component {
     }
   
       const { params } =this.props.navigation.state;
-   var typeuser= await  AsyncStorage.getItem('@typeofsignin')
-   this.setState({type:typeuser})
-      console.warn("############# type user",this.state.type==="teacher")
+  //  var typeuser= await  AsyncStorage.getItem('@typeofsignin')
+  //  this.setState({type:typeuser})
+  //     console.warn("############# type user",this.state.type==="teacher")
  
   }
 

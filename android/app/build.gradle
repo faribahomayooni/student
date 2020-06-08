@@ -130,7 +130,7 @@ android {
     }
 
     defaultConfig {
-        multiDexEnabled true
+
         targetSdkVersion 28
         applicationId "com.NT2Student"
         minSdkVersion 21
@@ -138,17 +138,17 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
+    }
 
-//   signingConfigs {
-//         release {
-//             if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
-//                 storeFile file(MYAPP_UPLOAD_STORE_FILE)
-//                 storePassword MYAPP_UPLOAD_STORE_PASSWORD
-//                 keyAlias MYAPP_UPLOAD_KEY_ALIAS
-//                 keyPassword MYAPP_UPLOAD_KEY_PASSWORD
-//             }
-//         }
-//     }
 
     splits {
         abi {
@@ -168,6 +168,7 @@ android {
     }
     buildToolsVersion = '28.0.3'
      buildTypes {
+
         debug {
              signingConfig signingConfigs.debug
         }
@@ -177,7 +178,7 @@ android {
               signingConfig signingConfigs.debug
               minifyEnabled enableProguardInReleaseBuilds
               proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            //    signingConfig signingConfigs.release
+               signingConfig signingConfigs.release
          }
      }
     

@@ -3,7 +3,7 @@ import React from 'react';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import Home from './../screens/Home';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import SplashScreen from './../components/Loader';
 // import Login from './screens/Login';
 import Presence from './../screens/Presence/Presence';
@@ -63,9 +63,7 @@ const RootStack = createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Home',
         headerRight: () => <View style={{alignSelf: 'flex-end'}} />,
-        tabBarVisible: false,
-        
-        
+        tabBarVisible: false,   
       }),
     },
     ChoosedDashboard: {
@@ -73,7 +71,7 @@ const RootStack = createStackNavigator(
       navigationOptions: ({navigation}) => ({
         title: 'Home',
         headerRight: () => <View style={{alignSelf: 'flex-end'}} />,
-        tabBarVisible: false,
+        tabBarVisible: true,
         
         
       }),

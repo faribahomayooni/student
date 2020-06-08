@@ -173,9 +173,13 @@ async componentDidMount() {
                       </TouchableOpacity>
                   </View>
               </View>
-              <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15}]} onPress={()=> this.CanSelected()}>
-               <Text style={{color:"white"}}>Submit</Text>
+              
+          <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:height*0.61,padding:20,marginTop:width*0.15,height:"10%"}]} onPress={()=>this.CanSelected()}>
+               <Text style={{color:"white"}}>submit</Text>
            </TouchableOpacity>
+              {/* <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15}]} onPress={()=> this.CanSelected()}>
+               <Text style={{color:"white"}}>Submit</Text>
+           </TouchableOpacity> */}
               {/* <TouchableOpacity    style={[cs.buttondashbordStyle,{width:"90%"}]} onPress={()=> this.CanSelected()}>
                   <Text style={{color:"white",marginBottom:10,alignSelf:"center",fontSize:16}}>Submit</Text>
               </TouchableOpacity> */}

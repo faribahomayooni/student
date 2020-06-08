@@ -89,10 +89,10 @@ class Profile extends Component {
         <View style={cs.mainContainer}>
           <View style={[cs.profileInfo]}>
             <Text>
-              <Text style={cs.BoldProfileInfo}>
+              {/* <Text style={cs.BoldProfileInfo}>
                 { this.props.Profile.data!==undefined  &&
                   this.props.Profile.data[0].firstname}
-              </Text>
+              </Text> */}
               <Text style={cs.RegularProfileInfo}>, je zit in groep </Text>
                  
                   
@@ -119,8 +119,8 @@ class Profile extends Component {
             <Text style={cs.progressText}>
               <Text style={[cs.BoldProgressInfo]}>
                 {' '}
-                { this.props.Profile.data!==undefined &&
-                 this.props.Profile.data[0].firstname}{' '}
+                {/* { this.props.Profile.data!==undefined &&
+                 this.props.Profile.data[0].firstname}{' '} */}
               </Text>
               <Text style={cs.RegularProgressInfo}>, je bent</Text>
             </Text>

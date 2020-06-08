@@ -12,7 +12,7 @@ import {Row, Col} from 'native-base';
 import {InputField, Button, Header} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import KnowModal from '../../components/KnowModal';
-import {getprofileInfo} from '../../actions/ProfileAction'
+import {getprofileInfo,TypeSignIn} from '../../actions/ProfileAction'
 import { StackActions, NavigationActions } from 'react-navigation';
 
 const sha256 = require('sha256');
@@ -80,7 +80,8 @@ class StudentSignIn extends Component {
             }
 
             this.props.navigation.navigate('Home',{typeofsignin:"student"});
-            AsyncStorage.setItem('@typeofsignin', "stundent");
+            this.props.TypeSignIn("student")
+           AsyncStorage.setItem('@typeofsignin', "stundent");
             // const resetAction = StackActions.reset({
             //   index: 0,
             //  key:"SignUp",
@@ -154,6 +155,7 @@ class StudentSignIn extends Component {
   };
 
   render() {
+    console.warn("=====>this is type of sign in",this.props.TypeSign)
     let {
       username,
       password,
@@ -284,13 +286,15 @@ class StudentSignIn extends Component {
 }
 
 const mapStateToProps = state => {
-  return {studentInfo: state.api.studentInfo};
+  return {studentInfo: state.api.studentInfo,
+           TypeSign:state.TypeSign
+  };
 };
 
 
 const mapDispatchToProps= {
   getprofileInfo,
-
+  TypeSignIn
  }
 
 export default connect(mapStateToProps,mapDispatchToProps)(StudentSignIn);

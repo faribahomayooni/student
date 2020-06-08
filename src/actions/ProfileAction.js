@@ -18,3 +18,9 @@ export function LogOut(data){
     return {type:allConstants.LOG_OUT, payload:data};
 
 }
+
+export function TypeSignIn(data){
+
+    return {type:allConstants.Type_SignIn, payload:data};
+
+}

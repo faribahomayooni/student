@@ -24,8 +24,6 @@ import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;
 import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 // @react-native-firebase/messaging
 import io.invertase.firebase.messaging.ReactNativeFirebaseMessagingPackage;
-// react-native-firebase
-import io.invertase.firebase.RNFirebasePackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 // react-native-image-picker
@@ -90,7 +88,6 @@ public class PackageList {
       new RNDateTimePickerPackage(),
       new ReactNativeFirebaseAppPackage(),
       new ReactNativeFirebaseMessagingPackage(),
-      new RNFirebasePackage(),
       new RNGestureHandlerPackage(),
       new ImagePickerPackage(),
       new ReanimatedPackage(),

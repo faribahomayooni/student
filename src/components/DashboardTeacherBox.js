@@ -10,7 +10,7 @@ import {connect, connectAdvanced} from 'react-redux';
 import COLORS from '../styles/variables';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
-import firebase from '@react-native-firebase/app'
+// import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging';
 
 const {width,height}=Dimensions.get("window")
@@ -254,11 +254,10 @@ setDropZoneValues(event){
               </TouchableOpacity>
          </View>
 
-              
               }
                
   
-          {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
+          {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15,height:"10%"}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
                <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
            </TouchableOpacity>}
       </View>

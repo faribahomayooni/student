@@ -11,6 +11,16 @@
   
   }
 
+  export function  TypeSign (state="student",action){
+    switch(action.type){
+       case 'Type_SignIn':        
+          return action.payload
+      default:
+       return state
+    }
+  
+  }
+
 //   export function  Profile (state="",action){
 //     switch(action.type){
 //        case 'student_remove':        

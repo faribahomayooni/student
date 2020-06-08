@@ -10,7 +10,7 @@ import COLORS from '../styles/variables';
 import { bindActionCreators } from 'redux';
 // import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import firebase from '@react-native-firebase/app'
+// import firebase from '@react-native-firebase/app'
 import messaging from '@react-native-firebase/messaging';
 
 const {width,height}=Dimensions.get("window")

@@ -518,6 +518,26 @@ export const commonStyle = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  boxesWrapperthree:{
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    height: screenHeight * 0.17,
+    width: screenWidth * 0.567,
+    margin: 10,
+    // marginTop: 50,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    alignItems: 'center',
+    alignSelf: 'center',
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+
+
+  },
   boxesTeacherWrapper: {
     borderRadius: 15,
     backgroundColor: '#fff',
