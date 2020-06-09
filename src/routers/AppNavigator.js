@@ -27,6 +27,7 @@ import MySchool from '../screens/Setting/MySchool';
 import AboutApp from '../screens/Setting/AboutApp';
 import HelpCentre from '../screens/Setting/helpCentre';
 import HelpCentreOpen from '../screens/Setting/helpCentreOpen';
+import Aanwezigheid from"../screens/Presence/Aanwezigheid"
 import {createAppContainer} from 'react-navigation';
 import {Image, View,Text,Animated, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -285,7 +286,7 @@ const ProfileStack = createStackNavigator(
 const PresenceStack = createStackNavigator(
   {
     Presence: {
-      screen: Presence,
+      screen: Aanwezigheid,
       navigationOptions: {
         title: 'Mijn aanwezigheid',
       },

@@ -56,16 +56,18 @@ class TeacherSignIn extends Component {
         .then(async(user) => {
           if (user.data.msg === 'success') {
            
-         
-           console.warn("========================> teacher signin",user.data.data.token);
+            AsyncStorage.setItem('@token', user.data.data.token);
+           console.warn("========================> teacher signin",user.data);
+           this.loadStudentInfo()
             try {
               AsyncStorage.setItem('@token', user.data.data.token);
+            
               AsyncStorage.setItem('@type', user.data.data.type);
               AsyncStorage.setItem(
                 '@userId',
                 JSON.stringify(user.data.data.userId),
               );
-          //  await   this.loadStudentInfo()
+             
               AsyncStorage.setItem('@username', user.data.data.username);
               AsyncStorage.setItem('@name', user.data.data.name);
               // showToast('Login success.');
@@ -96,6 +98,32 @@ class TeacherSignIn extends Component {
     }
   
   }
+
+  
+  loadStudentInfo = async () => {
+    axios
+      .get(global.url + 'api/student/loadInfo', {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      })
+      .then(res => {
+        this.setState({studentInfo: res.data});
+        this.props.getprofileInfo(res.data)
+        console.warn('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%teacher info&**************************', res.data);
+        if (res.data.msg === 'success') {
+        }
+        if (res.data.msg === 'fail') {
+          // console.warn('fail', res.data);
+          return;
+        }
+      })
+      .catch(error => {
+        // console.warn('error', error);
+      });
+  };
+
 
   showActionSheet = () => {
     this.ActionSheet.show();

@@ -1,12 +1,14 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useState } from 'react';
 import {connect} from 'react-redux';
 import {View, Text, ScrollView, Image} from 'react-native';
 import {commonStyle as cs} from '../../styles/common/styles';
 import {apiActions} from '../../actions';
+import CheckBox from '@react-native-community/checkbox';
 import {Row, Col} from 'native-base';
 
 function MySchool(props) {
+  const [Val,setValue]=useState(true)
   const personData = props.navigation.getParam('personData');
   const infoData = props.navigation.getParam('infoData');
   const addressData = props.navigation.getParam('addressData');
@@ -50,7 +52,7 @@ function MySchool(props) {
                   }}>
                   {infoData ? (
                     <Image
-                      style={{width: 50, height: 50, marginBottom: 30}}
+                      style={{width: 50, height: 50, marginBottom: 30,resizeMode:"contain"}}
                       source={{
                         uri:
                           `${global.url}app/contact/cn-` +
@@ -125,17 +127,24 @@ function MySchool(props) {
                         flexDirection: 'row',
                         marginTop: 20,
                         flex: 1,
-                        marginLeft: 'auto',
+                        marginTop:"10%",
+                        // marginLeft: 'auto',
                         paddingLeft: 15,
                       }}>
                       <View style={{flexDirection: 'column'}}>
-                        <Image
+                      {
+                      item.Fld_Photo? 
+                       <Image
                           source={{
                             uri:
                               `${global.url}app/contact/pr-` + item.Fld_Photo,
                           }}
-                          style={{borderRadius: 60 / 2, width: 60, height: 60}}
-                        />
+                          style={{borderRadius: 60 / 2, width: 60, height: 60,resizeMode:"contain"}}
+                        />:
+                        <Image
+                        source={require('./../../assets/images/student/message/NoPath-1.png')}
+                        style={{borderRadius: 60 / 2, width: 60, height: 60}}
+                      />}
                       </View>
                       <View style={{flexDirection: 'column'}}>
                         <View style={{marginLeft: 20, marginBottom: -10}}>
@@ -157,15 +166,141 @@ function MySchool(props) {
                   );
                 })
               : null}
+              
           </View>
         </View>
+        
+       {props.TypeSign==="student" &&
+       <View>
+       <View>
+           <View style={{flexDirection:"row",paddingRight:20}}>
+            <CheckBox
+            value={Val}
+              onValueChange={value => {
+               setValue(value)
+              }}
+              tintColors={{true: '#5467fd'}}
+              style={cs.checkboxCustom}
+            />
+            <Text style={[cs.checkEmailText,{}]}>
+                  Ik geef toestemming om mijn gegevens te delen met 
+                  andere collega's binnen deze app.
+            </Text>
+          </View>
+       </View>
+       <View style={cs.settingContainer}>
+          
+          <View style={cs.settingWrapper}>
+         
+            {/* <Text>skdfhksdfiusdfusidfisudfysiudfuy</Text> */}
+          
+          <View style={cs.infoSenderMessage}>
+              <Text style={cs.messageProfileName}>U</Text>
+            </View>
+                  <View
+                      style={{
+                        flexDirection: 'row',
+                        marginTop: 20,
+                        // flex: 1,
+                        marginTop:"10%",
+                        // marginLeft: 'auto',
+                        // paddingLeft: 15,
+                      }}>
+                      <View style={{flexDirection: 'column'}}>
+                      {/* {console.warn( "================>",item.Fld_Photo), */}
+                      {/* true?  */}
+                      {/* <Image */}
+                      {/* //     source={{ */}
+                      {/* //       uri:
+                      //         `${global.url}app/contact/pr-` + item.Fld_Photo,
+                      //     }}
+                      //     style={{borderRadius: 60 / 2, width: 60, height: 60}}
+                      //   />: */}
+                        <Image
+                        source={require('./../../assets/images/student/message/NoPath-1.png')}
+                        style={{borderRadius:60 / 2, width: 60,height:60,resizeMode:"contain"}}
+                         />
+                      </View>
+                      <View style={{flexDirection: 'column'}}>
+                        <View style={{marginLeft: 20, marginBottom: -10}}>
+                          <Text style={cs.schoolTrainingTitle}>
+                            jijoijo
+                            {/* {item.Fld_Name} */}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            marginTop: 10,
+                            margin: 20,
+                            paddingRight: 25,
+                          }}>
+                          <Text style={cs.addressTitle}>sdfsdf</Text>
+                          <Text style={cs.addressSubTitle}>sdfsdf</Text>
+                        </View>
+                      </View>
+                    </View>
+            <View style={cs.infoSenderMessage}>
+              <Text style={cs.messageProfileName}>Uw collega's</Text>
+            </View>
+            {personData
+              ? personData.map(item => {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        marginTop: 20,
+                        flex: 1,
+                        marginTop:"10%",
+                        // marginLeft: 'auto',
+                        paddingLeft: 15,
+                      }}>
+                      <View style={{flexDirection: 'column'}}>
+                      {console.warn( "================>",item.Fld_Photo),
+                      item.Fld_Photo? 
+                       <Image
+                          source={{
+                            uri:
+                              `${global.url}app/contact/pr-` + item.Fld_Photo,
+                          }}
+                          style={{borderRadius: 60 / 2, width: 60, height: 60,resizeMode:"contain"}}
+                        />:
+                        <Image
+                        source={require('./../../assets/images/student/message/NoPath-1.png')}
+                        style={{borderRadius: 60 / 2, width: 60, height: 60}}
+                      />}
+                      </View>
+                      <View style={{flexDirection: 'column'}}>
+                        <View style={{marginLeft: 20, marginBottom: -10}}>
+                          <Text style={cs.schoolTrainingTitle}>
+                            {item.Fld_Name}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            marginTop: 10,
+                            margin: 20,
+                            paddingRight: 25,
+                          }}>
+                          <Text style={cs.addressTitle}>{item.Fld_Email}</Text>
+                          <Text style={cs.addressSubTitle}>{item.Fld_Tel}</Text>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })
+              : null}
+              
+          </View>
+          </View>
+        </View>}
       </View>
+      
     </ScrollView>
   );
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {TypeSign:state.TypeSign};
 };
 
 export default connect(mapStateToProps)(MySchool);

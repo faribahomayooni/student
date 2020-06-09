@@ -11,7 +11,7 @@
   
   }
 
-  export function  TypeSign (state="student",action){
+  export function  TypeSign (state="",action){
     switch(action.type){
        case 'Type_SignIn':        
           return action.payload

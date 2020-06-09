@@ -32,21 +32,26 @@ function Privacy(props) {
           style={cs.pdf}
         /> */}
         <View style={{alignItems: 'center'}}>
-          <Text style={cs.pageTitle}>{props.navigation.getParam('title')}</Text>
+          <Text style={cs.pageTitle}>{props.TypeSign==="teacher"?"Overeenkomsten": props.navigation.getParam('title')}</Text>
           <Text style={cs.subTitleSettingPage}>
-            Download hieronder het privacy- en klachtenreglement.
+           {props.TypeSign==="teacher"?"Download hieronder de overeenkomsten die u hebt met uw opdrachtgever.": "Download hieronder het privacy- en klachtenreglement."}
           </Text>
         </View>
         <View style={cs.settingContainer}>
           <View style={cs.settingWrapper}>
             <View style={cs.helpCentreDetail}>
+             {props.TypeSign==="teacher" ?
+               <Image
+               source={require('./../../assets/images/student/setting/contract.png')}
+               style={{borderRadius: 60 / 2, width: 60, height: 60}}
+             />:
               <Image
                 source={require('./../../assets/images/student/setting/privacy-policy.png')}
                 style={{borderRadius: 60 / 2, width: 60, height: 60}}
-              />
+              />}
               <View style={{flexDirection: 'column'}}>
                 <Text style={cs.privacyTitle}>
-                  Download hier het privacyreglement
+              {props.TypeSign==="teacher"? " Download hier uw overeenkomst":"Download hier het privacyreglement"}
                 </Text>
               </View>
             </View>
@@ -81,13 +86,17 @@ function Privacy(props) {
         <View style={cs.settingContainer}>
           <View style={cs.settingWrapper}>
             <View style={cs.helpCentreDetail}>
-              <Image
-                source={require('./../../assets/images/student/setting/privacy-policy(1).png')}
+             {props.TypeSign==="teacher"? <Image
+                source={require('./../../assets/images/student/setting/business-partnership.png')}
                 style={{borderRadius: 60 / 2, width: 60, height: 60}}
-              />
+              />:
+              <Image
+              source={require('./../../assets/images/student/setting/privacy-policy(1).png')}
+              style={{borderRadius: 60 / 2, width: 60, height: 60}}
+            />}
               <View style={{flexDirection: 'column'}}>
-                <Text style={cs.privacyTitle}>
-                  Download hier het klachtenreglement
+                <Text style={[cs.privacyTitle]}>
+                {props.TypeSign==="teacher"?"Download hier uw contract": "Download hier het klachtenreglement"}
                 </Text>
               </View>
             </View>
@@ -125,7 +134,9 @@ function Privacy(props) {
 }
 
 const mapStateToProps = state => {
-  return {};
+  return {
+    TypeSign:state.TypeSign
+  };
 };
 
 export default connect(mapStateToProps)(Privacy);

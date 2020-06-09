@@ -15,7 +15,7 @@ export default class App extends Component {
       notification:[],
       // count:0,
     }
-     global.url = 'http://192.168.1.64:3100/';
+     global.url = 'http://192.168.1.46:3100/';
     // global.url = 'http://192.168.1.33:3100/';
     //  global.url='http://85.214.123.68:3100/'
    //  global.url = 'http://94.101.128.11:3100/';
@@ -26,7 +26,7 @@ export default class App extends Component {
   
   componentDidMount=async()=>{
     // console.warn("**********************navigation",this.props.navigation)  
-    messaging().onMessage( remoteMessage => {     
+    messaging().onMessage( remoteMessage => {      
       this.setState({notification:[
         Object.assign({}, remoteMessage), ...this.state.notification   
       ]})

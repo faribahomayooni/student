@@ -128,7 +128,7 @@ class StudentSignIn extends Component {
       .then(res => {
         this.setState({studentInfo: res.data});
         this.props.getprofileInfo(res.data)
-        console.warn('===>res when call twice for component', res);
+        console.warn('===>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@get teacher info in loadinfo in nt2', res.data);
         if (res.data.msg === 'success') {
         }
         if (res.data.msg === 'fail') {

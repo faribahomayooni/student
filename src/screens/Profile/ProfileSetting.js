@@ -263,13 +263,13 @@ class ProfileSetting extends Component {
                     }
                     settingImg={require('./../../assets/images/student/setting/user.png')}
                   />
-                ) : null}
-                { this.props.Profile.data!== undefined ? (
+                ) : null} 
+               { this.props.Profile.data!== undefined ? (
                   <SettingItem
                     routeNavigationName="EmailSetting"
                     navigation={this.props.navigation}
                     title="E-mail"
-                    desc={ this.props.Profile.data[0].FLD_EMAIL}
+                    // desc={ this.props.Profile.data[0].FLD_EMAIL}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/email.png')}
                   />
@@ -293,22 +293,22 @@ class ProfileSetting extends Component {
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/smartphone.png')}
                   />
-                ) : null}
+                ) : null} 
               </View>
             </View>
             <View style={[cs.settingContainer,{flexDirection:"column",paddingRight:30,paddingLeft:30}]}>
+            {this.props.TypeSign==="teacher" &&
               <View style={cs.settingWrapper}>
                 <SettingItem
                   basicListData={this.state.basicList}
                   routeNavigationName="TravelsCostSetting"
                   navigation={this.props.navigation}
                   title="Verslagen"
-                  desc="Stuur de bonnetjes op!"
+                  desc="Lees de Verslagen"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/teacher/analytics.png')}
-                />
-                
-              </View>
+                />  
+              </View>}
               <View style={cs.settingWrapper}>
                
                  <SettingItem
@@ -338,8 +338,8 @@ class ProfileSetting extends Component {
                   appSettingData={this.state.setting}
                   routeNavigationName="Privacy"
                   navigation={this.props.navigation}
-                  title="Privacy & Klachten"
-                  desc="De reglementen"
+                  title={this.props.TypeSign==="teacher"?"Contracten ":"Privacy & Klachten"}
+                  desc={this.props.TypeSign==="teacher"?"Contracten ":"De reglementen"}
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/document.png')}
                 />
@@ -349,7 +349,7 @@ class ProfileSetting extends Component {
                   addressData={this.state.address}
                   routeNavigationName="MySchool"
                   navigation={this.props.navigation}
-                  title="Over jouw school"
+                  title={this.props.TypeSign==="teacher"?"Over uw school":"Over jouw school"}
                   desc="Alle contact informatie"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/notification.png')}
@@ -402,7 +402,8 @@ const mapStateToProps = state => {
     loadAppSetting: state.api.loadSetting,
     loadBasicList: state.api.loadBasic,
     studentInfo: state.api.studentInfo,
-    Profile:state.Profile
+    Profile:state.Profile,
+    TypeSign:state.TypeSign
   };
 };
 
