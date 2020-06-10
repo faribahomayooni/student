@@ -1,5 +1,5 @@
 
-  export function  Profile (state={},action){
+  export function  Profile (state=[],action){
     switch(action.type){
        case 'student_Data':        
           return action.payload

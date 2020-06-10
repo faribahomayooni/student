@@ -21,6 +21,7 @@ import {removeprofile} from '../../actions/ProfileAction'
 import NavigationService from '../../routers/NavigationService';
 import { StackActions, NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
+import {getprofileInfo,TypeSignIn} from '../../actions/ProfileAction'
 
 class ProfileSetting extends Component {
   constructor(props) {
@@ -35,7 +36,8 @@ class ProfileSetting extends Component {
       address:[],
       setting:[],
       basicList:[],
-      type:""
+      type:"",
+      studentInfo:""
       
     };
     // const {dispatch} = this.props;
@@ -43,6 +45,7 @@ class ProfileSetting extends Component {
   }
 
   componentDidMount() {
+  //  this.props.getprofileInfo(this.props.navigation.getParam('studentInfo'))
      this.props.removeNotification()
     console.warn("!!!!!!!!!!",NavigationActions)
     this.loadMobilePerson()
@@ -50,6 +53,7 @@ class ProfileSetting extends Component {
     this.loadMobileAddress()
     this.loadAppSetting()
     this.loadBasicList(30)
+    this.loadStudentInfo()
     // window.scrollTo(0, 0);
     // const {dispatch} = this.props;
   //  this.props.dispatch(apiActions.loadMobilePerson());
@@ -84,7 +88,9 @@ class ProfileSetting extends Component {
     
   }
 
-
+ componentWillReceiveProps(){
+   this.loadStudentInfo()
+ }
    loadMobilePerson=async()=> {
       axios
         .get(global.url + 'api/school/loadMobilePerson', {
@@ -129,15 +135,11 @@ class ProfileSetting extends Component {
         })
         .catch(error => {
           console.log(error);
-        });
-  
-     
+        });  
    
   }
 
    loadMobileAddress=async() =>{
- 
-     
       axios
         .get(global.url + 'api/school/loadMobileAddress', {
           headers: {
@@ -163,9 +165,7 @@ class ProfileSetting extends Component {
   }
 
 
-   loadBasicList =async(id)=> {
-    
-     
+   loadBasicList =async(id)=> {  
       axios
         .post(
           global.url + 'api/admin/loadBasicList',
@@ -192,28 +192,34 @@ class ProfileSetting extends Component {
   
       
   }
-  // loadStudentInfo = async () => {
-  //   axios
-  //     .get(global.url + 'api/student/loadInfo', {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'x-access-token': await AsyncStorage.getItem('@token'),
-  //       },
-  //     })
-  //     .then(res => {
-  //       this.setState({studentInfo: res.data});
-  //       console.warn('===>res when call twice for component', res);
-  //       if (res.data.msg === 'success') {
-  //       }
-  //       if (res.data.msg === 'fail') {
-  //         // console.warn('fail', res.data);
-  //         return;
-  //       }
-  //     })
-  //     .catch(error => {
-  //       // console.warn('error', error);
-  //     });
-  // };
+  loadStudentInfo = async () => {
+    this.setState({type:await AsyncStorage.getItem('@typeofsignin')})
+    axios
+      .get(await AsyncStorage.getItem('@typeofsignin')==="teacher" ? global.url +'api/teacher/loadInfo':global.url +'api/student/loadInfo'
+      , {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      })
+      .then(res => {
+        
+       this.setState({studentInfo: res.data.data[0]});
+        // this.props.getprofileInfo(res.data)
+       console.warn('===>res when call twice for component', res.data.data[0]);
+      //  this.props.getprofileInfo(res.data.data[0])
+        if (res.data.msg === 'success') {
+        }
+        if (res.data.msg === 'fail') {
+          // console.warn('fail', res.data);
+          return;
+        }
+      })
+      .catch(error => {
+         console.warn('errsdfsdfsdor', error);
+      });
+  };
+
 
   logout() {
     this.props.removeprofile()
@@ -241,7 +247,7 @@ class ProfileSetting extends Component {
   };
   render() {
    
-    const studentInfo = this.props.navigation.getParam('studentInfo');
+    const{ studentInfo} = this.state;
     console.warn("@@@@&&&&& student number",this.props.Profile)
     const type = this.props.navigation.getParam('type');
     console.warn("fsdjkfhskjdfskdjfsdkfhsdkf",type)
@@ -261,9 +267,10 @@ class ProfileSetting extends Component {
                     navigation={this.props.navigation}
                     title="Naam"
                     desc={
-                        ((this.props.Profile.FLD_FIRSTNAME || this.props.Profile.firstname) + ' ' +
-                        
-                        this.props.Profile.FLD_LASTNAME)
+                      // console.warn("2222222222222222",this.props.Profile===Object),
+                      (studentInfo.FLD_FIRSTNAME  ||  studentInfo.firstname)  +
+                        ' ' +               
+                        (this.props.Profile.length==0 ? studentInfo.FLD_LASTNAME :this.props.Profile.FLD_LASTNAME)
                     }
                     settingImg={require('./../../assets/images/student/setting/user.png')}
                   />
@@ -273,7 +280,7 @@ class ProfileSetting extends Component {
                     routeNavigationName="EmailSetting"
                     navigation={this.props.navigation}
                     title="E-mail"
-                    desc={this.props.Profile.FLD_EMAIL}
+                    desc={studentInfo.FLD_EMAIL }
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/email.png')}
                   />
@@ -293,7 +300,7 @@ class ProfileSetting extends Component {
                     routeNavigationName="PhoneSetting1"
                     navigation={this.props.navigation}
                     title="Telefoonnummer"
-                    desc={  ( this.props.Profile.FLD_PHONE_NO1||this.props.Profile.FLD_PHONE_NUMBER1 )}
+                    desc={ ( studentInfo.FLD_PHONE_NO1||studentInfo.FLD_PHONE_NUMBER1 )}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/smartphone.png')}
                   />
@@ -417,7 +424,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps= {
   removeNotification,
-  removeprofile
+  removeprofile,
+  getprofileInfo
  }
 
  
