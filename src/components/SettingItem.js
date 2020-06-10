@@ -22,6 +22,7 @@ function SettingItem(props) {
               emailSetting: props.emailSetting,
               basicListData: props.basicListData,
               appSettingData: props.appSettingData,
+              type:props.type
             })
           }>
           <Image

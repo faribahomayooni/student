@@ -172,6 +172,16 @@ export const commonStyle = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  selectionWrapp: {
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    padding: 5,
+    height: 50,
+    margin: 15,
+    marginTop: 50,
+    
+   
+  },
   borderBottom: {
     borderBottomColor: '#ddd',
     borderBottomWidth: 0.5,
@@ -251,6 +261,24 @@ export const commonStyle = StyleSheet.create({
     // alignSelf: 'flex-end',
     borderColor: 'transparent',
   },
+  datePicker:{
+    fontSize:5,
+    color:"red",
+    borderRadius:5,
+    backgroundColor:"#eeeeee",
+    height:screenWidth*0.08,
+    width:screenWidth*0.28,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+
+  },
+  
   iconModalClose: {
     borderRadius: 30,
     // display: 'flex',
@@ -261,6 +289,13 @@ export const commonStyle = StyleSheet.create({
     marginTop: 22,
     right: Dimensions.get('window').width / 20,
     alignSelf: 'flex-end',
+    borderColor: 'transparent',
+  },
+  iconClose: {
+    borderRadius: 30,
+    backgroundColor: '#B426B5',
+    width: 25,
+    height: 25,
     borderColor: 'transparent',
   },
   nextPopUpIconWrapper: {

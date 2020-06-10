@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Progress from './../../components/Progress';
 import axios from 'axios';
 import {apiActions} from '../../actions';
+import { withNavigationFocus } from 'react-navigation';
+
 import {getprofileInfo} from '../../actions/ProfileAction'
 
 const {width,height}=Dimensions.get('window')
@@ -15,18 +17,31 @@ class Profile extends Component {
  
   
    state = {
-      studentInfo: null,
+      studentInfo: 
+      "",
       groupname:"",
       groupid:"",
       TeacherLastName:'',
       TeacherLastName:"",
-      targetName:""
+      targetName:"",
+      type:""
     }
   
-  componentDidMount=async()=> {
+  componentDidMount(){
     this.loadStudentInfo()
     this.loadStudentGroup(-1);   
   }
+
+  componentWillUpdate=(prevProps)=> {
+   console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused,this.props.isFocused)
+     if (prevProps.isFocused !== this.props.isFocused) {
+      console.warn("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+    
+       this.loadStudentInfo()
+       this.loadStudentGroup(-1)
+       
+       }
+     }
 
 
    loadStudentGroup=async(studentId) =>{  
@@ -56,17 +71,20 @@ class Profile extends Component {
   }
   
   loadStudentInfo = async () => {
+    this.setState({type:await AsyncStorage.getItem('@typeofsignin')})
     axios
-      .get(global.url + 'api/student/loadInfo', {
+      .get(await AsyncStorage.getItem('@typeofsignin')==="teacher" ? global.url +'api/teacher/loadInfo':global.url +'api/student/loadInfo'
+      , {
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': await AsyncStorage.getItem('@token'),
         },
       })
       .then(res => {
-        this.setState({studentInfo: res.data});
-        this.props.getprofileInfo(res.data)
-        console.warn('===>res when call twice for component', res);
+        
+       this.setState({studentInfo: res.data.data[0]});
+        // this.props.getprofileInfo(res.data)
+       console.warn('===>res when call twice for component', res.data.data[0]);
         if (res.data.msg === 'success') {
         }
         if (res.data.msg === 'fail') {
@@ -75,28 +93,26 @@ class Profile extends Component {
         }
       })
       .catch(error => {
-        // console.warn('error', error);
+         console.warn('errsdfsdfsdor', error);
       });
   };
 
 
 
   render() {
-    //  console.warn("================.load student group",this.props.Profile.data[0])
+   console.warn("================.type of sign innow*****",this.state.type)
     const {studentInfo} = this.props;
     return (
       <ScrollView>
         <View style={cs.mainContainer}>
           <View style={[cs.profileInfo]}>
             <Text>
-              {/* <Text style={cs.BoldProfileInfo}>
-                { this.props.Profile.data!==undefined  &&
-                  this.props.Profile.data[0].firstname}
-              </Text> */}
-              <Text style={cs.RegularProfileInfo}>, je zit in groep </Text>
-                 
-                  
-                
+              <Text style={cs.BoldProfileInfo}>
+                {this.state.studentInfo!==undefined 
+                &&  this.state.type==="teacher"?this.state.studentInfo.FLD_FIRSTNAME:this.state.studentInfo.firstname
+                 }
+              </Text>
+              <Text style={cs.RegularProfileInfo}>, je zit in groep </Text>   
             </Text>
             <Text style={[cs.colorProfileInfo]}>{this.state.groupname}</Text>
             <Text>
@@ -118,9 +134,8 @@ class Profile extends Component {
           <View style={{alignItems: 'center'}}>
             <Text style={cs.progressText}>
               <Text style={[cs.BoldProgressInfo]}>
-                {' '}
-                {/* { this.props.Profile.data!==undefined &&
-                 this.props.Profile.data[0].firstname}{' '} */}
+                {' '}   
+               {this.state.type==="teacher"?this.state.studentInfo.FLD_FIRSTNAME:this.state.studentInfo.firstname}{' '} 
               </Text>
               <Text style={cs.RegularProgressInfo}>, je bent</Text>
             </Text>
@@ -143,7 +158,8 @@ class Profile extends Component {
               onClick={() => {
               console.warn("!!!!!!!!!!!!!!!!!!",this.props.navigation)
                   this.props.navigation.navigate('ProfileSetting', {
-                      // studentInfo: this.props.Profile,
+                     studentInfo: this.state.studentInfo,
+                     type:this.state.type
                     })
                  
               }}
@@ -167,20 +183,20 @@ class Profile extends Component {
 
 
 
-const mapStateToProps = state => {
-  return {
-    studentInfo: state.api.studentInfo,
-    user: state.api.user,
-    loadStudentGroup: state.api.loadStudentGroup,
-    Profile:state.Profile
-  };
-};
+// const mapStateToProps = state => {
+//   return {
+//     studentInfo: state.api.studentInfo,
+//     user: state.api.user,
+//     loadStudentGroup: state.api.loadStudentGroup,
+//     Profile:state.Profile
+//   };
+// };
 
 
-const mapDispatchToProps= {
-  getprofileInfo,
+// const mapDispatchToProps= {
+//   getprofileInfo,
 
- }
+//  }
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(Profile);
+export default withNavigationFocus (Profile);

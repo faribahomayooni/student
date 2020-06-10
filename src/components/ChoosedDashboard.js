@@ -21,6 +21,30 @@ async componentDidMount() {
   
   }
 
+  submitDashboard=()=>{
+    // axios
+    //   .get(global.url + 'api/teacher/saveDashboard', {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'x-access-token': await AsyncStorage.getItem('@token'),
+    //     },
+    //   })
+    //   .then(res => {
+    //     // this.setState({studentInfo: res.data});
+    //     // this.props.getprofileInfo(res.data)
+    //     console.warn('===>res for save dashboardType', res.data);
+    //     if (res.data.msg === 'success') {
+    //     }
+    //     if (res.data.msg === 'fail') {
+    //       // console.warn('fail', res.data);
+    //       return;
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.warn('error', error);
+    //   });
+  }
+
   render() {
     console.warn("sdsd",this.props.navigation.state.params.typeTemplate)  
     return (
@@ -156,9 +180,9 @@ async componentDidMount() {
               </View>
               </ScrollView> 
             
-              <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15,height:width*0.023}]} onPress={()=> this.CanSelected()}>
+              <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15,height:width*0.023}]} onPress={()=> this.submitDashboard()}>
                <Text style={{color:"white"}}>Submit</Text>
-           </TouchableOpacity>
+              </TouchableOpacity>
             {/* </View> */}
       </View>
       

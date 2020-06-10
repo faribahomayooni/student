@@ -40,10 +40,6 @@ const EmailSetting = props => {
       .then(res => {
         // console.warn('success', res.data.data);
         if (res.data.msg === 'success') {
-          // dispatch({
-          //   type: allConstants.EDIT_EMAIL,
-          //   data: res.data.data,
-          // });
           ToastAndroid.show(
             'youre email has been changed sucessfully',
             ToastAndroid.SHORT,

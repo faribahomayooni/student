@@ -78,10 +78,10 @@ class StudentSignIn extends Component {
             } catch (error) {
               console.log('Error saving data' + error);
             }
-
+            AsyncStorage.setItem('@typeofsignin', "stundent");
             this.props.navigation.navigate('Home',{typeofsignin:"student"});
             this.props.TypeSignIn("student")
-           AsyncStorage.setItem('@typeofsignin', "stundent");
+       
             // const resetAction = StackActions.reset({
             //   index: 0,
             //  key:"SignUp",
@@ -127,7 +127,7 @@ class StudentSignIn extends Component {
       })
       .then(res => {
         this.setState({studentInfo: res.data});
-        this.props.getprofileInfo(res.data)
+        this.props.getprofileInfo(res.data.data[0])
         console.warn('===>@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@get teacher info in loadinfo in nt2', res.data);
         if (res.data.msg === 'success') {
         }

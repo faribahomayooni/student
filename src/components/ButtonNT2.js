@@ -40,12 +40,12 @@ class PresenceCalendar extends Component {
    
     return (
 
-               <TouchableOpacity style={{marginTop:"5%",alignSelf:"center",width:this.props.width,backgroundColor:this.props.color,padding:10,borderRadius:10,alignItems:"center",justifyContent:"center"}}>
+               <TouchableOpacity onPress={this.props.onPress} style={{marginTop:this.props.marginTop,alignSelf:"center",width:this.props.width,backgroundColor:this.props.color,padding:this.props.padding || 7,borderRadius:10,alignItems:"center",justifyContent:"center"}}>
                   <View style={{flexDirection:"row"}}>
                         {this.props.rightIcon &&    <Icon
                             name="cog"
                             color="white"
-                            size={20}
+                            size={15}
                             style={{}}
                             />}
                             <Text style={{color:"white",fontSize:15,marginLeft:5,marginRight:5}}>{this.props.NAME}</Text>

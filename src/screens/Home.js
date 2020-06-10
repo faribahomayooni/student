@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {View,AsyncStorage,BackHandler,Alert} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import DashboardBox from '../components/DashboardBox';
+import {withNavigationFocus} from 'react-navigation'
 import DashboardTeacherBox  from '../components/DashboardTeacherBox'
 class Home extends Component {
   constructor(props) {
@@ -16,6 +17,15 @@ class Home extends Component {
     BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
   }
 
+  
+  componentWillUpdate=async(prevProps)=> {
+    console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused,this.props.isFocused)
+      if (prevProps.isFocused !== this.props.isFocused) {
+        var typeuser= await  AsyncStorage.getItem('@typeofsignin')
+        this.setState({type:typeuser})
+        
+        }
+      }
 
   componentDidMount=async()=>{
     const { params } =this.props.navigation.state;
@@ -48,7 +58,8 @@ class Home extends Component {
   render() {
     return (
       <View style={cs.mainContainer}>
-       {this.props.TypeSign==="teacher" || this.state.type==="teacher"? 
+       {
+        this.state.type==="teacher"? 
         <DashboardTeacherBox navigation={this.props.navigation} />:
         <DashboardBox navigation={this.props.navigation} />
     }
@@ -63,4 +74,4 @@ const mapStateToProps = state => {
     TypeSign:state.TypeSign
   };
 };
-export default connect(mapStateToProps)(Home);
+export default withNavigationFocus(Home);

@@ -9,7 +9,7 @@ import {Row, Col} from 'native-base';
 import ActionSheet from 'react-native-actionsheet';
 import axios from 'axios';
 import {showToast} from '../../components/utility';
-import {TypeSignIn} from '../../actions/ProfileAction'
+import {TypeSignIn,getprofileInfo} from '../../actions/ProfileAction'
 import {InputField, Button, Header} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 const sha256 = require('sha256');
@@ -55,11 +55,14 @@ class TeacherSignIn extends Component {
         )
         .then(async(user) => {
           if (user.data.msg === 'success') {
-           
+            var typeSignIn="teacher"
+            AsyncStorage.setItem('@typeofsignin',typeSignIn);
             AsyncStorage.setItem('@token', user.data.data.token);
            console.warn("========================> teacher signin",user.data);
            this.loadStudentInfo()
             try {
+              var typeSignIn="teacher"
+              AsyncStorage.setItem('@typeofsignin',typeSignIn);
               AsyncStorage.setItem('@token', user.data.data.token);
             
               AsyncStorage.setItem('@type', user.data.data.type);
@@ -76,8 +79,9 @@ class TeacherSignIn extends Component {
            ;
               console.warn('Error saving data' + error);
             }
+           
             this.props.navigation.navigate('Home',{typeofsignin:"teacher"});
-            AsyncStorage.setItem('@typeofsignin', "teacher");
+           
             this.props.TypeSignIn("teacher")
            
            
@@ -102,7 +106,7 @@ class TeacherSignIn extends Component {
   
   loadStudentInfo = async () => {
     axios
-      .get(global.url + 'api/student/loadInfo', {
+      .get(global.url + 'api/teacher/loadInfo', {
         headers: {
           'Content-Type': 'application/json',
           'x-access-token': await AsyncStorage.getItem('@token'),
@@ -110,7 +114,7 @@ class TeacherSignIn extends Component {
       })
       .then(res => {
         this.setState({studentInfo: res.data});
-        this.props.getprofileInfo(res.data)
+        this.props.getprofileInfo(res.data.data[0])
         console.warn('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%teacher info&**************************', res.data);
         if (res.data.msg === 'success') {
         }
@@ -184,7 +188,7 @@ class TeacherSignIn extends Component {
           />
           <View style={cs.borderBottom} />
           <InputField
-            // heading="Password"
+          
             onfocus={() => {
               this.setState({passwordActive: true, emailActive: false});
             }}
@@ -286,7 +290,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps= {
-
+  getprofileInfo,
   TypeSignIn
  }
 

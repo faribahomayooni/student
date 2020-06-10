@@ -34,7 +34,8 @@ class ProfileSetting extends Component {
       mobilePerson:[],
       address:[],
       setting:[],
-      basicList:[]
+      basicList:[],
+      type:""
       
     };
     // const {dispatch} = this.props;
@@ -239,8 +240,11 @@ class ProfileSetting extends Component {
     ),
   };
   render() {
-    console.warn("@@@@&&&&& stackaction",StackActions)
-    // const studentInfo = this.props.navigation.getParam('studentInfo');
+   
+    const studentInfo = this.props.navigation.getParam('studentInfo');
+    console.warn("@@@@&&&&& student number",this.props.Profile)
+    const type = this.props.navigation.getParam('type');
+    console.warn("fsdjkfhskjdfskdjfsdkfhsdkf",type)
     // console.warn('studentInfo', studentInfo);
     return (
       <ScrollView>
@@ -251,30 +255,30 @@ class ProfileSetting extends Component {
           <View style={cs.pageTitleWrapper}>
             <View style={cs.settingContainer}>
               <View style={cs.settingWrapper}>
-                { this.props.Profile.data !== undefined ? (
+                { this.props.Profile !== undefined ? (
                   <SettingItem
                     routeNavigationName="nothing"
                     navigation={this.props.navigation}
                     title="Naam"
                     desc={
-                      this.props.Profile.data[0]!== undefined &&      (this.props.Profile.data[0].firstname +
-                      ' ' +
-                         this.props.Profile.data[0].FLD_LASTNAME)
+                        ((this.props.Profile.FLD_FIRSTNAME || this.props.Profile.firstname) + ' ' +
+                        
+                        this.props.Profile.FLD_LASTNAME)
                     }
                     settingImg={require('./../../assets/images/student/setting/user.png')}
                   />
                 ) : null} 
-               { this.props.Profile.data!== undefined ? (
+               { this.props.Profile!== undefined ? (
                   <SettingItem
                     routeNavigationName="EmailSetting"
                     navigation={this.props.navigation}
                     title="E-mail"
-                    // desc={ this.props.Profile.data[0].FLD_EMAIL}
+                    desc={this.props.Profile.FLD_EMAIL}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/email.png')}
                   />
                 ) : null}
-                { this.props.Profile.data !== undefined ? (
+                {this.props.Profile !== undefined ? (
                   <SettingItem
                     routeNavigationName="PasswordSetting"
                     navigation={this.props.navigation}
@@ -284,12 +288,12 @@ class ProfileSetting extends Component {
                     settingImg={require('./../../assets/images/student/setting/unlock.png')}
                   />
                 ) : null}
-                { this.props.Profile.data !== undefined ? (
+                { this.props.Profile !== undefined ? (
                   <SettingItem
                     routeNavigationName="PhoneSetting1"
                     navigation={this.props.navigation}
                     title="Telefoonnummer"
-                    desc={this.props.Profile.data[0] !== undefined && this.props.Profile.data[0].FLD_PHONE_NUMBER1}
+                    desc={  ( this.props.Profile.FLD_PHONE_NO1||this.props.Profile.FLD_PHONE_NUMBER1 )}
                     nameIcon="angle-right"
                     settingImg={require('./../../assets/images/student/setting/smartphone.png')}
                   />
@@ -297,11 +301,11 @@ class ProfileSetting extends Component {
               </View>
             </View>
             <View style={[cs.settingContainer,{flexDirection:"column",paddingRight:30,paddingLeft:30}]}>
-            {this.props.TypeSign==="teacher" &&
+            {type==="teacher" &&
               <View style={cs.settingWrapper}>
                 <SettingItem
                   basicListData={this.state.basicList}
-                  routeNavigationName="TravelsCostSetting"
+                  routeNavigationName=""
                   navigation={this.props.navigation}
                   title="Verslagen"
                   desc="Lees de Verslagen"
@@ -333,15 +337,17 @@ class ProfileSetting extends Component {
                   nameIcon="angle-right"
                   desc="Heb je hulp nodig?"
                   settingImg={require('./../../assets/images/student/setting/light-bulb.png')}
+                  type={type}
                 />
                 <SettingItem
                   appSettingData={this.state.setting}
                   routeNavigationName="Privacy"
                   navigation={this.props.navigation}
-                  title={this.props.TypeSign==="teacher"?"Contracten ":"Privacy & Klachten"}
-                  desc={this.props.TypeSign==="teacher"?"Contracten ":"De reglementen"}
+                  title={type==="teacher"?"Contracten ":"Privacy & Klachten"}
+                  desc={type==="teacher"?"Contracten ":"De reglementen"}
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/document.png')}
+                  type={type}
                 />
                 <SettingItem
                   personData={this.state.mobilePerson}
@@ -349,10 +355,11 @@ class ProfileSetting extends Component {
                   addressData={this.state.address}
                   routeNavigationName="MySchool"
                   navigation={this.props.navigation}
-                  title={this.props.TypeSign==="teacher"?"Over uw school":"Over jouw school"}
+                  title={type==="teacher"?"Over uw school":"Over jouw school"}
                   desc="Alle contact informatie"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/notification.png')}
+                  type={type}
                 />
                 <SettingItem
                   routeNavigationName="AboutApp"
@@ -361,6 +368,7 @@ class ProfileSetting extends Component {
                   desc="Contract informatie"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/smartphone-1.png')}
+                  type={type}
                 />
               </View>
             </View>
@@ -412,4 +420,5 @@ const mapDispatchToProps= {
   removeprofile
  }
 
+ 
 export default connect(mapStateToProps,mapDispatchToProps)(ProfileSetting);

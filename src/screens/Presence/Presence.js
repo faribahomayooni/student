@@ -17,11 +17,9 @@ import Progress from './../../components/Progress';
 import {commonStyle as cs} from '../../styles/common/styles';
 import CalendarsScreen from './../../components/Calenderunchange';
 import CalendarsChangable from  './../../components/CalendarGroup'
-// import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Button} from './../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {apiActions} from '../../actions';
-// import AsyncStorage from '@react-native-community/async-storage';
 import PickerScreen from './../../components/Picker';
 import axios from 'axios';
 import { withNavigationFocus } from 'react-navigation';
@@ -74,16 +72,10 @@ class PresenceCalendar extends Component {
     this.setState({
       date: month,
     });
-    
-    
-    // this.getGroupFunction = this.getGroupFunction.bind(this);
   }
 
   changegroup=(mode)=>{
     setTimeout(()=>{this.setState({modify: false})},1000);
-    // console.warn("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
-    // this.setState({modify:mode===1?false:true})
-
   }
 
   getGroupFunction= (newGroup)=> {
@@ -98,15 +90,11 @@ class PresenceCalendar extends Component {
      this.setState({count:this.state.count+1})
  
    }
-  //  this.setState({changeid:""})
-//  this.setState({id:newGroup.FLD_FK_GROUP})
    this.setState({
      groupName: newGroup.FLD_GROUP_NAME,
      groupId: newGroup.FLD_FK_GROUP,
    });
-   // this.setState({id:newGroup.FLD_FK_GROUP})
-   // console.warn('dsfdf', newGroup.FLD_FK_GROUP, userId, this.state.month);
-   // this.loadMonthAttendance(newGroup.FLD_FK_GROUP, userId, this.state.month);
+
    this.passGroupdata(newGroup.FLD_FK_GROUP,this.state.month)
   //  this.props.dispatch(
   //    apiActions.loadMonthAttendance(
@@ -286,8 +274,9 @@ class PresenceCalendar extends Component {
     
   }
   componentWillUpdate(prevProps) {
-   console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps , this.props.isFocused)
+   console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
     if (prevProps.isFocused !== this.props.isFocused) {
+    
       this.loadStudentInfo()
       this.groupStudent(-1)
       

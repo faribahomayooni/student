@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 function Privacy(props) {
   const settingData = props.navigation.getParam('appSettingData');
+  const type = props.navigation.getParam('type');
+  console.warn(props.type,"TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
   const openURL = url => {
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   };
@@ -32,15 +34,16 @@ function Privacy(props) {
           style={cs.pdf}
         /> */}
         <View style={{alignItems: 'center'}}>
-          <Text style={cs.pageTitle}>{props.TypeSign==="teacher"?"Overeenkomsten": props.navigation.getParam('title')}</Text>
+          <Text style={cs.pageTitle}>{props.navigation.getParam('type')==="teacher"?"Overeenkomsten": props.navigation.getParam('title')}</Text>
           <Text style={cs.subTitleSettingPage}>
-           {props.TypeSign==="teacher"?"Download hieronder de overeenkomsten die u hebt met uw opdrachtgever.": "Download hieronder het privacy- en klachtenreglement."}
+           {props.navigation.getParam('type')==="teacher"?"Download hieronder de overeenkomsten die u hebt met uw opdrachtgever.": "Download hieronder het privacy- en klachtenreglement."}
           </Text>
         </View>
         <View style={cs.settingContainer}>
           <View style={cs.settingWrapper}>
             <View style={cs.helpCentreDetail}>
-             {props.TypeSign==="teacher" ?
+             {console.warn("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",type),
+             type==="teacher"?
                <Image
                source={require('./../../assets/images/student/setting/contract.png')}
                style={{borderRadius: 60 / 2, width: 60, height: 60}}
@@ -48,10 +51,11 @@ function Privacy(props) {
               <Image
                 source={require('./../../assets/images/student/setting/privacy-policy.png')}
                 style={{borderRadius: 60 / 2, width: 60, height: 60}}
-              />}
+              />
+              }
               <View style={{flexDirection: 'column'}}>
                 <Text style={cs.privacyTitle}>
-              {props.TypeSign==="teacher"? " Download hier uw overeenkomst":"Download hier het privacyreglement"}
+              {type==="teacher"? " Download hier uw overeenkomst":"Download hier het privacyreglement"}
                 </Text>
               </View>
             </View>
@@ -86,7 +90,7 @@ function Privacy(props) {
         <View style={cs.settingContainer}>
           <View style={cs.settingWrapper}>
             <View style={cs.helpCentreDetail}>
-             {props.TypeSign==="teacher"? <Image
+             {type==="teacher"? <Image
                 source={require('./../../assets/images/student/setting/business-partnership.png')}
                 style={{borderRadius: 60 / 2, width: 60, height: 60}}
               />:

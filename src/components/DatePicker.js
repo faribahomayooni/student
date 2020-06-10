@@ -21,6 +21,7 @@ const DateTimePicker = props => {
         borderRadius: 10,
         fontWeight: 'bold',
         fontSize: 24,
+        ...props.style
       }}
       date={date}
       mode="date"
@@ -53,6 +54,7 @@ const DateTimePicker = props => {
           fontWeight: 'bold',
           fontSize: 20,
           justifyContent: 'flex-start',
+         ...props.textStyle
         },
         // ... You can check the source to find the other keys.
       }}
