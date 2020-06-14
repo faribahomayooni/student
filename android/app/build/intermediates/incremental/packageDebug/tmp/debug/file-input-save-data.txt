@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Jun 07 11:19:31 IRDT 2020
+#Sun Jun 14 16:30:13 IRDT 2020
 124.path=lib/x86_64/libfolly_futures.so
 60.set=NATIVE_RESOURCE
 52.set=NATIVE_RESOURCE

@@ -11,6 +11,7 @@ import NavigationService from '../../../src/routers/NavigationService';
 
 const PhotoPopUp = props => {
   const [addCost, setCost] = useState(false);
+  const [Type,setType]=useState("")
   const id = props.navigation.getParam('id');
   const costTypeId = props.navigation.getParam('costTypeId');
   // const date = props.navigation.getParam('date');
@@ -28,6 +29,7 @@ const   addTravel=async(
   costFileName,
   studentId,
 ) =>{
+  setType(await AsyncStorage.getItem('@typeofsignin'))
   console.warn("data for image in react native",id,
   costTypeId,
   date,
@@ -36,7 +38,7 @@ const   addTravel=async(
   studentId)
     axios
       .post(
-        global.url + 'api/student/addTravelCost',
+        global.url+'api/teacher/addTravelCost',
         {
           id: id,
           costTypeId: costTypeId,
@@ -61,14 +63,12 @@ const   addTravel=async(
             ToastAndroid.SHORT,
           );
     setCost(false)
-          console.warn("!!!navigation in travel cost",props.navigation.navigate("TravelsCost"))
-          // showToast('Travel cost add successful');
-      
+          console.warn("suceess save image in travel cost",res.data)
          
           }
       })
     .catch(error => {
-      console.warn("danger!!!!!!!!!!!!!!!!!!!",error)
+      console.warn("eror in travelCost for upload image",error)
        setCost(false)
     //     ToastAndroid.show(
     //      error,

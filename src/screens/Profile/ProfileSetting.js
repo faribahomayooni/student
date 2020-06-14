@@ -45,6 +45,7 @@ class ProfileSetting extends Component {
   }
 
   componentDidMount() {
+    this.setState({type:''})
   //  this.props.getprofileInfo(this.props.navigation.getParam('studentInfo'))
      this.props.removeNotification()
     console.warn("!!!!!!!!!!",NavigationActions)
@@ -88,7 +89,10 @@ class ProfileSetting extends Component {
     
   }
 
- componentWillReceiveProps(){
+async componentWillReceiveProps(){
+  console.warn("######################")
+  this.setState({type:''})
+  this.setState({type:await AsyncStorage.getItem('@typeofsignin')})
    this.loadStudentInfo()
  }
    loadMobilePerson=async()=> {
@@ -225,7 +229,8 @@ class ProfileSetting extends Component {
     this.props.removeprofile()
     this.props.removeNotification()
     AsyncStorage.setItem('@token', '');
-    AsyncStorage.setItem('@typeofsignin', '');
+    AsyncStorage.removeItem('@typeofsignin')
+  
     this.props.navigation.navigate('SignIn');
     
   }
@@ -248,7 +253,7 @@ class ProfileSetting extends Component {
   render() {
    
     const{ studentInfo} = this.state;
-    console.warn("@@@@&&&&& student number",this.props.Profile)
+    console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@****************r",this.props.Profile)
     const type = this.props.navigation.getParam('type');
     console.warn("fsdjkfhskjdfskdjfsdkfhsdkf",type)
     // console.warn('studentInfo', studentInfo);

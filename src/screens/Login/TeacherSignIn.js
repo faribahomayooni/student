@@ -56,7 +56,7 @@ class TeacherSignIn extends Component {
         .then(async(user) => {
           if (user.data.msg === 'success') {
             var typeSignIn="teacher"
-            AsyncStorage.setItem('@typeofsignin',typeSignIn);
+            AsyncStorage.setItem('@typeofsignin',"teacher");
             AsyncStorage.setItem('@token', user.data.data.token);
            console.warn("========================> teacher signin",user.data);
            this.loadStudentInfo()
@@ -129,6 +129,7 @@ class TeacherSignIn extends Component {
   };
 
 
+  
   showActionSheet = () => {
     this.ActionSheet.show();
   };

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,Image} from 'react-native';
+import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,Image,AsyncStorage,ToastAndroid} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
@@ -12,41 +12,62 @@ class DashboardBox extends Component {
   constructor(props) {
     super(props);
     this.state={
-        typeTemplate:"Transfrom"
-     
+        typeTemplate:"Transfrom",
+        Items:[]
     }
   }
 
 async componentDidMount() {
+  const {selectedItems} =this.props.navigation.state.params
+  selectedItems.filter(obj=>{console.warn(obj.index),this.state.Items.push(obj.index)})
+  console.warn("jdfkjdfskdfg",this.state.Items)
   
   }
 
-  submitDashboard=()=>{
-    // axios
-    //   .get(global.url + 'api/teacher/saveDashboard', {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       'x-access-token': await AsyncStorage.getItem('@token'),
-    //     },
-    //   })
-    //   .then(res => {
-    //     // this.setState({studentInfo: res.data});
-    //     // this.props.getprofileInfo(res.data)
-    //     console.warn('===>res for save dashboardType', res.data);
-    //     if (res.data.msg === 'success') {
-    //     }
-    //     if (res.data.msg === 'fail') {
-    //       // console.warn('fail', res.data);
-    //       return;
-    //     }
-    //   })
-    //   .catch(error => {
-    //     console.warn('error', error);
-    //   });
+  submitDashboard=async()=>{
+
+   console.warn("44444444444444444444444444444444444")
+    const {typeTemplate}=this.props.navigation.state.params
+ 
+    axios
+      .post(global.url + 'api/teacher/saveDashboard',
+      {
+        layoutId:(typeTemplate=="TwoRow" && 1)  || (typeTemplate==="ThreeRow" && 2) || (typeTemplate==="default"  && 3)  || (typeTemplate==="Transfrom" && 4),
+        
+        icons:JSON.stringify(this.state.Items) 
+      },
+       {    
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },    
+      })
+      .then(res => {
+        console.warn('===>res for save dashboardType', res.data);
+        if (res.data.msg === 'success') {
+          ToastAndroid.show(
+            'youre dashboard saved sucessfully',
+            ToastAndroid.SHORT,
+          );
+        this.props.navigation.navigate("Home")
+
+        }
+        if (res.data.msg === 'fail') {
+          // console.warn('fail', res.data);
+          return;
+        }
+      })
+      .catch(error => {
+        console.warn('error for save Dahboard', error);
+      });
   }
 
   render() {
-    console.warn("sdsd",this.props.navigation.state.params.typeTemplate)  
+    const {typeTemplate}=this.props.navigation.state.params
+   var  icons=JSON.stringify(this.state.Items) 
+    console.warn(typeTemplate,layoutId)
+  var  layoutId=(typeTemplate=="TwoRow" && 1)  || (typeTemplate==="ThreeRow" && 2) || (typeTemplate==="default"  && 3)  || (typeTemplate==="Transfrom" && 4)
+  console.warn("2222222222222222222",typeTemplate,layoutId,icons)
     return (
       <View style={{alignItems:"center",padding:15}}>
         
@@ -62,14 +83,14 @@ async componentDidMount() {
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[0].ImageText}</Text>
                                         </View>
                                 </View>
-                                    <View  style={[cs.pairBox,{marginTop:10}]}>
+                                 <View  style={[cs.pairBox,{marginTop:10}]}>
                                         <View
                                     
                                         style={[cs.boxesWrapper,{width:width*0.70}]}>
                                           <Image style={cs.boxPairImageStyle} source={this.props.navigation.state.params.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.props.navigation.state.params.selectedItems[1].ImageText}</Text>
                                         </View>
-                                    </View> 
+                                 </View> 
                             </View> }
                       {this.props.navigation.state.params.typeTemplate==="ThreeRow" &&  <View  style={{marginBottom:width*0.15}}>
                            

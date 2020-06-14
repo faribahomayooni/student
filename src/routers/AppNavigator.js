@@ -34,6 +34,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import IconBadge from 'react-native-icon-badge';
 import {connect} from 'react-redux';
 import MyTabBar from '../../src/components/MyTabBar'
+import DashboardTeacherBox from '../components/DashboardTeacherBox'
 import ChoosedDashboard from '../../src/components/ChoosedDashboard'
 
 
@@ -57,6 +58,14 @@ const RootStack = createStackNavigator(
         headerStyle: {
           display: 'none',
         },
+      }),
+    },
+    DashboardTeacherBox:{
+      screen: DashboardTeacherBox,
+      navigationOptions: ({navigation}) => ({
+        title: 'Home',
+        headerRight: () => <View style={{alignSelf: 'flex-end'}} />,
+        tabBarVisible: false,   
       }),
     },
     DashboardTeacher: {

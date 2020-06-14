@@ -34,7 +34,7 @@ class DashboardBox extends Component {
       DynamicItemDIS:width*0.65,
       blueBoxHeight:width,
       dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
-      {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:3,imageName:anything_Img,ImageText:"Nog iets?"},  
+      {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:4,imageName:anything_Img,ImageText:"Nog iets?"},  
     ]
     }
   }
@@ -61,11 +61,9 @@ async componentDidMount() {
   }
 
 
-
-
-
-
-
+  componentWillReceiveProps(){
+    console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@******************")
+  }
    registerAppWithFCM=async ()=> {
     await messaging().registerDeviceForRemoteMessages();
   }
@@ -237,7 +235,7 @@ setDropZoneValues(event){
              </View>    
            
       </View>
-      </ScrollView>
+      
       {this.state.showitems===false &&
            <View style={cs.pairBox}>
               <TouchableOpacity
@@ -255,12 +253,12 @@ setDropZoneValues(event){
          </View>
 
               }
-               
-  
-          {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{position:"absolute",bottom:0,top:width,padding:20,marginTop:width*0.15,height:"10%"}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
-               <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
-           </TouchableOpacity>}
-      </View>
+    {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{marginBottom:width*0.05,alignSelf:"center",width:width*0.95,borderRadius:5,padding:10}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
+                               <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
+                            </TouchableOpacity>}
+                            </ScrollView>
+        </View>
+    
     );
   }
 }
