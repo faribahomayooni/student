@@ -25,7 +25,7 @@ class TeacherSignIn extends Component {
     super(props);
     this.state = {
       username:"",
-      password:""
+      password:"",
     };
     this.actionSheet = null;
     this.signIn = this.signIn.bind(this);
@@ -55,14 +55,17 @@ class TeacherSignIn extends Component {
         )
         .then(async(user) => {
           if (user.data.msg === 'success') {
-            var typeSignIn="teacher"
             AsyncStorage.setItem('@typeofsignin',"teacher");
+              this.props.TypeSignIn("teacher")
+            var typeSignIn="teacher"
+          
             AsyncStorage.setItem('@token', user.data.data.token);
            console.warn("========================> teacher signin",user.data);
            this.loadStudentInfo()
             try {
               var typeSignIn="teacher"
-              AsyncStorage.setItem('@typeofsignin',typeSignIn);
+              AsyncStorage.setItem('@typeofsignin',"teacher");
+              console.warn("**********************type sign",await AsyncStorage.getItem('@typeofsignin'))
               AsyncStorage.setItem('@token', user.data.data.token);
             
               AsyncStorage.setItem('@type', user.data.data.type);
@@ -70,7 +73,7 @@ class TeacherSignIn extends Component {
                 '@userId',
                 JSON.stringify(user.data.data.userId),
               );
-             
+          
               AsyncStorage.setItem('@username', user.data.data.username);
               AsyncStorage.setItem('@name', user.data.data.name);
               // showToast('Login success.');
@@ -154,7 +157,8 @@ class TeacherSignIn extends Component {
     this.setState({user: user});
   };
   render() {
-    // console.warn("@@@@@@@@@@@@@@username and password",this.state.username, sha256(this.state.password))
+    var type = AsyncStorage.getItem('@typeofsignin')
+     console.warn("@@@@@@@@@@@@@@ type of signin",type)
     let {
       username,
       password,

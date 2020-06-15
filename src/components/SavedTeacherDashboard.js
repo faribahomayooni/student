@@ -1,12 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,Image,AsyncStorage,ToastAndroid} from 'react-native';
+import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,Image,AsyncStorage,ToastAndroid, ActivityIndicator} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
 import {connect} from 'react-redux';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/FontAwesome';;
+import Icon from 'react-native-vector-icons/FontAwesome';import { floor } from 'react-native-reanimated';
+;
 
 const {width,height}=Dimensions.get("window")
 let attendance_Img = require('../assets/images/student/dashboard/Image217.png');
@@ -20,6 +21,7 @@ class DashboardBox extends Component {
     this.state={
         typeTemplate:"Transfrom",
         dashboardStatus:[],
+        showHome:true,
         Items:[],
         selectedItems:[],
         dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
@@ -45,6 +47,7 @@ class DashboardBox extends Component {
           var data =  res.data.data[0].FldDashbord
          var items = JSON.parse(data)
          items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))
+         this.setState({showHome:false})
        }
         if (res.data.msg === 'fail') {
           
@@ -58,7 +61,7 @@ class DashboardBox extends Component {
 
 async componentDidMount() {
   this.setState({selectedItems:[]})
-    //  this.loadDashboard()
+      this.loadDashboard()
     //  if( this.state.dashboardStatus.length!==0){
     //  var data =  this.state.dashboardStatus[0].FldDashbord
     //  var items = JSON.parse(data)
@@ -84,7 +87,13 @@ async componentDidMount() {
     return (
       <View style={{alignItems:"center",padding:10}}>  
         <ScrollView>
-        
+         {this.state.showHome === true? 
+          <View style={{alignItems:"center",justifyContent:"center",marginTop:width/2}}>
+             <ActivityIndicator/>
+             <Text>wacht alsjeblieft</Text>
+          </View>
+         :
+          
               <View style={{justifyContent:"space-around",marginTop:10,}}>
                   <TouchableOpacity onPress={()=>this.props.navigation.navigate('DashboardTeacherBox')}>
                       <Icon name="edit" size={25} color={"blue"}/>
@@ -214,13 +223,13 @@ async componentDidMount() {
                      
                     
                   </View>
-              </View>
+              </View>}
               </ScrollView> 
             
              
             {/* </View> */}
       </View>
-      
+   
     );
   }
 }

@@ -6,6 +6,7 @@ import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {TypeSignIn} from '../actions/ProfileAction'
 import {connect, connectAdvanced} from 'react-redux';
 import COLORS from '../styles/variables';
 import { bindActionCreators } from 'redux';
@@ -40,6 +41,7 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
+  this.props.TypeSignIn(await AsyncStorage.getItem('@typeofsignin'))
   this.setState({conut:this.state.dashboardItems})
   var data= await AsyncStorage.getItem('@notification')
     // console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
@@ -275,7 +277,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps= {
  getnotification,
- getGroupStudent
+ getGroupStudent,
+ TypeSignIn
 }
 
 const styles = StyleSheet.create({

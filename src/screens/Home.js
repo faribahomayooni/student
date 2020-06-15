@@ -1,23 +1,24 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View,AsyncStorage,BackHandler,Alert} from 'react-native';
+import {View,AsyncStorage,BackHandler,Alert,ActivityIndicator, Dimensions,Text} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import DashboardBox from '../components/DashboardBox';
 import axios from 'axios';
 import {withNavigationFocus} from 'react-navigation'
 import SavedTeacherDashboard from '../components/SavedTeacherDashboard'
 import DashboardTeacherBox  from '../components/DashboardTeacherBox'
+
+
+const {width,height}=Dimensions.get("window")
 class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       type:"",
-      dashboardStatus:[]
+      dashboardStatus:[],
+      showHome:true
     };
   }
-
-
-  
 
   componentWillMount() {
     BackHandler.addEventListener('hardwareBackPress', this.onBackPress);
@@ -63,6 +64,7 @@ class Home extends Component {
       })
       .then(res => {
         console.warn("=====>res in load Dashboard",res.data)
+        this.setState({showHome:false})
       
         if (res.data.msg === 'success') {
           this.setState({dashboardStatus:res.data.data})
@@ -98,7 +100,11 @@ class Home extends Component {
     console.warn("state of dashboardstatus",this.state.dashboardStatus)
     return (
       <View style={cs.mainContainer}>
-       {
+       {this.state.showHome ?
+       <View style={{alignItems:"center",justifyContent:"center",marginTop:width/2}}>
+       <ActivityIndicator/>
+         <Text>wacht alsjeblieft</Text>
+      </View>:
         this.state.type==="teacher"? 
           (this.state.dashboardStatus.length!==0 ?
           (<SavedTeacherDashboard  status={this.state.dashboardStatus} navigation={this.props.navigation}/>):

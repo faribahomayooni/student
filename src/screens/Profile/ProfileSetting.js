@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {commonStyle as cs} from '../../styles/common/styles';
 import SettingItem from '../../components/SettingItem';
@@ -23,6 +24,8 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
 import {getprofileInfo,TypeSignIn} from '../../actions/ProfileAction'
 
+
+const {width,height}=Dimensions.get("window")
 class ProfileSetting extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +40,9 @@ class ProfileSetting extends Component {
       setting:[],
       basicList:[],
       type:"",
-      studentInfo:""
+      studentInfo:"",
+      count:0,
+      showProfile:true
       
     };
     // const {dispatch} = this.props;
@@ -45,6 +50,7 @@ class ProfileSetting extends Component {
   }
 
   componentDidMount() {
+    this.setState({count:this.state.count+1})
     this.setState({type:''})
   //  this.props.getprofileInfo(this.props.navigation.getParam('studentInfo'))
      this.props.removeNotification()
@@ -155,7 +161,7 @@ async componentWillReceiveProps(){
           console.warn("++++++++++++++++++++++",res.data.data);
           if (res.data.msg === 'success') {
             this.setState({address:res.data.data})
-            
+            // this.setState({showProfile:false})
           }
           if (res.data.msg === 'fail') {
             console.log(res.data);
@@ -211,6 +217,7 @@ async componentWillReceiveProps(){
        this.setState({studentInfo: res.data.data[0]});
         // this.props.getprofileInfo(res.data)
        console.warn('===>res when call twice for component', res.data.data[0]);
+       this.setState({showProfile:false})
       //  this.props.getprofileInfo(res.data.data[0])
         if (res.data.msg === 'success') {
         }
@@ -259,6 +266,12 @@ async componentWillReceiveProps(){
     // console.warn('studentInfo', studentInfo);
     return (
       <ScrollView>
+        {this.state.showProfile===true ?
+        <View style={{alignItems:"center",justifyContent:"center",marginTop:width/2}}>
+            <ActivityIndicator/>
+              <Text>wacht alsjeblieft</Text>
+           </View>:
+        
         <View
           style={
             this.props.darkMode ? {backgroundColor: 'red'} : cs.mainContainer
@@ -313,7 +326,7 @@ async componentWillReceiveProps(){
               </View>
             </View>
             <View style={[cs.settingContainer,{flexDirection:"column",paddingRight:30,paddingLeft:30}]}>
-            {type==="teacher" &&
+            {this.props.TypeSign==="teacher" &&
               <View style={cs.settingWrapper}>
                 <SettingItem
                   basicListData={this.state.basicList}
@@ -349,17 +362,17 @@ async componentWillReceiveProps(){
                   nameIcon="angle-right"
                   desc="Heb je hulp nodig?"
                   settingImg={require('./../../assets/images/student/setting/light-bulb.png')}
-                  type={type}
+                  type={this.props.TypeSign}
                 />
                 <SettingItem
                   appSettingData={this.state.setting}
                   routeNavigationName="Privacy"
                   navigation={this.props.navigation}
-                  title={type==="teacher"?"Contracten ":"Privacy & Klachten"}
-                  desc={type==="teacher"?"Contracten ":"De reglementen"}
+                  title={this.props.TypeSign==="teacher"?"Contracten ":"Privacy & Klachten"}
+                  desc={this.props.TypeSign==="teacher"?"Contracten ":"De reglementen"}
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/document.png')}
-                  type={type}
+                  type={this.props.TypeSign}
                 />
                 <SettingItem
                   personData={this.state.mobilePerson}
@@ -367,11 +380,11 @@ async componentWillReceiveProps(){
                   addressData={this.state.address}
                   routeNavigationName="MySchool"
                   navigation={this.props.navigation}
-                  title={type==="teacher"?"Over uw school":"Over jouw school"}
+                  title={this.props.TypeSign==="teacher"?"Over uw school":"Over jouw school"}
                   desc="Alle contact informatie"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/notification.png')}
-                  type={type}
+                  type={this.props.TypeSign}
                 />
                 <SettingItem
                   routeNavigationName="AboutApp"
@@ -380,7 +393,7 @@ async componentWillReceiveProps(){
                   desc="Contract informatie"
                   nameIcon="angle-right"
                   settingImg={require('./../../assets/images/student/setting/smartphone-1.png')}
-                  type={type}
+                  type={this.props.TypeSign}
                 />
               </View>
             </View>
@@ -402,7 +415,7 @@ async componentWillReceiveProps(){
               />
             </TouchableOpacity>
           </View>
-        </View>
+        </View>}
       </ScrollView>
     );
     // : (

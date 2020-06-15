@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {View, Text, AsyncStorage, ScrollView,Dimensions} from 'react-native';
+import {View, Text, AsyncStorage, ScrollView,Dimensions,ActivityIndicator} from 'react-native';
 import {commonStyle as cs} from '../../styles/common/styles';
 import {Button} from '../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -24,7 +24,8 @@ class Profile extends Component {
       TeacherLastName:'',
       TeacherLastName:"",
       targetName:"",
-      type:""
+      type:"",
+      showProfile:true
     }
   
   componentDidMount(){
@@ -63,6 +64,7 @@ class Profile extends Component {
           if (res.data.msg === 'success') {
             this.setState({groupname:res.data.data[0].FLD_GROUP_NAME,groupid:await res.data.data[0].FLD_FK_GROUP})   
            this. getTeacherName(res.data.data[0].FLD_FK_GROUP)
+           this.setState({showProfile:false})
           }
         })
         .catch(error => {
@@ -86,6 +88,7 @@ class Profile extends Component {
         // this.props.getprofileInfo(res.data)
        console.warn('===>res when call twice for component', res.data.data[0]);
         if (res.data.msg === 'success') {
+          this.setState({showProfile:false})
         }
         if (res.data.msg === 'fail') {
           // console.warn('fail', res.data);
@@ -104,6 +107,12 @@ class Profile extends Component {
     const {studentInfo} = this.props;
     return (
       <ScrollView>
+        {this.state.showProfile===true ?
+        <View style={{alignItems:"center",justifyContent:"center",marginTop:width/2}}>
+        <ActivityIndicator/>
+          <Text>wacht alsjeblieft</Text>
+       </View>:
+        
         <View style={cs.mainContainer}>
           <View style={[cs.profileInfo]}>
             <Text>
@@ -174,7 +183,7 @@ class Profile extends Component {
             </View>
           </View>
           {/* <Footer navigation={this.props.navigation} activeTab={'Profile'} /> */}
-        </View>
+        </View>}
       </ScrollView>
     );
   }

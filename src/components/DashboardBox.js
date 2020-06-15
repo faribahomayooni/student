@@ -4,6 +4,7 @@ import {Text, View, TouchableOpacity, Image,AsyncStorage,Alert,TouchableHighligh
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
+import {TypeSignIn,getprofileInfo} from '../actions/ProfileAction'
 import { StackActions, NavigationActions } from 'react-navigation';
 import {connect} from 'react-redux';
 import COLORS from '../styles/variables';
@@ -23,6 +24,7 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
+  this.props.TypeSignIn( await AsyncStorage.getItem('@typeofsignin'))
   var data= await AsyncStorage.getItem('@notification')
     console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
     //  console.warn("test navigation action",NavigationActions)
@@ -245,7 +247,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps= {
  getnotification,
- getGroupStudent
+ getGroupStudent,
+ TypeSignIn
 }
 
 const styles = StyleSheet.create({
