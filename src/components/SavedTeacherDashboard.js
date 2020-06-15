@@ -23,6 +23,7 @@ class DashboardBox extends Component {
         dashboardStatus:[],
         showHome:true,
         Items:[],
+        edit:false,
         selectedItems:[],
         dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
       {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:4,imageName:anything_Img,ImageText:"Nog iets?"},  
@@ -31,6 +32,7 @@ class DashboardBox extends Component {
   }
 
   loadDashboard = async () => {
+    // this.setState({selectedItems:[]})
     axios
       .get(global.url + 'api/teacher/loadDashboard', {
         headers: {
@@ -59,25 +61,35 @@ class DashboardBox extends Component {
       });
   };
 
-async componentDidMount() {
+ componentDidMount() {
+  console.warn("sadasdgashd")
   this.setState({selectedItems:[]})
-      this.loadDashboard()
+  if(this.state.edit===false){
+       this.loadDashboard()}
     //  if( this.state.dashboardStatus.length!==0){
     //  var data =  this.state.dashboardStatus[0].FldDashbord
     //  var items = JSON.parse(data)
     //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))} 
     }
   
- async componentWillReceiveProps(){
-  this.setState({selectedItems:[]})
-    this.loadDashboard()
+  async componentWillReceiveProps(next){
+  // this.setState({selectedItems:[]})
+   console.warn("loadingdata",next.navigation.state.routeName==="Home")
+  if (this.state.edit===true){
+    // this.setState({selectedItems:[]})
+    // console.warn("qqqqqqqqqqqq",next.navigation.state.params.resetSelected)
+   this.setState({selectedItems:[]})
+  this.loadDashboard()
+  }
     //  if( this.state.dashboardStatus.length!==0){
     //  var data =  this.state.dashboardStatus[0].FldDashbord
-    //  var items = JSON.parse(data)
-    //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))}
+    //  var items = JSON.parse(data)fg   //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))}
 
   }
-
+editPress=()=>{
+  this.setState({edit:true})
+  this.props.navigation.navigate('DashboardTeacherBox');
+}
 
 
   render() {
@@ -95,7 +107,7 @@ async componentDidMount() {
          :
           
               <View style={{justifyContent:"space-around",marginTop:10,}}>
-                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('DashboardTeacherBox')}>
+                  <TouchableOpacity onPress={()=>this.editPress()}>
                       <Icon name="edit" size={25} color={"blue"}/>
                   </TouchableOpacity>
                           {dashboardStatus.length!==0 && dashboardStatus[0].FldLayout===1 && <View style={{marginTop:width/5}} >

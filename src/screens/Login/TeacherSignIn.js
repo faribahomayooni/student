@@ -26,6 +26,7 @@ class TeacherSignIn extends Component {
     this.state = {
       username:"",
       password:"",
+      icon: 'eye-slash',
     };
     this.actionSheet = null;
     this.signIn = this.signIn.bind(this);
@@ -106,7 +107,12 @@ class TeacherSignIn extends Component {
   
   }
 
-  
+  _changeIcon() {
+    this.setState(prevState => ({
+      icon: prevState.icon === 'eye' ? 'eye-slash' : 'eye',
+      passwordShow: !prevState.passwordShow,
+    }));
+  }
   loadStudentInfo = async () => {
     axios
       .get(global.url + 'api/teacher/loadInfo', {
@@ -191,7 +197,7 @@ class TeacherSignIn extends Component {
             onSubmit={() => this.password.focus()}
             onChange={username => this.setState({username})}
           />
-          <View style={cs.borderBottom} />
+          {/* <View style={cs.borderBottom} />
           <InputField
           
             onfocus={() => {
@@ -210,7 +216,40 @@ class TeacherSignIn extends Component {
           <Image
             style={cs.passEye}
             source={require('./../../assets/images/common/eye.png')}
+            
+          /> */}
+          <View style={cs.borderBottom} />
+          {/* <Icon active name={this.state.icon} /> */}
+          <InputField
+            // heading="Password"
+            onfocus={() => {
+              this.setState({passwordActive: true, emailActive: false});
+            }}
+            value={password}
+            active={passwordActive}
+            secure={this.state.passwordShow}
+            placeholder="Uw wachtwoord"
+            reference={component => (this.password = component)}
+            onSubmit={() => {
+              this.setState({passwordActive: false});
+            }}
+            onChange={password => this.setState({password})}
           />
+          <Icon
+            color="#aaa"
+            size={28}
+            style={cs.passEye}
+            name={this.state.icon}
+            onPress={() => this._changeIcon()}
+          />
+          {/* <TouchableOpacity>
+            <Image
+              // onPress={this.toggleSwitch}
+              style={cs.passEye}
+              source={require('./../../assets/images/common/eye.png')}
+            />
+          </TouchableOpacity> */}
+        
         </View>
 
         <View style={cs.columnContainer}>

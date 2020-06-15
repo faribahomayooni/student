@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Sun Jun 14 16:25:40 IRDT 2020
+#Mon Jun 15 15:26:28 IRDT 2020
 60.set=ASSET
 52.set=NATIVE_RESOURCE
 53.base=D\:\\last version nt2\\android\\app\\build\\intermediates\\merged_assets\\release\\out
