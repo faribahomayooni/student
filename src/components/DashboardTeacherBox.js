@@ -64,7 +64,7 @@ async componentDidMount() {
 
 
   componentWillReceiveProps(){
-    console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@******************")
+ 
   }
    registerAppWithFCM=async ()=> {
     await messaging().registerDeviceForRemoteMessages();
@@ -239,19 +239,13 @@ setDropZoneValues(event){
       </View>
       
       {this.state.showitems===false &&
-           <View style={cs.pairBox}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('Messages');
-                }}
+           <View style={[cs.pairBox],{marginBottom:width/10,flexDirection:"row"}}>
+              <View
                 style={[cs.borderTeacher,{width:width*0.40}]}>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('HelpCentre');
-                }}
+              </View>
+              <View
                 style={[cs.borderTeacher,{width:width*0.40}]}>
-              </TouchableOpacity>
+              </View>
          </View>
 
               }

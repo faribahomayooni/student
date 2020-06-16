@@ -23,7 +23,9 @@ class DashboardBox extends Component {
         dashboardStatus:[],
         showHome:true,
         Items:[],
+        count:0,
         edit:false,
+        data:[],
         selectedItems:[],
         dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
       {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:4,imageName:anything_Img,ImageText:"Nog iets?"},  
@@ -48,7 +50,13 @@ class DashboardBox extends Component {
         
           var data =  res.data.data[0].FldDashbord
          var items = JSON.parse(data)
-         items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))
+         items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.data.push(i)}))
+         this.state.data.filter(obj=>{
+          if (!this.state.selectedItems.some(o => o.index === obj.index)) {
+            this.state.selectedItems.push({ ...obj })
+          }
+         })
+       
          this.setState({showHome:false})
        }
         if (res.data.msg === 'fail') {
@@ -72,19 +80,18 @@ class DashboardBox extends Component {
     //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))} 
     }
   
-  async componentWillReceiveProps(next){
-  // this.setState({selectedItems:[]})
-   console.warn("loadingdata",next.navigation.state.routeName==="Home")
-  if (this.state.edit===true){
+   componentWillReceiveProps(next){
     // this.setState({selectedItems:[]})
-    // console.warn("qqqqqqqqqqqq",next.navigation.state.params.resetSelected)
+    this.setState({data:this.state.selectedItems})
+  if (this.state.edit===true && next.navigation.state.params!==undefined  && next.navigation.state.params.resetSelected==='choosedDashboard'){
    this.setState({selectedItems:[]})
-  this.loadDashboard()
+   this.loadDashboard()
+   this.setState({count:this.state.count+1}) 
   }
-    //  if( this.state.dashboardStatus.length!==0){
-    //  var data =  this.state.dashboardStatus[0].FldDashbord
-    //  var items = JSON.parse(data)fg   //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))}
-
+  }
+  componentWillUnmount(){
+    this.setState({count:0})
+    this.setState({selectedItems:[]})
   }
 editPress=()=>{
   this.setState({edit:true})

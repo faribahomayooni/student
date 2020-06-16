@@ -49,7 +49,7 @@ async componentDidMount() {
             'youre dashboard saved sucessfully',
             ToastAndroid.SHORT,
           );
-        this.props.navigation.navigate("Home",{resetSelected:true})
+        this.props.navigation.navigate("Home",{resetSelected:'choosedDashboard'})
 
         }
         if (res.data.msg === 'fail') {
