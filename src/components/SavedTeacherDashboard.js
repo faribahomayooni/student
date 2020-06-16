@@ -26,6 +26,8 @@ class DashboardBox extends Component {
         count:0,
         edit:false,
         data:[],
+        item:"",
+        arr:[{PageName:"Presence",Text:"Taking Attendance"},{PageName:"Messages",Text:"Lees berichten"},{PageName:"HelpCentre",Text:"Help"},{PageName:"TravelsCostSetting",Text:"Reiskosten"}],
         selectedItems:[],
         dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
       {index:2,imageName:setting_Img,ImageText:"Settings?"},{index:3,imageName:help_Img,ImageText:"Help"},{index:4,imageName:anything_Img,ImageText:"Nog iets?"},  
@@ -95,7 +97,15 @@ class DashboardBox extends Component {
   }
 editPress=()=>{
   this.setState({edit:true})
-  this.props.navigation.navigate('DashboardTeacherBox');
+  this.props.navigation.navigate('DashboardTeacherBox',{select:this.state.selectedItems,staus:this.state.dashboardStatus[0].FldLayout});
+}
+
+onpressItems=async(select)=>{
+ await this.setState({item:""})
+  this.state.arr.filter(obj=>{(obj.Text===select.ImageText) && this.setState({item:obj.PageName})}),
+  console.warn("=====>this is item for navigate",this.state.item)
+  this.props.navigation.navigate(this.state.item)
+
 }
 
 
@@ -120,45 +130,47 @@ editPress=()=>{
                           {dashboardStatus.length!==0 && dashboardStatus[0].FldLayout===1 && <View style={{marginTop:width/5}} >
                               
                                 <View style={[cs.pairBox]}>
-                                        <View
-                                    
+                                        <TouchableOpacity
+                                         onPress={()=>this.onpressItems(this.state.selectedItems[0])}
                                           style={[cs.boxesWrapper,{width:width*0.70}]}>
                                             <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].ImageText}</Text>
-                                        </View>
+                                         </TouchableOpacity>
                                 </View>
                                     <View  style={[cs.pairBox,{marginTop:10}]}>
-                                        <View
-                                    
+                                    <TouchableOpacity
+                                     onPress={()=>this.onpressItems(this.state.selectedItems[1])}
                                         style={[cs.boxesWrapper,{width:width*0.70}]}>
                                           <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].ImageText}</Text>
-                                        </View>
+                                      </TouchableOpacity>
                                     </View> 
                             </View> }
                      {dashboardStatus.length!==0 && dashboardStatus[0].FldLayout===2 &&  <View  style={{marginBottom:width*0.15}}>          
                            <View style={[cs.pairBox]}>
                                {console.warn(this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName)}
-                                   <View
+                                  <TouchableOpacity
+                                   onPress={()=>this.onpressItems(this.state.selectedItems[0])}
                                    style={[cs.boxesWrapperthree]}>
                                           <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName} />
                                            <Text style={cs.pairBoxFont}>{this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].ImageText}</Text>
-                                   </View>
+                                  </TouchableOpacity>
                            </View>
                                <View style={[cs.pairBox]}>
-                                   <View
-                               
-                               style={[cs.boxesWrapperthree]}>
+                               <TouchableOpacity
+                                onPress={()=>this.onpressItems(this.state.selectedItems[1])}  
+                                style={[cs.boxesWrapperthree]}>
                                      <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].imageName} />
                                            <Text style={cs.pairBoxFont}>{this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].ImageText}</Text>
-                                   </View>
+                                 </TouchableOpacity>
                                </View> 
                                <View style={[cs.pairBox]}>
-                                   <View
+                                  <TouchableOpacity
+                                   onPress={()=>this.onpressItems(this.state.selectedItems[2])}
                                    style={[cs.boxesWrapperthree]}>
                                      <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].imageName}/>
                                            <Text style={cs.pairBoxFont}>{this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].ImageText}</Text>
-                                   </View>
+                                    </TouchableOpacity>
                                </View> 
                        </View> }
                     
@@ -167,35 +179,35 @@ editPress=()=>{
                    {dashboardStatus.length!==0 && dashboardStatus[0].FldLayout===3 &&
                    <View >
                    
-                         <View style={cs.boxesWrapper}>
+                       <TouchableOpacity style={cs.boxesWrapper} onPress={()=>this.onpressItems(this.state.selectedItems[0])}>
                                   <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName} />
                                    <Text style={cs.pairBoxFont}>{this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].ImageText}</Text>
-                         </View>
+                       </TouchableOpacity>
                          <View style={[cs.pairBox,{width:width*0.80}]}>
-                                <View
-                               
+                               <TouchableOpacity
+                                onPress={()=>this.onpressItems(this.state.selectedItems[1])}
                                 style={[cs.boxesPairWrapper,{width:width*0.20}]}>
                                   <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].ImageText}</Text>
-                                </View>
-                                <View
-                               
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                onPress={()=>this.onpressItems(this.state.selectedItems[2])}
                                 style={cs.boxesPairWrapper}>
                                       <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].imageName} />
                                       <Text style={cs.pairBoxFont}>{this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].ImageText}</Text>
-                                </View>
+                               </TouchableOpacity>
                           </View>
                             <View style={cs.pairBox}>
-                                <View style={cs.boxesPairWrapper}>
+                              <TouchableOpacity style={cs.boxesPairWrapper}  onPress={()=>this.onpressItems(this.state.selectedItems[3])}>
                                         <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[3]!==undefined && this.state.selectedItems[3].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[3]!==undefined && this.state.selectedItems[3].ImageText}</Text>
-                                </View>
-                              {this.state.selectedItems.length>4 &&  <View
-                               
+                              </TouchableOpacity>
+                              {this.state.selectedItems.length>4 && <TouchableOpacity
+                                onPress={()=>this.onpressItems(this.state.selectedItems[4])}
                                 style={cs.boxesPairWrapper}>
                                   <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[4]!==undefined && this.state.selectedItems[4].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[4]!==undefined && this.state.selectedItems[4].ImageText}</Text>
-                                </View>}
+                                </TouchableOpacity>}
                             </View> 
                       </View> }
                 
@@ -203,40 +215,42 @@ editPress=()=>{
                      <View >
                       
                          <View style={[cs.pairBox,{width:width*0.80}]}>
-                                <View 
+                               <TouchableOpacity
+                                onPress={()=>this.onpressItems(this.state.selectedItems[0])}
                                 style={[cs.boxesPairWrapper,{  transform: [
                                
                                    { rotateZ: "-20deg" }
                                   ]}]}>
                                             <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].ImageText}</Text>
-                                </View>
-                                <View
+                                 </TouchableOpacity>
+                             <TouchableOpacity
+                              onPress={()=>this.onpressItems(this.state.selectedItems[1])}
                                style={[cs.boxesPairWrapper,{  transform: [
                              
                                { rotateZ: "15deg" }
                               ],marginTop:20,marginLeft:15}]}>
                                           <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[1]!==undefined && this.state.selectedItems[1].ImageText}</Text>
-                                </View>
+                              </TouchableOpacity>
                           </View>
-                          <View style={cs.boxesWrapper}>
+                          <TouchableOpacity style={cs.boxesWrapper}  onPress={()=>this.onpressItems(this.state.selectedItems[2])}>
                                    <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].imageName} />
                                    <Text style={cs.pairBoxFont}>{this.state.selectedItems[2]!==undefined && this.state.selectedItems[2].ImageText}</Text>
-                         </View>
-                            <View style={cs.pairBox}>
-                                <View style={cs.boxesPairWrapper}>
+                           </TouchableOpacity>
+                             <View style={cs.pairBox}>
+                              <TouchableOpacity style={cs.boxesPairWrapper}  onPress={()=>this.onpressItems(this.state.selectedItems[3])}>
                                            <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[3]!==undefined && this.state.selectedItems[3].imageName} />
                                             <Text style={cs.pairBoxFont}>{this.state.selectedItems[3]!==undefined && this.state.selectedItems[3].ImageText}</Text>
-                                </View>
+                              </TouchableOpacity>
                                {dashboardStatus.length!==0 && this.state.selectedItems.length>4 && 
-                               <View style={[cs.boxesPairWrapper,{  transform: [
+                              <TouchableOpacity  onPress={()=>this.onpressItems(this.state.selectedItems[4])} style={[cs.boxesPairWrapper,{  transform: [
                                
                                { rotateZ: "-20deg" }
                               ]}]}>
                                        <Image style={cs.boxPairImageStyle} source={this.state.selectedItems[4]!==undefined && this.state.selectedItems[4].imageName} />
                                         <Text style={cs.pairBoxFont}>{this.state.selectedItems[4]!==undefined && this.state.selectedItems[4].ImageText}</Text>
-                                </View>}
+                               </TouchableOpacity>}
                             </View> 
                       </View> }
                      

@@ -21,7 +21,11 @@ class DashboardBox extends Component {
     }
   }
 
-async componentDidMount() {
+ componentDidMount() {
+  if(this.props.navigation.state.params!==undefined){
+    this.props.navigation.state.params.layout===1 && this.setState({typeTemplate:"TwoRow"}) || this.props.navigation.state.params.layout===2 && this.setState({typeTemplate:"ThreeRow"}) || 
+    this.props.navigation.state.params.layout===3 && this.setState({typeTemplate:"default"}) ||  this.props.navigation.state.params.layout===4 && this.setState({typeTemplate:"Transfrom"})
+  }
   
   }
 

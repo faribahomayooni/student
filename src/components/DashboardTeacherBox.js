@@ -32,6 +32,7 @@ class DashboardBox extends Component {
       counter:[1],
       conut:5,
       selected:[],
+      popItems:[],
       DynamicItemDIS:width*0.65,
       blueBoxHeight:width,
       dashboardItems:[{index:0,imageName:attendance_Img,ImageText:"Taking Attendance"},{index:1,imageName:messages_Img,ImageText:"Lees berichten"},
@@ -41,11 +42,17 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
+  this.setState({popItems:[]})
+  this.setState({selectedItems:this.props.navigation.state.params.select})
+  this.state.dashboardItems.filter(obj=>{
+    if (!this.props.navigation.state.params.select.some(o => o.index === obj.index)) {
+      this.state.popItems.push({ ...obj })
+    }
+   })
+   this.setState({dashboardItems:this.state.popItems})
   this.props.TypeSignIn(await AsyncStorage.getItem('@typeofsignin'))
   this.setState({conut:this.state.dashboardItems})
   var data= await AsyncStorage.getItem('@notification')
-    // console.warn("NOTIFICATION in local storage!!!!!!!!!!!!!",data)
-    //  await  this.getGroupList() 
      this.props.notification.length!==0 && this.setState({modalVisible:true})  
       this.checkPermission();
       const {dispatch} = this.props;
@@ -64,6 +71,8 @@ async componentDidMount() {
 
 
   componentWillReceiveProps(){
+
+    // this.state.dashboardItems.filter(obj=>this.props.navigation.state.param.select.filter(item=>{(item.index==obj.index)&& this.state.selectedItems.push(item)}))
  
   }
    registerAppWithFCM=async ()=> {
@@ -131,7 +140,7 @@ SaveTokenwithapi= async()=>{
 }
 
 addItems=(items)=>{
-  console.warn("indexxxxxxxxxxxxxxxxx",items)
+ 
 var selected= this.state.dashboardItems.filter(obj=>obj!==items)
 
 this.setState({dashboardItems:selected})
@@ -141,7 +150,7 @@ this.setState({dashboardItems:selected})
 }
 
 minusItems=(items)=>{
-  console.warn("indexxxxxxxxxxxxxxxxx",items)
+
   var selected= this.state.selectedItems.filter(obj=>obj!==items)
    this.setState({selectedItems:selected})
    this.setState({dashboardItems:[items,...this.state.dashboardItems]})
@@ -156,7 +165,7 @@ setDropZoneValues(event){
 }
 
   render() {
-     console.warn("selected items in dashboard#############",this.state.selectedItems)
+  
     let data= this.props.notification.length!==0 && this.props.notification[0].notification.body.toString()
    
     return (
@@ -169,8 +178,8 @@ setDropZoneValues(event){
                   <Text style={{marginTop:30,marginBottom:50}}>Voeg hieronder maximaal tot 5  snelkoppelingen toe</Text>
               </View>}
             {this.state.showitems===true &&
-           <View  style={{backgroundColor:"#5467fd",borderRadius:10,padding:5,flexDirection:"row",flexWrap:"wrap",alignItems:"center"}}>
-             {this.state.dashboardItems.map((items,index)=>{
+           <View  style={{backgroundColor:"#5467fd",borderRadius:10,padding:5,flexDirection:"row",flexWrap:"wrap",alignItems:"center",justifyContent:"center"}}>
+             {this.state.dashboardItems.length!==undefined  && this.state.dashboardItems.map((items,index)=>{
              
                return(
                 <View style={cs.pairBoxarray}  key={index} > 
@@ -210,7 +219,7 @@ setDropZoneValues(event){
            </View>
        </TouchableOpacity>}
        
-            <View style={{flexDirection:"row",flexWrap:"wrap",marginBottom:width*0.15}}>
+        {this.state.showitems &&   <View style={{flexDirection:"row",flexWrap:"wrap",marginBottom:width*0.15,justifyContent:"center"}}>
               
                     {this.state.selectedItems.map(items=> {
                       return (
@@ -234,7 +243,7 @@ setDropZoneValues(event){
                         </View>
                         )
                   })} 
-             </View>    
+             </View>    }
            
       </View>
       
@@ -249,7 +258,7 @@ setDropZoneValues(event){
          </View>
 
               }
-    {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{marginBottom:width*0.05,alignSelf:"center",width:width*0.95,borderRadius:5,padding:10}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems})}>
+    {this.state.showitems && <TouchableOpacity style={[cs.buttondashbordStyle,{marginBottom:width*0.05,alignSelf:"center",width:width*0.95,borderRadius:5,padding:10}]} onPress={()=> this.props.navigation.navigate('DashboardTeacher',{selected:this.state.selectedItems,layout:this.props.navigation.state.params.status})}>
                                <Text style={{color:"white"}}>Select Youre Dashboard Type</Text>
                             </TouchableOpacity>}
                             </ScrollView>
