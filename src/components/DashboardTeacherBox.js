@@ -27,6 +27,7 @@ class DashboardBox extends Component {
     this.state={
       selectedItems:[],
       addItem:0,
+      layout:"",
       modalVisible:false,
       showitems:false,
       counter:[1],
@@ -42,6 +43,8 @@ class DashboardBox extends Component {
   }
 
 async componentDidMount() {
+  console.warn("*************************** edit teacher dashboard",this.props.navigation.state.params.status)
+  this.setState({layout:this.props.navigation.state.params!==undefined &&  this.props.navigation.state.params.status})
   this.setState({popItems:[]})
   this.setState({selectedItems:this.props.navigation.state.params.select})
   this.state.dashboardItems.filter(obj=>{
@@ -71,6 +74,7 @@ async componentDidMount() {
 
 
   componentWillReceiveProps(){
+    console.warn("*************************** edit teacher dashboard")
 
     // this.state.dashboardItems.filter(obj=>this.props.navigation.state.param.select.filter(item=>{(item.index==obj.index)&& this.state.selectedItems.push(item)}))
  

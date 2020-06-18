@@ -19,7 +19,7 @@ function navigate(routeName, params) {
 
 
 function navigateReset(routeName, params) {
-  console.warn("######################navigation reset")
+  // console.warn("######################navigation reset")
   _navigator.dispatch(
     StackActions.reset({
       index: 0,

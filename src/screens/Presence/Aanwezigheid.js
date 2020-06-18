@@ -12,6 +12,7 @@ import axios from 'axios';
 import { withNavigationFocus } from 'react-navigation';
 import Presence from './Presence';
 import AanwezigheidTeacher from '../Presence/AanwezigheidTeacher'
+import PresenceTeacher from './PresenceTeacher';
 
 const {width, height} = Dimensions.get('window');
 class Aanwezigheid extends Component {
@@ -33,7 +34,7 @@ class Aanwezigheid extends Component {
      
         <View>
             {this.props.TypeSign==="teacher" ?
-            <AanwezigheidTeacher/>:
+            <PresenceTeacher/>:
             <Presence/>
             }
          

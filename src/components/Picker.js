@@ -29,7 +29,7 @@ const PickerScreen = props => {
          
         {data
           ? data.map(item => {
-            {console.warn("asaaaaaaaaaaaaaaaaa",item.FLD_GROUP_NAME)}
+            // {console.warn("asaaaaaaaaaaaaaaaaa",item.FLD_GROUP_NAME)}
               return (
                 <Item
                   color="#fff"

@@ -5,6 +5,7 @@ import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
 import {getGroupStudent} from '../actions/TravelcostAction'
 import {connect} from 'react-redux';
+import {TypeSignIn} from '../actions/ProfileAction'
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';import { floor } from 'react-native-reanimated';
 ;
@@ -45,7 +46,7 @@ class DashboardBox extends Component {
         },
       })
       .then(async(res) => {
-        console.warn("=====>res in load Dashboard",res.data)
+        // console.warn("=====>res in load Dashboard",res.data)
       
         if (res.data.msg === 'success') {
           this.setState({dashboardStatus:res.data.data})
@@ -71,19 +72,15 @@ class DashboardBox extends Component {
       });
   };
 
- componentDidMount() {
-  console.warn("sadasdgashd")
+async componentDidMount() {
+  this.props.TypeSignIn( await AsyncStorage.getItem('@typeofsignin'))
+  // console.warn("sadasdgashd")
   this.setState({selectedItems:[]})
   if(this.state.edit===false){
-       this.loadDashboard()}
-    //  if( this.state.dashboardStatus.length!==0){
-    //  var data =  this.state.dashboardStatus[0].FldDashbord
-    //  var items = JSON.parse(data)
-    //  items.filter(obj=>this.state.dashboardItems.filter(i=>{(i.index===obj) && this.state.selectedItems.push(i)}))} 
+       this.loadDashboard()} 
     }
   
    componentWillReceiveProps(next){
-    // this.setState({selectedItems:[]})
     this.setState({data:this.state.selectedItems})
   if (this.state.edit===true && next.navigation.state.params!==undefined  && next.navigation.state.params.resetSelected==='choosedDashboard'){
    this.setState({selectedItems:[]})
@@ -96,21 +93,22 @@ class DashboardBox extends Component {
     this.setState({selectedItems:[]})
   }
 editPress=()=>{
+  // console.warn("laaaaaaaaaaaaaaaaaaayout",this.state.dashboardStatus[0].FldLayout)
   this.setState({edit:true})
-  this.props.navigation.navigate('DashboardTeacherBox',{select:this.state.selectedItems,staus:this.state.dashboardStatus[0].FldLayout});
+  this.props.navigation.navigate('DashboardTeacherBox',{select:this.state.selectedItems,status:this.state.dashboardStatus[0].FldLayout});
 }
 
 onpressItems=async(select)=>{
  await this.setState({item:""})
   this.state.arr.filter(obj=>{(obj.Text===select.ImageText) && this.setState({item:obj.PageName})}),
-  console.warn("=====>this is item for navigate",this.state.item)
+  // console.warn("=====>this is item for navigate",this.state.item)
   this.props.navigation.navigate(this.state.item)
 
 }
 
 
   render() {
-    console.warn("selected items",this.state.selectedItems.length)
+    // console.warn("selected items",this.state.selectedItems.length)
       const{status}=this.props
       const {dashboardStatus}=this.state
     return (
@@ -148,7 +146,7 @@ onpressItems=async(select)=>{
                             </View> }
                      {dashboardStatus.length!==0 && dashboardStatus[0].FldLayout===2 &&  <View  style={{marginBottom:width*0.15}}>          
                            <View style={[cs.pairBox]}>
-                               {console.warn(this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName)}
+                               {/* {console.warn(this.state.selectedItems[0]!==undefined && this.state.selectedItems[0].imageName)} */}
                                   <TouchableOpacity
                                    onPress={()=>this.onpressItems(this.state.selectedItems[0])}
                                    style={[cs.boxesWrapperthree]}>
@@ -280,7 +278,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps= {
  getnotification,
- getGroupStudent
+ getGroupStudent,
+ TypeSignIn
 }
 
 const styles = StyleSheet.create({

@@ -22,11 +22,19 @@ class DashboardBox extends Component {
   }
 
  componentDidMount() {
+   console.warn("paaaaaaaaaaaaraaaaaaaaaaaaaaaaaams",this.props.navigation.state.params)
   if(this.props.navigation.state.params!==undefined){
     this.props.navigation.state.params.layout===1 && this.setState({typeTemplate:"TwoRow"}) || this.props.navigation.state.params.layout===2 && this.setState({typeTemplate:"ThreeRow"}) || 
     this.props.navigation.state.params.layout===3 && this.setState({typeTemplate:"default"}) ||  this.props.navigation.state.params.layout===4 && this.setState({typeTemplate:"Transfrom"})
   }
   
+  }
+
+  componentWillReceiveProps(){
+    if(this.props.navigation.state.params!==undefined){
+      this.props.navigation.state.params.layout===1 && this.setState({typeTemplate:"TwoRow"}) || this.props.navigation.state.params.layout===2 && this.setState({typeTemplate:"ThreeRow"}) || 
+      this.props.navigation.state.params.layout===3 && this.setState({typeTemplate:"default"}) ||  this.props.navigation.state.params.layout===4 && this.setState({typeTemplate:"Transfrom"})
+    }
   }
 
   CanSelected=()=>{
@@ -67,7 +75,7 @@ class DashboardBox extends Component {
   }
 
   render() {
-     console.warn("**this is selected dashboard ***",this.props.navigation.state.params.selected)
+     console.warn("**this is selected dashboard ***",this.state.typeTemplate)
   
     return (
       <View style={{alignItems:"center",padding:15}}>

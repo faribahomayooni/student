@@ -15,7 +15,7 @@ export default class App extends Component {
       notification:[],
       // count:0,
     }
-     global.url = 'http://192.168.1.46:3100/';
+     global.url = 'http://192.168.1.64:3100/';
     // global.url = 'http://192.168.1.33:3100/';
     //  global.url='http://85.214.123.68:3100/'
   //   global.url = 'http://94.101.128.11:3100/';
@@ -58,13 +58,11 @@ export default class App extends Component {
 }
   
   render() {
-    // console.warn("&&&&&&&&&&&&&notification in app component&&&&&&&&&&&&&&",store)
     return (
       <Provider store={store}>
         <View style={styles.container}>
           <AppNavigator
             screenProps={this.state.notification}
-          // counter={this.state.count}
             ref={navigatorRef => {
               NavigationService.setTopLevelNavigator(navigatorRef);
             }}

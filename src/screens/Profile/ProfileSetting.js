@@ -96,7 +96,7 @@ class ProfileSetting extends Component {
   }
 
 async componentWillReceiveProps(){
-  console.warn("######################")
+  // console.warn("######################")
   this.setState({type:''})
   this.setState({type:await AsyncStorage.getItem('@typeofsignin')})
    this.loadStudentInfo()

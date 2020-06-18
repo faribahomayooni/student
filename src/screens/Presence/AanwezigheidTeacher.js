@@ -151,7 +151,7 @@ toggleSwitch=()=>{
                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
                  
                        <DateTimePicker getDate={getDateFunction} style={cs.datePicker} textStyle={{fontSize:15,color:"gray",justifyContent:"center",alignSelf:"center",marginBottom:width*0.03}}/>
-                       <Text>></Text>
+                       <Text></Text>
                        <DateTimePicker getDate={getDateFunction} style={cs.datePicker} textStyle={{fontSize:15,color:"gray",justifyContent:"center",alignSelf:"center",marginBottom:width*0.03}}/>
                     </View>
                     <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-around",marginTop:10}}>

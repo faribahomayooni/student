@@ -23,6 +23,8 @@ import {month} from '../../src/actions/api.actions'
 var DISABLED_DAYS = []
 var count = 0;
 const {width, height} = Dimensions.get('window');
+const FirstDot = { key: 'First', color: 'red' };
+const SecondDot = { key: 'Second', color: 'red' };
 class CalendarsScreen extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +47,7 @@ class CalendarsScreen extends Component {
      month:'',
      year:'',
      changemodedate:[],
-    //  resloadmonthattendance:"",
+      resloadmonthattendance:"",
      modify:0,
      changedisablemode:false,
     };
@@ -54,13 +56,14 @@ class CalendarsScreen extends Component {
 loadmonth=async()=>{
   console.warn("**************",this.props.groupId)
   var userId=  parseInt(await AsyncStorage.getItem('@userId'))
+  console.warn("ffffffffffffffff",userId)
   axios
   .post(
-    global.url + 'api/student/loadMonthAttendance',
+    global.url + 'api/school/LoadCalendar',
     {
       groupId:this.props.groupId,
-      userId: userId,
-      monthId: this.state.month===""? new Date().getMonth()+1:this.state.month,
+      endDate: '2020/04/30',
+      startDate: '2020/04/01',
     },
     {
       headers: {
@@ -69,33 +72,35 @@ loadmonth=async()=>{
       },
     },
   )
-  .then(async(res )=> {
+  .then((res )=> {
     if (res.data.msg === 'success') {
-      console.warn("==================>11",res.data.data !== undefined,res.data)
+        console.warn("==================>11",res.data.data !== undefined,res.data)
       this.setState({resloadmonthattendance:res.data.data})
       // this.props.getMonthdata(res.data.data)
       res.data.data !== undefined &&
       res.data.data.filter(obj => {
         console.warn("aaaaaaaaaaaa",res.data)
-        if (obj.FLD_IS_LATE === 1) {
+        if (obj.STATUS === 2) {
           
           this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
-            type: 1,
-          });
-        } else if (obj.FLD_ISPRESENT === 1) {
-          console.warn("bbbbbbbbbbbbbbbb")
-          this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
+            date: obj.selected_date,
             type: 3,
-          });
-        } else if (obj.FLD_ISPRESENT === 0) {
-          console.warn("cccccccccccccccccc")
-          this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
-            type: 2,
+            status:obj.CountStudent
           });
         } 
+        // else if (obj.FLD_ISPRESENT === 1) {
+        //   console.warn("bbbbbbbbbbbbbbbb")
+        //   this.state.studentstatus.push({
+        //     date: obj.FLD_DATE.slice(0, 10),
+        //     type: 3,
+        //   });
+        // } else if (obj.FLD_ISPRESENT === 0) {
+        //   console.warn("cccccccccccccccccc")
+        //   this.state.studentstatus.push({
+        //     date: obj.FLD_DATE.slice(0, 10),
+        //     type: 2,
+        //   });
+        // } 
       });
       // console.warn("###################################")
         this.anotherFunc();
@@ -172,6 +177,7 @@ loadmonth=async()=>{
   }
 
   componentDidMount(){
+      console.warn("^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.props.groupId)
     let today = new Date();
     let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
     // this.setState({month:this.props.month})
@@ -194,6 +200,7 @@ loadmonth=async()=>{
 
   
  componentWillReceiveProps=async(nexxt,dat)=>{
+    console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.props.groupId)
   // this.func()
    if(this.state.counter!==this.props.count)
  {  
@@ -254,7 +261,7 @@ anotherFunc = async() => {
           
           customStyles: {
             container: {
-              width: '97%',
+              width: '95%',
               backgroundColor:
                 (v.type === 1 && '#E7B52E') ||
                 (v.type === 2 && '#F64D53') ||
@@ -264,6 +271,9 @@ anotherFunc = async() => {
            
             text: {
               color: 'white',
+              fontSize:12,
+              marginLeft:30,
+              marginTop:-2
             },
           },
         },
@@ -294,7 +304,7 @@ anotherFunc = async() => {
              Object.assign(c, {
                [v]: {selected: true},
                [v.date]: {
-         
+                 dots: [FirstDotFirstDot, SecondDot] ,
                  customStyles: {
                    container: {
                      width: '97%',
@@ -310,6 +320,23 @@ anotherFunc = async() => {
                    },
                  },
                },
+              [v.status]:{
+                customStyles: {
+                    container: {
+                      width: '250%',
+                      backgroundColor:
+                        (v.type === 1 && '#E7B52E') ||
+                        (v.type === 2 && '#F64D53') ||
+                        (v.type === 3 && '#88C755'),
+                      borderRadius: 0,
+                    },
+      
+                    text: {
+                      color: 'red',
+                    },
+                  },
+
+              }
            
              }),
            {},
@@ -393,21 +420,23 @@ anotherFunc = async() => {
         await   this.state.resloadmonthattendance.filter(obj => {
         if (obj.FLD_IS_LATE === 1) {
             this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
-            type: 1,
-          });
-        } else if (obj.FLD_ISPRESENT === 1) {
-          this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
+            date: obj.selected_date,
             type: 3,
+            status:obj.CountStudent
           });
-        } else if (obj.FLD_ISPRESENT === 0) {
-          this.state.studentstatus.push({
-            date: obj.FLD_DATE.slice(0, 10),
-            type: 2,
-          });
+        } 
+        // else if (obj.FLD_ISPRESENT === 1) {
+        //   this.state.studentstatus.push({
+        //     date: obj.FLD_DATE.slice(0, 10),
+        //     type: 3,
+        //   });
+        // } else if (obj.FLD_ISPRESENT === 0) {
+        //   this.state.studentstatus.push({
+        //     date: obj.FLD_DATE.slice(0, 10),
+        //     type: 2,
+        //   });
          
-        }
+        // }
       });
       this.setState({
         markedDates: this.getDaysInMonth(date.month - 1, date.year, this.state.disable)

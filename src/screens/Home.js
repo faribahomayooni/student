@@ -46,7 +46,7 @@ class Home extends Component {
     const { params } =this.props.navigation.state;
  var typeuser= await  AsyncStorage.getItem('@typeofsignin')
  this.setState({type:typeuser})
-    console.warn("############# type user",this.props.TypeSign)
+    // console.warn("############# type user",this.props.TypeSign)
   }
 
   componentWillUnmount() {
@@ -63,7 +63,7 @@ class Home extends Component {
         },
       })
       .then(res => {
-        console.warn("=====>res in load Dashboard",res.data)
+        // console.warn("=====>res in load Dashboard",res.data)
         this.setState({showHome:false})
       
         if (res.data.msg === 'success') {
@@ -97,7 +97,7 @@ class Home extends Component {
   }
 
   render() {
-    console.warn("state of dashboardstatus",this.state.dashboardStatus)
+    // console.warn("state of dashboardstatus",this.state.dashboardStatus)
     return (
       <View style={cs.mainContainer}>
        {this.state.showHome ?
