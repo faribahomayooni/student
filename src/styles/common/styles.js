@@ -1149,6 +1149,16 @@ export const commonStyle = StyleSheet.create({
     marginRight: 12,
     marginLeft: 12,
   },
+  pickerContainerTeacher: {
+    backgroundColor: COLORS.primaryColor,
+    borderRadius: 12,
+    borderColor: 'transparent',
+    height: 45,
+    marginTop: 10,
+    marginBottom: 20,
+    marginRight: 12,
+    marginLeft: 12,
+  },
   forgotContainer: {
     backgroundColor: '#F2F3F7',
     borderRadius: 12,

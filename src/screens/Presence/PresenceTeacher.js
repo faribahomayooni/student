@@ -11,9 +11,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   AsyncStorage,
-  ToastAndroid
+  ToastAndroid,
+  Picker,
+  Image
 } from 'react-native';
 import Progress from './../../components/Progress';
+import ActionSheet from 'react-native-actionsheet';
 import {commonStyle as cs} from '../../styles/common/styles';
 // import CalendarsScreen from './../../components/Calenderunchange';
 import CalendarsChangable from  './../../components/TeacherCalendar'
@@ -48,6 +51,8 @@ class PresenceCalendar extends Component {
       teacherInfo:null,
       changeid:"",
       targetName:'',
+      loadStudent:[],
+      date:"",
       editpage:false,
       month:  parseInt(
         '2018-03-01'.substring(5, 7),
@@ -67,6 +72,7 @@ class PresenceCalendar extends Component {
       },
     };
     this.getMonthFunction = this.getMonthFunction.bind(this);
+    this.actionSheet = null;
   }
   getMonthFunction = month => {
     this.setState({
@@ -74,19 +80,22 @@ class PresenceCalendar extends Component {
     });
   }
 
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
+  
   changegroup=(mode)=>{
     setTimeout(()=>{this.setState({modify: false})},1000);
   }
 
   getGroupFunction= (newGroup)=> {
-    this. getTeacherName()
- console.warn("********************************************************************hihi",newGroup.FLD_PK_GROUP)
+  console.warn("********************************************************************hihi",newGroup.FLD_PK_GROUP)
   this.setState({id:""})
    this.setState({group: this.state.group + 1});
    this.setState({change:true})
    if(this.state.id!==newGroup.FLD_FK_GROUP){
-     this.setState({id:newGroup.FLD_PK_GROUP })
-     
+     this.setState({id:newGroup.FLD_PK_GROUP })  
      this.setState({count:this.state.count+1})
  
    }
@@ -111,6 +120,7 @@ class PresenceCalendar extends Component {
 }
 
   async componentDidMount() {
+    // this.getStudentStatus()
       console.warn("teacher caaaaaaaaaaaaaaaaaaaalendar@@@@@@@@@@@@@@@@@@@@@@@@@@")
     this.groupStudent(-1)
  this.loadTeacherInfo()
@@ -119,58 +129,48 @@ class PresenceCalendar extends Component {
   }
 
 
-  getTeacherName=async()=>{
-    // console.warn("{{{{{{{{{{{{{{{{{{",this.state.id)
-    axios
-    .post(
-      global.url + 'api/school/loadGroupInfo',
-      {
-        groupId: this.state.id,
+  // getStudentStatus=async(date)=>{
+ 
+  //   axios
+  //   .post(
+  //     global.url + 'api/school/loadGroupStudents',
+  //     {
+  //       groupId: this.state.groupId,
+  //       date:date
        
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': await AsyncStorage.getItem('@token'),
-        },
-      },
-    )
-    .then(res => {
+  //     },
+  //     {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'x-access-token': await AsyncStorage.getItem('@token'),
+  //       },
+  //     },
+  //   )
+  //   .then(res => {
   
-      // console.warn("++++++++++++++++++++++++",res)
-      if (res.data.msg === 'success') {
+  //      console.warn("++++++++++++++++++++++++",res)
+  //     if (res.data.msg === 'success') {
        
-          this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
+  //         this.setState({teacherName:res.data.data[0].TeacherName,teacherlastname:res.data.data[0].TeacherLastName,targetName:res.data.data[0].TrajectName})
         
         
-      }
-    })
-    .catch(error => {
-      // console.warn(error);
-    });
+  //     }
+  //   })
+  //   .catch(error => {
+  //     // console.warn(error);
+  //   });
   
-  }
+  // }
  
 
-  savedate=async(date,type,dateinfo)=>{
+  savedate=async(studentData)=>{
+    this.setState({loadStudent:studentData})
+   console.warn("!!!!!!!!!!!!!!",studentData)
+    //  this.setState({loadStudent:student})
     
-    dateinfo.filter(obj=>{
-    // console.warn("****************************************",obj)
    
-    if((obj.FLD_DATE.slice(0, 10)===date)===true){
-      // console.warn("000000000000000000000000000000000000000000000000000000000000000")
-     
-      // obj['FLD_IS_LATE']=1
-    
-      type===3 &&(obj['FLD_ISPRESENT']=1 )
-      type===2 &&( obj['FLD_ISPRESENT']=0) || (obj['FLD_IS_LATE']=0) 
-      type===1 && ( obj['FLD_IS_LATE']=1);
-      // console.warn("2222222222222222222",obj)
-      this.state.changedata.push(obj)
-    }
+
   
-   
-  })
   }
 
 
@@ -197,18 +197,17 @@ class PresenceCalendar extends Component {
           },
         )
         .then(res => {
-          // console.warn("ffffffffffffffffffffffff",res.data)
+         
           if (res.data.msg === 'success') {
             ToastAndroid.show(
               'Twoje zmiany zostały pomyślnie zarejestrowane',
               ToastAndroid.SHORT,
             );
-            // this.props.navigation.navigate('Presence')
-          //  this.setState({editpage:false})
+      
           }
         })
         .catch(error => {
-          // console.warn("@@@@@@@@@@@@@@@@@@@@@@@@@@error",error);
+       
         });
       }
   }
@@ -278,8 +277,11 @@ class PresenceCalendar extends Component {
     
   }
   componentWillUpdate(prevProps) {
+    // this.setState({loadStudent:[]})
+    
    console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
     if (prevProps.isFocused !== this.props.isFocused) {
+      // this.savedate()
     
       this.loadTeacherInfo()
       this.groupStudent(-1)
@@ -292,8 +294,7 @@ class PresenceCalendar extends Component {
     const {loadMonthAttendance} = this.props;
    
     return (
-      <ScrollView>
-       
+      <ScrollView>     
         <View
         pointerEvents={(this.state.modify===true) ? 'none':null}
          style={{
@@ -307,104 +308,15 @@ class PresenceCalendar extends Component {
             }),
           }}>
           <View style={cs.mainContainer}>
-          {this.state.modify===true  && (
-            <View
-              style={{
-                position:"absolute",
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: width -width/10,
-                marginLeft:width/2-45,
-                zIndex: 3,
-              }}>
-              <ActivityIndicator size="large" color="#2e7d32" />
-              <Text style={{color: '#2e7d32', textAlign: 'center'}}>
-                please wait
-              </Text>
-            </View>
-          )}
-            <View style={cs.profileInfo} />
-          
-            <View>
-           { this .state.editpage!==true ?  
-            <View style={{alignItems: 'center', marginTop: 20}}>
-             <View>
-            <Text style={cs.titleMyPresence}>Samenvatting</Text>
-          </View>
-          <View style={{alignItems: 'center'}}>
-          <Text style={cs.BoldProfileInfo}>
-            {this.state.teacherInfo !== null &&  this.state.teacherInfo.data[0]!==undefined &&
-                  this.state.teacherInfo.data[0].FLD_FIRSTNAME}{' '}
-              <Text style={cs.RegularProgressInfo}>, je bent</Text>
-            </Text>
-            <Progress />
-            <Text style={cs.progressBottomText}> van de lessen</Text>
-            <Text style={cs.progressBottomText}> aanwezig geweest.</Text>
-
-            </View>
-               
-                <Text>
-                  <Text style={cs.RegularProfileInfo}>
-                    heeft les op{' '}
-                    <Text style={cs.colorProfileInfo}>dinsdag </Text>
-                    en <Text style={cs.colorProfileInfo}>donderdag.</Text>
-                  </Text>
-                </Text>
-              </View>: <View style={{alignItems: 'center', marginTop: 20}}>
-                <View style={{alignItems: 'center', direction: 'row'}}>
-                
-                    {/* <View>
-                        <Text style={cs.RegularProfileInfo}> Imię nauczyciela:</Text> 
-                        <Text style={cs.BoldProfileInfo}>
-                     
-                      {this.state.teacherName}  {this.state.teacherlastname}
-                    </Text>
-                    </View> */}
-                   
-                  <Text>
-                  <Text style={cs.BoldProfileInfo}>
-                  {this.state.studentInfo !== null &&
-                  this.state.studentInfo.data[0].firstname}{' '}
-                    </Text>
-                    <Text style={cs.RegularProfileInfo}>, jouw groep </Text>
-                  </Text>
-                  <View>
-                    <Text style={cs.colorProfileInfo}>
-                      {this.state.groupName}
-                    </Text>
-                  </View>
-                </View>
-                <Text>
-                  <Text style={cs.RegularProfileInfo}>
-                    heeft les op{' '}
-                    <Text style={cs.colorProfileInfo}>dinsdag </Text>
-                    en <Text style={cs.colorProfileInfo}>donderdag.</Text>
-                  </Text>
-                </Text>
-              </View>}
+            <View>  
               <View>
-                <PickerScreen
+                {/* <PickerScreen
                   getGroup={this.getGroupFunction}
                   data={this.state.groupStudent}
-                />
+                /> */}
               </View>
-            { this.state.editpage===true &&
-             <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: 20,
-                  alignSelf: 'center',
-                }}>
-                <TouchableOpacity onPress={()=>this.setState({type:3})} style={[this.state.type===3 &&({borderWidth: 3,borderColor:"blue",borderRadius:5}),cs.presenceStatusColor]}>
-                  <Text style={cs.presenceColorText}>AANWEZIG</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.setState({type:1})} style={[this.state.type===1 &&({borderWidth:3,borderColor:"blue",borderRadius:5}),cs.lateStatusColor]}>
-                  <Text style={cs.presenceColorText}>TE LAAT</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.setState({type:2})} style={[this.state.type===2 &&({borderWidth:3,borderColor:"blue",borderRadius: 5}),cs.absentStatusColor]}>
-                  <Text style={cs.presenceColorText}>AFWEZIG</Text>
-                </TouchableOpacity>
-              </View>}
+         
+             
              <View style={cs.calendarsWrapper}>
               {/* <TouchableOpacity
                
@@ -437,7 +349,7 @@ class PresenceCalendar extends Component {
                 </View>
                 {/* </TouchableOpacity> */}
               </View>
-             { this.state.editpage!==true?
+            
               <View
                 style={{
                   marginBottom: 20,
@@ -447,97 +359,97 @@ class PresenceCalendar extends Component {
                 <View
                   style={{
                     marginTop: 5,
-                    flex: 1,
-                    backgroundColor: 'rgba(238,196,97,0.57)',
+                    // flex: 1,
+                    // backgroundColor: 'rgba(238,196,97,0.57)',
                     marginLeft: 12,
                     marginRight: 12,
-                    padding: 5,
-                    borderColor: '#C99400',
-                    borderWidth: 2,
-                    borderRadius: 8,
+                  
                   }}>
                   <Text
                     style={{
                       color: '#31455E',
-                      fontSize: 12,
+                      fontSize: 16,
                       fontStyle: 'italic',
                     }}>
-                    LET OP: De aanwezigheid voor vandaag is nog niet 'bewaard'
+                   Aanwezigheid voor
                   </Text>
                 </View>
 
                 <View
-                  style={{
-                    width: '100%',
-                    marginBottom: 20,
-                  }}>
+               >
                   
                 </View>
-              </View>:
-               <View
-               style={{
-                 marginBottom: 20,
-                 width: '100%',
-               }}>
-               <Button
-                 name="AANWEZIG"
-                 imgSource={require('./../../assets/images/student/presence/saveImge.png')}
-                 colorButton="#CD51C9"
-                 onClick={()=>{
-                   this.SaveBtn()
-                  //  this.setState({editpage:false})
-                 }}
-               />
-               <View
-                 style={{
-                   marginTop: 5,
-                   flex: 1,
-                   backgroundColor: 'rgba(238,196,97,0.57)',
-                   marginLeft: 12,
-                   marginRight: 12,
-                   padding: 5,
-                   borderColor: '#C99400',
-                   borderWidth: 2,
-                   borderRadius: 8,
-                 }}>
-                 <Text
-                   style={{
-                     color: '#31455E',
-                     fontSize: 12,
-                     fontStyle: 'italic',
-                   }}>
-                   LET OP: De aanwezigheid voor vandaag is nog niet 'bewaard'
-                 </Text>
-               </View>
+              </View>
+              {/* <TouchableOpacity onPress={this.showActionSheet}>
+              <ActionSheet
+                ref={o => (this.ActionSheet = o)}
+                title={'Selecteer uw school'}
+                options={}
+                cancelButtonIndex={3}
+                destructiveButtonIndex={1}
+                onPress={index => {
+                 
+                }}
+              />
+              <Text style={cs.selectionInputText}> Selecteer uw school</Text>
 
-               <View>
-                 <Text style={cs.summaryPresence}>
-                   Bekijk een samenvatting van je aanwezigheid.{' '}
-                 </Text>
-               </View>
-               <View
-                 style={{
-                   width: '100%',
-                   marginBottom: 20,
-                 }}>
-                 <Button
-                   name="SAMENVATTING"
-                   colorButton="#5467FD"
-                   onClick={() =>
-                     this.setState({editpage:false})
-                   }
-                 />
-                 <View style={cs.nextIconWrapper}>
-                   <Icon
-                     name="chevron-right"
-                     color="white"
-                     size={12}
-                     style={{marginLeft: 8, marginTop: 5}}
-                   />
-                 </View>
-               </View>
-             </View>
-              }
+              <View style={cs.selectIconWrapper}>
+                <Icon
+                  name="chevron-down"
+                  color="#fff"
+                  size={12}
+                  style={{marginLeft: 5, marginTop: 4}}
+                />
+              </View>
+            </TouchableOpacity> */}
+             <View style={[cs.pickerContainerTeacher]}>
+      <Picker
+        placeholder="Selecteer type kosten"
+        style={{backgroundColor:"transparent"}}
+        // mode="dropdown"
+        iosIcon={<Icon name="arrow-down" />}
+        selectedValue={this.props.groupId}
+        onValueChange={(e)=>this.getGroupFunction(e)}
+        placeholderStyle={{ color: 'none' }}
+        itemStyle={{backgroundColor:"blue"}}>
+           
+        {this.state.groupStudent
+          ? this.state.groupStudent.map(item => {
+            // {console.warn("asaaaaaaaaaaaaaaaaa",item.FLD_GROUP_NAME)}
+              return (
+                <Item
+                  color="#fff"
+                  backgroundColor="none"
+                  label={item.FLD_GROUP_NAME}
+                  // value={item.FLD_FK_GROUP}
+                  // value={item.FLD_GROUP_NAME}
+                  value={item}
+                />
+              );
+            })
+          : ''}
+      </Picker>
+      <View style={cs.dropDownBtn}>
+        <Icon
+          name="chevron-down"
+          color="white"
+          size={12}
+          style={{marginLeft: 5, marginTop: 5}}
+        />
+      </View>
+    </View>
+   {this.state.loadStudent.map((item,index)=>{
+     console.warn(item)
+     return(
+      <View key={index} style={{flexDirection:"row",justifyContent:"center",marginTop:10}}>
+      <Image source={require('../../assets/images/student/presence/notebook.png')} />
+      <Text style={{marginTop:10}}>{item.StudentFullName}</Text>
+      <Button style={{marginTop:10}}>status</Button>
+    </View>
+     )
+   }) }
+              
+             
             </View>
           </View>
         </View>

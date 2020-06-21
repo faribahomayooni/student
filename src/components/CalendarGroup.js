@@ -265,6 +265,10 @@ anotherFunc = async() => {
             text: {
               color: 'white',
             },
+            dots:[
+              {key:"vacation", color:"white",selectedDotColor:"red"},
+              {key:"vacation", color:"blue",selectedDotColor:"red"}
+            ]
           },
         },
       }),
@@ -308,6 +312,7 @@ anotherFunc = async() => {
                    text: {
                      color: 'white',
                    },
+                 
                  },
                },
            

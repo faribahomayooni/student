@@ -54,11 +54,7 @@ class PresenceCalendar extends Component {
        10,
      ),
       date: {
-        // year: 2018,
-        // month: 3,
-        // day: 1,
-        // timestamp: 1519862400000,
-        // dateString: '2018-03-01',
+      
         year: 2018,
         month: 4,
         day: 1,
