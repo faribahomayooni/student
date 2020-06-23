@@ -11,6 +11,32 @@ export const commonStyle = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#293A54',
   },
+  groupNote:{
+    flexDirection:"row",
+    backgroundColor:COLORS.primaryColor,
+    borderRadius:10,
+    justifyContent:"center",
+    alignItems:"center"
+
+  },
+  pickerMe:{
+    marginRight:20,
+    flexDirection:"row",
+    backgroundColor:"white",
+    borderRadius:10,
+    justifyContent:"center",
+    padding:10,
+    alignItems:"center",
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+
+  },
   ShowBox:{
      borderRadius: 10,
       backgroundColor: '#fff',
@@ -108,6 +134,15 @@ export const commonStyle = StyleSheet.create({
     alignSelf: 'center',
     // fontWeight: 'normal',
     marginLeft: 20,
+  },
+  btnstyle:{
+    backgroundColor:"#CD51C9",
+    borderRadius:10,
+    padding:10,
+    marginTop:screenWidth/25,
+    width:screenWidth-screenWidth/10,
+    alignSelf:"center"
+
   },
   subtextInfoModalLogin: {
     color: '#ccc',
@@ -1154,7 +1189,7 @@ export const commonStyle = StyleSheet.create({
     borderRadius: 12,
     borderColor: 'transparent',
     height: 45,
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 20,
     marginRight: 12,
     marginLeft: 12,

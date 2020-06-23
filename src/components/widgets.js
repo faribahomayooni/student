@@ -25,6 +25,7 @@ export class InputField extends Component {
       reference,
       onChange,
       onfocus,
+      // imageaddress,
       returnKey = 'next',
       keyboardType,
       secure = false,
@@ -33,9 +34,11 @@ export class InputField extends Component {
       _style = {},
       star = true,
       capitalize = 'none',
+      image,
     } = this.props;
     return (
       <View style={{flex: 1}}>
+      
         <Text style={styles.headingText}>
           {heading}
           {/* {star ? '*' : ''} */}
@@ -58,6 +61,7 @@ export class InputField extends Component {
           secureTextEntry={secure}
           autoCapitalize={capitalize}
         />
+     
       </View>
     );
   }

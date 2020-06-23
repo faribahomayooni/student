@@ -271,8 +271,7 @@ class PresenceCalendar extends Component {
   }
   componentWillUpdate(prevProps) {
    console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
-    if (prevProps.isFocused !== this.props.isFocused) {
-    
+    if (prevProps.isFocused !== this.props.isFocused) {  
       this.loadStudentInfo()
       this.groupStudent(-1)
       
@@ -281,7 +280,7 @@ class PresenceCalendar extends Component {
 
   render() {
    console.warn("student groups@@@@%%%%",this.props.loadStudentGroup)
-    const {loadMonthAttendance} = this.props;
+   const {loadMonthAttendance} = this.props;
    
     return (
       <ScrollView>

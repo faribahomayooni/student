@@ -33,6 +33,7 @@ class CalendarsScreen extends Component {
     super(props);
 
     this.state = {
+     
       counter: 0,
       selected: '',
       dynamicdate: [],
@@ -57,16 +58,10 @@ class CalendarsScreen extends Component {
     };
   }
 
-loadmonth=async()=>{
-   var startDATE =`${this.state.year}/0${this.state.month}/01`;
-  var endDate =`${this.state.year}/0${this.state.month}/30`;
-
-  console.warn("**************",this.state.year,'/',+this.state.month,'/',30)
-  var userId=  parseInt(await AsyncStorage.getItem('@userId'))
-  console.warn("ffffffffffffffff",`${this.state.year}/${this.state.month}/1`.toString(),this.props.groupId)
-  console.warn("**************",this.props.groupId)
-  var userId=  parseInt(await AsyncStorage.getItem('@userId'))
-  console.warn("ffffffffffffffff",userId)
+loadmonth=async(date)=>{
+  console.warn("state of month and year in moment ",this.state.month===""?`${moment().year()}/0${moment().month()+1}/01}`:`${this.state.year}/0${this.state.month}/01`)
+   var startDATE =date==undefined?`${moment().year()}/0${moment().month()+1}/01`:`${date.year}/0${date.month}/01`;
+  var endDate =date==undefined?`${moment().year()}/0${moment().month()+1}/30`:`${date.year}/0${date.month}/30`;
   axios
   .post(
     global.url + 'api/school/LoadCalendar',
@@ -84,15 +79,11 @@ loadmonth=async()=>{
   )
   .then((res )=> {
     if (res.data.msg === 'success') {
-      
+      console.warn("@@@@@@@@@@@@@@@@@@ res for load month",res.data.data)
       this.setState({resloadmonthattendance:res.data.data})
-      // this.props.getMonthdata(res.data.data)
       res.data.data !== undefined &&
       res.data.data.filter(obj => {
-        console.warn("aaaaaaaaaaaa",res.data)
         if (obj.STATUS === 2) {
-          // console.warn("kfdhdkjfjdkf!!!!!!!!!!!",obj.CountStudent)
-          
           this.state.studentstatus.push({
             date: obj.selected_date,
             type: 3,
@@ -171,6 +162,7 @@ loadmonth=async()=>{
   }
 
   componentDidMount(){
+    this.loadmonth()
     let today = new Date();
     let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
     const {loadMonthAttendance} = this.props;
@@ -240,12 +232,9 @@ anotherFunc = async() => {
                 (v.type === 3 && '#88C755'),
               borderRadius: 0,
             },
-            //  dots: [vacation, massage, workout], selected: true, selectedColor: 'red',
             text: {
               color: 'white',
               fontSize:12,
-              // marginLeft:30,
-              // marginTop:-2
             },
            
           },
@@ -271,10 +260,11 @@ anotherFunc = async() => {
   
   componentWillUpdate(prevProps) {
      if (prevProps.isFocused !== this.props.isFocused) {
+       this.loadmonth()
       this.setState({id:""})
        this.setState({studentstatus:[],dynamicdate:[]})
        this.setState({markedDates:[]})
-       this.loadmonth()
+      //  this.loadmonth()
   
        }
      }
@@ -318,10 +308,10 @@ anotherFunc = async() => {
       
         scrollEnabled={true}
           onMonthChange={async(date) => {
-               this.loadmonth()
+               this.loadmonth(date)
                this.setState({month:date.month})
                this.setState({year:date.year})
-        await   this.state.resloadmonthattendance.filter(obj => {
+          this.state.resloadmonthattendance.filter(obj => {
         if (obj.FLD_IS_LATE === 1) {
             this.state.studentstatus.push({
             date: obj.selected_date,
@@ -329,25 +319,12 @@ anotherFunc = async() => {
             status:obj.CountStudent
           });
         } 
-        // else if (obj.FLD_ISPRESENT === 1) {
-        //   this.state.studentstatus.push({
-        //     date: obj.FLD_DATE.slice(0, 10),
-        //     type: 3,
-        //   });
-        // } else if (obj.FLD_ISPRESENT === 0) {
-        //   this.state.studentstatus.push({
-        //     date: obj.FLD_DATE.slice(0, 10),
-        //     type: 2,
-        //   });
-         
-        // }
+     
       });
       this.setState({
         markedDates: this.getDaysInMonth(date.month - 1, date.year, this.state.disable)
       })
-      this.anotherFunc();
-            // console.warn("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>load month attendanc", await this.state.dateinmonth)
-            
+      this.anotherFunc();          
           }}
           style={styles.calendar}
           hideExtraDays
