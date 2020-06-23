@@ -251,7 +251,7 @@ anotherFunc = async() => {
    this.setState({dynamicdate:obj,changedisablemode:false})
    this.setState({markedDates:{...this.state.markedDates,...obj}})
 };
-  edit=async(day)=>{
+  edit=(day)=>{
  
             this.props.savedate(day.dateString)
 
@@ -354,9 +354,7 @@ anotherFunc = async() => {
           }}
           
           onDayPress={(day) => {
-            this.props.edit!==true  ?
-         this.props.activeEditPage(true)
-       :
+        
      this.edit(day)
           }} 
            current={this.state.selected}

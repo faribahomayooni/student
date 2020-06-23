@@ -63,6 +63,10 @@ class PresenceCalendar extends Component {
       date:"",
       IsOpenNote:false,
       editpage:false,
+      presentStatus:[],
+      LateStatus:[],
+      absentStatus:[],
+      IsSelectAll:false,
       month:  parseInt(
         '2018-03-01'.substring(5, 7),
        10,
@@ -119,12 +123,16 @@ class PresenceCalendar extends Component {
   async componentDidMount() {
     this.groupStudent(-1)
    this.loadTeacherInfo()
+   this.savedate()
+   this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
+ 
   }
 
 
 
 
   savedate=async(studentData)=>{
+    this.setState({presentStatus:[],absentStatus:[],LateStatus:[]})
     this.setState({datepress:studentData})
     console.warn("!!!!!!!!!!!!!!",studentData)
     axios
@@ -141,19 +149,19 @@ class PresenceCalendar extends Component {
       },
     },
   )
-  .then((res )=> {
+  .then(async(res )=> {
     if (res.data.msg === 'success') {
-      console.warn("@@@@@@@@@@@@@@@@@@ res for load student",res.data.data)
-      this.setState({loadStudent:res.data.data})
-        this.anotherFunc();
+        // console.warn("@@@@@@@@@@@@@@@@@@ res for load student",res.data.data)
+        this.setState({loadStudent:res.data.data})
+       
+     
+        // this.anotherFunc();
     }
   })
   .catch(error => {
   
   });
 
-  
-  
   }
 
 
@@ -251,30 +259,40 @@ class PresenceCalendar extends Component {
         })
         .catch(error => {
           console.warn(error);
-        });
-  
-      
-    
+        }); 
   }
   componentWillUpdate(prevProps) {
     // this.setState({loadStudent:[]})
     
    console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
     if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
+
       this.savedate()
-      // this.savedate()
-    
+     
       this.loadTeacherInfo()
       this.groupStudent(-1)
       
       }
     }
 
+    componentWillReceiveProps(){
+      for(let i=0;i<this.state.loadStudent.length;i++){
+       
+        this.state.presentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false
+      
+        this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false
+   
+        this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
+
+      }
+    }
+
+    
+
     OpenNoteModal=(comment)=>{
       console.warn("@@@@@@@@@@@****",comment!==null)
       this.setState({comment:comment.Fld_Comment}),this.setState({IsOpenNote:true})
-    
-      
 
     }
 
@@ -309,9 +327,20 @@ class PresenceCalendar extends Component {
       });
 
     }
+    SelectAllPress=()=>{
+         this.setState({IsSelectAll:true})
+    }
+
+    presentPress=(index)=>{
+      const {presentStatus}=this.state
+      this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
+      // var data =(this.state.presentStatus[index]===true)?false:true
+       this.setState({presentStatus})
+      console.warn(index,this.state.presentStatus)
+    }
 
   render() {
-   console.warn("student groups@@@@%%%%",this.props.loadStudentGroup)
+   console.warn("student groups@@@@%%%%",this.state.presentStatus,this.state.absentStatus,this.state.LateStatus,this.state.loadStudent)
     const {loadMonthAttendance} = this.props;
    
     return (
@@ -388,6 +417,30 @@ class PresenceCalendar extends Component {
           </View>
         </View>
       </Modal >
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={this.state.IsSelectAll}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}
+      >
+        <View style={{justifyContent:"center",flex:1}}>
+            <View style={{flexDirection:"row",justifyContent:"space-between"}}>
+              
+              <View>
+                 <Text style={{fontWeight:"bold"}}>Groepsbericht</Text>
+              </View>
+              <TouchableOpacity style={{width:15,height:15,borderRadius:20,backgroundColor:"red",alignItems:"center",justifyContent:"center"}} onPress={()=>this.setState({IsGroupNote:false})}>
+                  <Icon name="close" color="white"/>
+              </TouchableOpacity>
+           
+            </View>
+            <View style={{backgroundColor:"white",borderRadius:10,width:width/2,alignSelf:"center"}}>
+               
+            </View>
+        </View>
+      </Modal>
         <View
         pointerEvents={(this.state.modify===true) ? 'none':null}
          style={{
@@ -402,23 +455,7 @@ class PresenceCalendar extends Component {
           }}>
           <View style={cs.mainContainer}>
             <View>  
-            {/* <View
-                style={{
-                  flexDirection: 'row',
-                  marginTop: 20,
-                  alignSelf: 'center',
-                }}>
-                <TouchableOpacity onPress={()=>this.setState({type:3})} style={[this.state.type===3 &&({borderWidth: 3,borderColor:"blue",borderRadius:5}),cs.presenceStatusColor]}>
-                  <Text style={cs.presenceColorText}>AANWEZIG</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.setState({type:1})} style={[this.state.type===1 &&({borderWidth:3,borderColor:"blue",borderRadius:5}),cs.lateStatusColor]}>
-                  <Text style={cs.presenceColorText}>TE LAAT</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.setState({type:2})} style={[this.state.type===2 &&({borderWidth:3,borderColor:"blue",borderRadius: 5}),cs.absentStatusColor]}>
-                  <Text style={cs.presenceColorText}>AFWEZIG</Text>
-                </TouchableOpacity>
-          </View> */}
-         
+          
              <Text style={{fontWeight:"bold",fontSize:20,alignSelf:"center",marginTop:15}}>Vrijdag, 4 oktober 2019</Text>
              <View style={cs.calendarsWrapper}>
                 <View style={{width: '100%'}}>    
@@ -507,7 +544,7 @@ class PresenceCalendar extends Component {
                 </View>
              </View>
             {this.state.loadStudent.length!==0 && <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/13}}>
-                  <TouchableOpacity style={cs.pickerMe}> 
+                  <TouchableOpacity   onPress={()=>this.SelectAllPress()} style={cs.pickerMe}> 
                      <Text style={{marginTop:2,marginRight:20}}>Markeer iedereen als</Text>
                      <View style={{borderRadius:20,width:20,height:20,backgroundColor:"gray",alignItems:"center",justifyContent:"center"}} >
                       <Icon
@@ -525,6 +562,17 @@ class PresenceCalendar extends Component {
                 
              </View>}
             {this.state.loadStudent.map((item,index)=>{
+              console.warn("in render part log present status$$$",this.state.presentStatus)
+              for(let i=0;i<this.state.loadStudent.length;i++){
+       
+               this.state.presentStatus[i]=  ((this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false)
+              
+                this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false
+           
+                this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
+        
+              }
+             
               console.warn(item)
               return(
                 <View key={index} style={{flexDirection:"row",marginTop:10,justifyContent:"center"}}>
@@ -540,15 +588,15 @@ class PresenceCalendar extends Component {
                             alignSelf: 'center',
                         
                           }}>
-                          <TouchableOpacity onPress={()=>this.setState({type:3})} style={[item.FLD_ISPRESENT===1 || this.state.type===3 ?(cs.presenceStatusColor):{padding:7,borderRadius:5,backgroundColor:"white",alignItems:"center",borderWidth:0.5,marginRight:10,paddingRight:17,paddingLeft:17}]}>
-                            <Text style={[cs.presenceColorText],item.FLD_IS_LATE===1 || this.state.type===1 &&{ color:"black",fontSize:20}}>Aanw</Text>
+                          <TouchableOpacity onPress={()=>this.presentPress(index)} style={[this.state.presentStatus[index]===true ?(cs.presenceStatusTeacherColor):cs.present]}>
+                            <Text style={this.state.presentStatus[index]!==true ?{ color:"black",fontSize:15}:{color:"white",fontSize:15}}>Aanw</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={()=>this.setState({type:1})} style={[item.FLD_IS_LATE===1 || this.state.type===1 ? (cs.lateStatusColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:10,paddingRight:17,paddingLeft:17}]}>
-                            <Text style={[cs.presenceColorText],item.FLD_IS_LATE===1 || this.state.type===1 &&{ color:"black",fontSize:20}}>Laat</Text>
+                          <TouchableOpacity onPress={()=>this.setState({type:1})} style={[this.state.LateStatus[index]===true===true ? (cs.lateStatusSelectColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:10,paddingRight:17,paddingLeft:17}]}>
+                            <Text style={[this.state.LateStatus[index]===true?cs.presenceColorText:{color:"black",fontSize:15}]}>Laat</Text>
                           </TouchableOpacity>
                           {console.warn("!!!!!!!!!",item.FLD_ISPRESENT===null)}
-                          <TouchableOpacity onPress={()=>this.setState({type:2})} style={[item.FLD_ISPRESENT!==null || this.state.type===2 ?(cs.absentStatusColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:5,paddingRight:17,paddingLeft:17}]}>
-                            <Text style={[cs.presenceColorText],item.FLD_ISPRESENT!==null || this.state.type===2 &&{ color:"black",fontSize:20} }>Afw</Text>
+                          <TouchableOpacity onPress={()=>this.setState({type:2})} style={[this.state.absentStatus[index]===true  ?(cs.absentStatusTeacherColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:5,paddingRight:17,paddingLeft:17}]}>
+                            <Text style={this.state.absentStatus[index]===true ?[cs.presenceColorText]:{ color:"black",fontSize:15} }>Afw</Text>
                           </TouchableOpacity>
                 </View>
                 
@@ -628,10 +676,27 @@ modalView: {
     width: 0,
     height: 2
   },
+  
   shadowOpacity: 0.25,
   shadowRadius: 3.84,
   elevation: 5
 },
+modalSelectAllView: {
+  margin: 20,
+  backgroundColor: "#F2F3F7",
+  borderRadius:10,
+  padding: 35,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5
+},
+
   overlay: {},
 });
 

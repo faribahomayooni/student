@@ -1239,6 +1239,27 @@ export const commonStyle = StyleSheet.create({
     margin: 2,
     marginTop: -10,
   },
+  present:{
+    padding:7,
+    borderRadius:5,
+    backgroundColor:"white",
+    alignItems:"center",
+    borderWidth:0.5,
+    marginRight:10,
+    paddingRight:17,
+    paddingLeft:17
+
+  },
+  presenceStatusTeacherColor: {
+    backgroundColor: '#88C755',
+    padding:7,
+    borderRadius:5,
+    alignItems:"center",
+    // borderWidth:0.5,
+    marginRight:10,
+    paddingRight:17,
+    paddingLeft:17
+  },
   lateStatusColor: {
     backgroundColor: '#E7B52E',
     paddingTop:5,
@@ -1247,6 +1268,15 @@ export const commonStyle = StyleSheet.create({
     paddingLeft: 18,
     margin: 2,
     marginTop: -10,
+  },
+  lateStatusSelectColor:{
+    padding:7,
+    borderRadius:5,
+    backgroundColor: '#E7B52E',
+    // borderWidth:0.5,
+    marginRight:10,
+    paddingRight:17,
+    paddingLeft:17
   },
   absentStatusColor: {
     backgroundColor: '#F64D53',
@@ -1257,9 +1287,19 @@ export const commonStyle = StyleSheet.create({
     margin: 2,
     marginTop: -10,
   },
+  absentStatusTeacherColor:{
+    padding:7,
+    borderRadius:5,
+    backgroundColor:"#F64D53",
+    // borderWidth:0.5,
+    marginRight:5,
+    paddingRight:17,
+    paddingLeft:17
+  },
   presenceColorText: {
     color: '#fff',
     fontWeight: '700',
+    fontSize:15
   },
   summaryPresence: {
     alignSelf: 'center',

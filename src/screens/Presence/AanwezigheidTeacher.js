@@ -132,19 +132,6 @@ toggleSwitch=()=>{
                     </TouchableOpacity>
                     </View>
                   <View style={{flex: 1}}>
-                    {/* <View style={{flexDirection:"row"}}> */}
-                   
-                    {/* <TouchableOpacity onPress={()=>this.setState({isModalVisible:false})}>
-                      <View style={[cs.iconModalClose,{alignItems:"center",justifyContent:"center",backgroundColor:"blue"}]}>
-                        <Icon
-                        name="close"
-                          color="white"
-                          size={14}
-                        />
-                      </View>
-                      
-                    </TouchableOpacity> */}
-                    {/* </View> */}
                     <Text style={[cs.modalCameraTitle,{color:"black",marginTop:0}]}>Bekijk Studenten</Text>
                     <Text style={[cs.modalCameraTitle,{fontWeight:"normal",color:"black",fontSize:width/28,marginTop:0}]}>Alle uw studenten in één overzicht</Text>
                     <Text style={{marginLeft:"8%",marginTop:"5%"}}>Select Date Range</Text>
