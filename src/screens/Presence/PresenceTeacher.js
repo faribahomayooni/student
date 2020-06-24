@@ -19,15 +19,13 @@ import {
   TextInput
 } from 'react-native';
 import moment from 'moment';
-import COLORS from '../../../src/styles/variables';
-import Progress from './../../components/Progress';
-import ActionSheet from 'react-native-actionsheet';
 import {commonStyle as cs} from '../../styles/common/styles';
 import CalendarsChangable from  './../../components/TeacherCalendar'
 import {Button} from './../../components/widgets';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {apiActions} from '../../actions';
-import PickerScreen from './../../components/Picker';
+import StudentCommentModal from '../../components/StudentCommentModal'
+import GroupeNoteModal from '../../components/GroupeNoteModal'
+import SelectAllModal from '../../components/SelectAllModal'
 import axios from 'axios';
 import { withNavigationFocus } from 'react-navigation';
 
@@ -66,6 +64,8 @@ class PresenceCalendar extends Component {
       presentStatus:[],
       LateStatus:[],
       absentStatus:[],
+      type:'',
+      loader:false,
       IsSelectAll:false,
       month:  parseInt(
         '2018-03-01'.substring(5, 7),
@@ -104,7 +104,6 @@ class PresenceCalendar extends Component {
    if(this.state.id!==newGroup.FLD_FK_GROUP){
      this.setState({id:newGroup.FLD_PK_GROUP })  
      this.setState({count:this.state.count+1})
- 
    }
    this.setState({
      groupName: newGroup.FLD_GROUP_NAME,
@@ -120,7 +119,8 @@ class PresenceCalendar extends Component {
    
 }
 
-  async componentDidMount() {
+   componentDidMount() {
+    
     this.groupStudent(-1)
    this.loadTeacherInfo()
    this.savedate()
@@ -132,15 +132,17 @@ class PresenceCalendar extends Component {
 
 
   savedate=async(studentData)=>{
+    
     this.setState({presentStatus:[],absentStatus:[],LateStatus:[]})
     this.setState({datepress:studentData})
-    console.warn("!!!!!!!!!!!!!!",studentData)
+    // console.warn("!!!!!!!!!!!!!!",studentData)
+    studentData &&  this.setState({loader:true})
     axios
   .post(
     global.url + 'api/school/loadGroupStudents',
     {
       groupId:this.state.groupId,
-      date:studentData!==undefined ? studentData : ` ${moment().year()}/${moment().month()}/1`
+      date:studentData  ? studentData :` ${moment().year()}/${moment().month()}/1`
     },
     {
       headers: {
@@ -150,10 +152,23 @@ class PresenceCalendar extends Component {
     },
   )
   .then(async(res )=> {
+   
     if (res.data.msg === 'success') {
-        // console.warn("@@@@@@@@@@@@@@@@@@ res for load student",res.data.data)
-        this.setState({loadStudent:res.data.data})
-       
+      const {presentStatus,LateStatus,absentStatus}= this.state
+         console.warn("@@@@@@@@@@@@@@@@@@ res for load student",res.data.data)
+      await  this.setState({loadStudent:res.data.data})
+        for(let i=0;i<this.state.loadStudent.length;i++){
+          console.warn("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
+          this.state.presentStatus[i]=((this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false)  
+          this.setState({presentStatus})         
+           this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false 
+           this.setState({LateStatus})     
+           this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
+           this.setState({absentStatus})
+           console.warn("statuuuuuuuuuuuuuuuuuuuuus present",this.state.presentStatus)
+           this.setState({loader:false})
+         }
+        
      
         // this.anotherFunc();
     }
@@ -210,7 +225,7 @@ class PresenceCalendar extends Component {
         },
       })
       .then(res => {
-        console.warn("===============name@@@@@@@@@@@@@@@@@",res.data)
+        // console.warn("===============name@@@@@@@@@@@@@@@@@",res.data)
         this.setState({teacherInfo: res.data});
         // console.warn('===>res when call twice for component', res);
         if (res.data.msg === 'success') {
@@ -233,13 +248,13 @@ class PresenceCalendar extends Component {
 
   groupStudent=async(teacherId )=> {  
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-    console.warn("current date",utc)
+     console.warn("current date",this.state.datepress,"fffff",`${moment().year()}/${moment().month()+1}/1`)
       axios
         .post(
           global.url + 'api/teacher/loadGroupsByDate',
           {
             teacherId :-1 ,
-            date:'2020/06/01'
+            date:this.state.datepress!=="" ?this.state.datepress:`${moment().year()}/${moment().month()}/1`
           },
           {
             headers: {
@@ -250,7 +265,7 @@ class PresenceCalendar extends Component {
         )
         .then(async(res) => {
           if (res.data.msg === 'success') {
-            console.warn("grouppppppppppppppppppp",res.data)
+            // console.warn("grouppppppppppppppppppp",res.data)
         this.setState({groupStudent:res.data.data})
         this.getGroupFunction(res.data.data[0])
             // this.setState({id:res.data.data[0].FLD_FK_GROUP})
@@ -258,54 +273,37 @@ class PresenceCalendar extends Component {
           }
         })
         .catch(error => {
-          console.warn(error);
+          console.warn("%%%%%%%%%this is group for teacher by date",error);
         }); 
   }
+
   componentWillUpdate(prevProps) {
-    // this.setState({loadStudent:[]})
-    
-   console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
+  //  console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
     if (prevProps.isFocused !== this.props.isFocused) {
       this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
-
-      this.savedate()
-     
+      this.savedate()   
       this.loadTeacherInfo()
       this.groupStudent(-1)
       
       }
     }
 
-    componentWillReceiveProps(){
-      for(let i=0;i<this.state.loadStudent.length;i++){
-       
-        this.state.presentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false
-      
-        this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false
-   
-        this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
-
-      }
-    }
-
-    
-
     OpenNoteModal=(comment)=>{
-      console.warn("@@@@@@@@@@@****",comment!==null)
+      // console.warn("@@@@@@@@@@@****",comment!==null)
       this.setState({comment:comment.Fld_Comment}),this.setState({IsOpenNote:true})
 
     }
 
 
     groupeNoteOpen=async()=>{
-      console.warn("###############",this.state.datepress)
+      // console.warn("###############",this.state.datepress)
       this.setState({IsGroupNote:true})
       axios
       .post(
         global.url + 'api/school/loadGroupNote',
         {
           groupId :this.state.groupId ,
-          date:this.state.datepress
+          date:this.state.datepress 
         },
         {
           headers: {
@@ -316,7 +314,7 @@ class PresenceCalendar extends Component {
       )
       .then(async(res) => {
         if (res.data.msg === 'success') {
-          console.warn("note group",res.data)
+          // console.warn("note group",res.data)
           this.setState({groupNote:res.data.data})
     
           
@@ -334,117 +332,72 @@ class PresenceCalendar extends Component {
     presentPress=(index)=>{
       const {presentStatus}=this.state
       this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
-      // var data =(this.state.presentStatus[index]===true)?false:true
-       this.setState({presentStatus})
-      console.warn(index,this.state.presentStatus)
+      this.setState({presentStatus})
+      const {absentStatus}=this.state
+      this.state.absentStatus[index]=(this.state.absentStatus[index]===true)?false:true
+      this.setState({absentStatus})
+      //  this.setState({presentStatus})
+      console.warn(index, this.state.presentStatus[index])
     }
 
+
+    latePress=(index)=>{
+      const {LateStatus}=this.state
+      this.state.LateStatus[index]=(this.state.LateStatus[index]===true)?false:true
+      this.setState({LateStatus})
+      const {presentStatus}=this.state
+      this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
+      this.setState({presentStatus})
+      //  this.setState({presentStatus})
+      const {absentStatus}=this.state
+      this.state.absentStatus[index]=(this.state.absentStatus[index]===true)?false:true
+      this.setState({absentStatus})
+      console.warn(index, this.state.LateStatus[index])
+    }
+
+    absentPress=(index)=>{
+      const {absentStatus}=this.state
+      this.state.absentStatus[index]=(this.state.absentStatus[index]===true)?false:true
+      this.setState({absentStatus})
+      const {presentStatus}=this.state
+      this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
+      this.setState({presentStatus})
+      //  this.setState({presentStatus})
+      console.warn(index, this.state.absentStatus[index])
+    }
+    CloseStudentModal=(status)=>{
+      console.warn("$$$$$$$$$$$$$$$$$$",status)
+    this.setState({IsOpenNote:status})  
+    }
+    
+
+    CloseGroupeNoteModal=(status)=>{
+      this.setState({IsGroupNote:status})
+       console.warn(status,"status for close group student")
+    }
+
+    CloseSelectALLeModal=(status)=>{
+      this.setState({IsSelectAll:status})
+       console.warn(status,"status for close group student")
+    }
+
+    Type=(value)=>{
+      this.setState({type:value})
+    }
   render() {
-   console.warn("student groups@@@@%%%%",this.state.presentStatus,this.state.absentStatus,this.state.LateStatus,this.state.loadStudent)
+ 
     const {loadMonthAttendance} = this.props;
    
     return (
       <ScrollView>   
-            <Modal
-            style={{marginTop:width/2}}
-            animationType="slide"
-            transparent={true}
-            visible={this.state.IsOpenNote}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-            }}
-           >
-            
-         <View style={[styles.centeredView]}>
-         
-          <View style={{padding:0},[styles.modalView]}>
-            <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-              
-              <View>
-                 <Text style={{fontWeight:"bold"}}>Voeg aantekeningen toe</Text>
-              </View>
-              <TouchableOpacity style={{width:15,height:15,borderRadius:20,backgroundColor:"red",alignItems:"center",justifyContent:"center"}} onPress={()=>this.setState({IsOpenNote:false})}>
-                  <Icon name="close" color="white"/>
-              </TouchableOpacity>
-           
-            </View>
-            <View style={{borderWidth:0.5,borderColor:"lighgray",marginTop:5}}></View>
-              <Text style={{marginTop:5}}>Opmerking</Text>
-                <TextInput
-                 numberOfLines={10}
-                 multiline={true}
-                    style={{padding:10, borderColor: 'lightgray', borderWidth: 1 ,marginTop:10,height:width/2, justifyContent: "flex-start"}}
-                    onChangeText={text => this.setState({comment:text})}
-                    value={this.state.comment}
-                  />
-                  <View style={{flexDirection:"row",marginTop:5}}>
-                        <TouchableOpacity  onPress={()=>this.setState({IsOpenNote:false})} style={{backgroundColor:"red",borderRadius:5,padding:5,marginRight:5}}>
-                            <Text style={{color:"white"}}>sluiten</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{backgroundColor:"green",borderRadius:5,padding:5}}>
-                            <Text  style={{color:"white"}}>Bevestiging</Text>
-                        </TouchableOpacity>
-                  </View>
-          </View>
-        </View>
-      </Modal >
-      <Modal
-            style={{marginTop:width/2}}
-            animationType="slide"
-            transparent={true}
-            visible={this.state.IsGroupNote}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-            }}
-           >
-            
-         <View style={[styles.centeredView]}>
-         
-          <View style={{padding:0},[styles.modalView]}>
-            <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-              
-              <View>
-                 <Text style={{fontWeight:"bold"}}>Groepsbericht</Text>
-              </View>
-              <TouchableOpacity style={{width:15,height:15,borderRadius:20,backgroundColor:"red",alignItems:"center",justifyContent:"center"}} onPress={()=>this.setState({IsGroupNote:false})}>
-                  <Icon name="close" color="white"/>
-              </TouchableOpacity>
-           
-            </View>
-            <View style={{borderWidth:0.5,borderColor:"lighgray",marginTop:5}}></View>
-           { this.state.GroupeNote!==""?  <Text>{this.state.GroupeNote}</Text>:<Text style={{alignSelf:"center",color:"gray",marginTop:10}}>Er is geen bericht om weer te geven</Text>}
-            
-          </View>
-        </View>
-      </Modal >
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={this.state.IsSelectAll}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-        }}
-      >
-        <View style={{justifyContent:"center",flex:1}}>
-            <View style={{flexDirection:"row",justifyContent:"space-between"}}>
-              
-              <View>
-                 <Text style={{fontWeight:"bold"}}>Groepsbericht</Text>
-              </View>
-              <TouchableOpacity style={{width:15,height:15,borderRadius:20,backgroundColor:"red",alignItems:"center",justifyContent:"center"}} onPress={()=>this.setState({IsGroupNote:false})}>
-                  <Icon name="close" color="white"/>
-              </TouchableOpacity>
-           
-            </View>
-            <View style={{backgroundColor:"white",borderRadius:10,width:width/2,alignSelf:"center"}}>
-               
-            </View>
-        </View>
-      </Modal>
+        <StudentCommentModal comment={this.state.comment}  CloseStudentModal={this.CloseStudentModal} IsOpenNote={this.state.IsOpenNote} />
+        <GroupeNoteModal    IsGroupNote={this.state.IsGroupNote} CloseGroupeNoteModal={this.CloseGroupeNoteModal} CloseStudentModal={this.CloseStudentModal} GroupeNote={this.state.GroupeNote} />
+        <SelectAllModal Type={this.Type}    CloseSelectALLeModal={this.CloseSelectALLeModal}  IsSelectAll={this.state.IsSelectAll} />
+      
         <View
         pointerEvents={(this.state.modify===true) ? 'none':null}
          style={{
-            ...(   this.state.modify===true  &&  {
+            ...(   this.state.modify===true || this.state.loader  &&  {
              
               zIndex: 2,
               width: width,
@@ -453,6 +406,11 @@ class PresenceCalendar extends Component {
               opacity: 0.5,
             }),
           }}>
+         { this.state.loader && 
+         <View style={{position:"absolute",top:width-width/5,left:width/2-width/20}}>
+            <ActivityIndicator size="large" color={"blue"} style={{zIndex:3}}/>
+         </View>
+         }
           <View style={cs.mainContainer}>
             <View>  
           
@@ -474,9 +432,7 @@ class PresenceCalendar extends Component {
                     changeid={this.state.changeid}
                     groupdata={this.passGroupdata()}
                     activeEditPage={(status)=>this.activeEditPage(status)}
-                  />
-                 
-                  
+                  />                  
                 </View>
                 {/* </TouchableOpacity> */}
               </View>
@@ -545,7 +501,7 @@ class PresenceCalendar extends Component {
              </View>
             {this.state.loadStudent.length!==0 && <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/13}}>
                   <TouchableOpacity   onPress={()=>this.SelectAllPress()} style={cs.pickerMe}> 
-                     <Text style={{marginTop:2,marginRight:20}}>Markeer iedereen als</Text>
+                     <Text style={{marginTop:2,marginRight:20}}>{this.state.type!=="" ?(this.state.type): ("Markeer iedereen als")}</Text>
                      <View style={{borderRadius:20,width:20,height:20,backgroundColor:"gray",alignItems:"center",justifyContent:"center"}} >
                       <Icon
                         name="chevron-down"
@@ -562,45 +518,33 @@ class PresenceCalendar extends Component {
                 
              </View>}
             {this.state.loadStudent.map((item,index)=>{
-              console.warn("in render part log present status$$$",this.state.presentStatus)
-              for(let i=0;i<this.state.loadStudent.length;i++){
-       
-               this.state.presentStatus[i]=  ((this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false)
-              
-                this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false
-           
-                this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
-        
-              }
-             
-              console.warn(item)
+              console.warn("present status",this.state.loadStudent[index].FLD_ISPRESENT)
+              // console.warn("in render part log present status$$$",this.state.presentStatus)
+            
+              // console.warn(item)
               return(
                 <View key={index} style={{flexDirection:"row",marginTop:10,justifyContent:"center"}}>
                   <TouchableOpacity onPress={()=>this.OpenNoteModal(item)}>
                       <Image source={require('../../assets/images/student/presence/notebook.png')} style={{width:20,height:20,resizeMode:"contain",marginTop:5}} />
                  </TouchableOpacity>
-                {/* <Text style={{marginTop:0}}>{item.FLD_DATE}</Text> */}
                 <Text style={{marginTop:0,fontSize:15,marginRight:0,width:"25%",marginTop:5}}>{item.StudentFullName}</Text>
                     <View
                           style={{
                             flexDirection: 'row',
-                            // marginTop: 20,
                             alignSelf: 'center',
                         
                           }}>
                           <TouchableOpacity onPress={()=>this.presentPress(index)} style={[this.state.presentStatus[index]===true ?(cs.presenceStatusTeacherColor):cs.present]}>
                             <Text style={this.state.presentStatus[index]!==true ?{ color:"black",fontSize:15}:{color:"white",fontSize:15}}>Aanw</Text>
                           </TouchableOpacity>
-                          <TouchableOpacity onPress={()=>this.setState({type:1})} style={[this.state.LateStatus[index]===true===true ? (cs.lateStatusSelectColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:10,paddingRight:17,paddingLeft:17}]}>
+                          <TouchableOpacity onPress={()=>this.latePress(index)} style={[this.state.LateStatus[index]===true===true ? (cs.lateStatusSelectColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:10,paddingRight:17,paddingLeft:17}]}>
                             <Text style={[this.state.LateStatus[index]===true?cs.presenceColorText:{color:"black",fontSize:15}]}>Laat</Text>
                           </TouchableOpacity>
-                          {console.warn("!!!!!!!!!",item.FLD_ISPRESENT===null)}
-                          <TouchableOpacity onPress={()=>this.setState({type:2})} style={[this.state.absentStatus[index]===true  ?(cs.absentStatusTeacherColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:5,paddingRight:17,paddingLeft:17}]}>
+                          {/* {console.warn("!!!!!!!!!",item.FLD_ISPRESENT===null)} */}
+                          <TouchableOpacity onPress={()=>this.absentPress(index)} style={[this.state.absentStatus[index]===true  ?(cs.absentStatusTeacherColor):{padding:7,borderRadius:5,backgroundColor:"white",borderWidth:0.5,marginRight:5,paddingRight:17,paddingLeft:17}]}>
                             <Text style={this.state.absentStatus[index]===true ?[cs.presenceColorText]:{ color:"black",fontSize:15} }>Afw</Text>
                           </TouchableOpacity>
                 </View>
-                
-                {/* <Button style={{marginTop:0}}>status</Button> */}
               </View>
               )
             }) }
@@ -631,20 +575,15 @@ class PresenceCalendar extends Component {
                    width: '100%',
                    marginBottom: 20,
                  }}>
-                 <TouchableOpacity style={cs.btnstyle}>
-                   <View style={{flexDirection:"row",justifyContent:"center"}}>
-                     <Image source={require('../../assets/images/student/presence/save.png')} style={{width:width/20,height:width/20,marginRight:width/30}} /> 
-                     <Text style={{color:"white",fontWeight:"bold",fontSize:width/25}}>BEWAREN</Text> 
-                     <View style={[cs.nextIconWrapper,{backgroundColor :"#B426B5"}]}>
-                      <Icon
-                        name="chevron-right"
-                        color="white"
-                        size={12}
-                        style={{marginLeft: 8, marginTop: 5}}
-                      />
-                    </View>   
-                   </View>          
-                 </TouchableOpacity>
+                 <Button
+                 name="BEWAREN"
+                 imgSource={require('./../../assets/images/student/presence/saveImge.png')}
+                 colorButton="#CD51C9"
+                 onClick={()=>{
+                   this.SaveBtn()
+                  //  this.setState({editpage:false})
+                 }}
+               />
                    
                </View>
             </View>
@@ -656,56 +595,6 @@ class PresenceCalendar extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  centeredView: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  marginTop: 22
-},
-modalView: {
-  width:width-width/10,
-  margin: 20,
-  backgroundColor: "white",
-  borderRadius: 20,
-  padding: 35,
-  paddingTop:10,
-  // alignItems: "center",
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2
-  },
-  
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5
-},
-modalSelectAllView: {
-  margin: 20,
-  backgroundColor: "#F2F3F7",
-  borderRadius:10,
-  padding: 35,
-  alignItems: "center",
-  shadowColor: "#000",
-  shadowOffset: {
-    width: 0,
-    height: 2
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5
-},
-
-  overlay: {},
-});
-
-const mapStateToProps = state => {
-  return {
-    // loadStudentGroup: state.api.loadStudentGroup,
-      // loadMonthAttendance: state.api.loadMonthAttendance,
-  };
-};
 
 
 export default   withNavigationFocus (PresenceCalendar);

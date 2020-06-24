@@ -11,6 +11,14 @@ export const commonStyle = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#293A54',
   },
+  IconModal:{
+    borderRadius:20,
+    width:20,
+    height:20,
+    backgroundColor:"gray",
+    alignItems:"center",
+    justifyContent:"center"
+  },
   groupNote:{
     flexDirection:"row",
     backgroundColor:COLORS.primaryColor,
@@ -18,6 +26,20 @@ export const commonStyle = StyleSheet.create({
     justifyContent:"center",
     alignItems:"center"
 
+  },
+  ModalSelectALLItems:{
+    backgroundColor:"white",
+    // borderRadius:10,
+    // width:screenWidth/2,
+    // alignSelf:"center"
+  },
+
+  ImaSaveModal:{
+    width:screenWidth/20,
+    height:screenWidth/20,
+    marginRight:screenWidth/30,
+    backgroundColor:"#78CD51"
+    ,borderRadius:5
   },
   pickerMe:{
     marginRight:20,
