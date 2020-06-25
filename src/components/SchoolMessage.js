@@ -206,7 +206,7 @@ return(
   componentWillUpdate(prevProps) {
   //  console.warn("page when update page again",this.page)
      if (prevProps.isFocused !== this.props.isFocused) {
-       console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      //  console.warn("!!!!!!!!!!!!!!!!!!!!!!!!!!!")
        this.setState({allMessage:[]})
        this.page = 1
       this.getMessage(this.page)

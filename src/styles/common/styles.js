@@ -24,14 +24,12 @@ export const commonStyle = StyleSheet.create({
     backgroundColor:COLORS.primaryColor,
     borderRadius:10,
     justifyContent:"center",
-    alignItems:"center"
-
+    alignItems:"center",
+    paddingTop:screenWidth/60,
+    paddingBottom:screenWidth/60
   },
   ModalSelectALLItems:{
     backgroundColor:"white",
-    // borderRadius:10,
-    // width:screenWidth/2,
-    // alignSelf:"center"
   },
 
   ImaSaveModal:{
@@ -41,12 +39,22 @@ export const commonStyle = StyleSheet.create({
     backgroundColor:"#78CD51"
     ,borderRadius:5
   },
+  IconDropdown:{
+    borderRadius:20,
+    width:20,
+    height:20,
+    backgroundColor:"gray",
+    alignItems:"center",
+    justifyContent:"center"
+
+  },
   pickerMe:{
-    marginRight:20,
+    width:screenWidth/2,
+// ,    marginRight:20,
     flexDirection:"row",
-    backgroundColor:"white",
+    backgroundColor:"#F2F3F7",
     borderRadius:10,
-    justifyContent:"center",
+    // justifyContent:"center",
     padding:10,
     alignItems:"center",
     shadowColor: '#000',

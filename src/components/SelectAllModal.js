@@ -17,40 +17,26 @@ class GroupeNoteModal extends Component {
     state={
         IsSelectAll:this.props.IsSelectAll,
         type:0,
+      
     }
+     componentDidMount(){
+      //  this.props.Type(this.props.data[0])
+       console.warn("^^^^^^^^^^^^^^",this.props.data)
+     }
  
-
-    pressPresent=()=>{
+    pressPresent=(items)=>{
         this.setState({type:1})
         this.props.CloseSelectALLeModal(false)
-        this.props.Type("Aanwezig")
-        // setInterval(() => {
-        //     this.props.CloseSelectALLeModal(false)
-        //    }, 200)
-       
+        this.props.Type(items)
+      
     }
-    pressAbsent=()=>{
-        this.setState({type:2})
-        this.props.CloseSelectALLeModal(false)
-        this.props.Type("Afwezig")
-        // setInterval(() => {
-        //     this.props.CloseSelectALLeModal(false)
-        //    }, 200)
-    }
-    pressLate=()=>{
-        this.setState({type:3})
-        this.props.CloseSelectALLeModal(false)
-        this.props.Type("Laat")
-        // setInterval(() => {
-        //     this.props.CloseSelectALLeModal(false)
-        //    }, 200)
-    }
+   
 
 render(){
-    console.warn("!!!!!!!!!!!!!!! is open Modal",this.state.IsSelectAll)
   return(
     <Modal
         animationType="slide"
+        transparent={true}
         transparent={true}
         visible={this.props.IsSelectAll}
         onRequestClose={() => {
@@ -58,11 +44,11 @@ render(){
         }}
       >
         <View style={{justifyContent:"center",flex:1}}>
-          <View style={{backgroundColor:"white",margin:width/5,borderRadius:10}}>
+          <View style={{backgroundColor:"#F2F3F7",margin:width/5,borderRadius:10}}>
             <View style={{flexDirection:"row",justifyContent:"space-between",padding:10}}>
               
               <View>
-                 <Text style={{fontWeight:"bold"}}>Groepsbericht</Text>
+             <Text style={{fontWeight:"bold"}}>{this.props.Title}</Text>
               </View>
               <TouchableOpacity onPress={()=>this.props.CloseSelectALLeModal(false)} style={cs.IconModal} >
                       <Icon
@@ -74,31 +60,22 @@ render(){
               </TouchableOpacity>
            
             </View>
-            <View style={{borderWidth:0.5,borderColor:"lighgray",marginTop:5}}></View>
-            <TouchableOpacity  onPress={()=>this.pressPresent()} style={[cs.ModalSelectALLItems,{backgroundColor:this.state.type===1 ? "#78CD51":"white"}]}>
-              <View style={{flexDirection:"row",marginTop:width/30,marginLeft:width/20,marginBottom:width/30}}>
-                 <Text style={{marginRight:width/30,width:width/5}}>Aanwezig</Text>
-                 <Image source={require('../assets/images/student/presence/save.png')} style={cs.ImaSaveModal} /> 
+            <View style={{borderWidth:0.5,borderColor:"lighgray",marginTop:5,}}></View>
+          {this.props.data.map((items,index)=>{
+            // console.warn("this is groupe name",items)
+            return(
+              <TouchableOpacity  onPress={()=>this.pressPresent(items)} style={[cs.ModalSelectALLItems,{backgroundColor:"#F2F3F7"}]}>
+              <View style={{flexDirection:"row",marginTop:width/30,marginLeft:width/20,marginBottom:width/30,borderBottomLeftRadius:10,borderBottomRightRadius:10}}>
+                 <Text style={{marginRight:width/30,width:width/5}}>{items.FLD_GROUP_NAME!==undefined ?items.FLD_GROUP_NAME :items }</Text>
+                 {/* <Image source={require('../assets/images/student/presence/save.png')} style={cs.ImaSaveModal} />  */}
               </View>
                
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>this.pressAbsent()} style={[cs.ModalSelectALLItems,{backgroundColor:this.state.type===2 ? "#78CD51":"white"}]}>
-              <View style={{flexDirection:"row",marginTop:width/30,marginLeft:width/20,marginBottom:width/30}}>
-                 <Text style={{marginRight:width/30,width:width/5}}>Afwezig</Text>
-                 <Image source={require('../assets/images/student/presence/save.png')} style={cs.ImaSaveModal} /> 
-              </View>
-               
-            </TouchableOpacity>
-            {/* <View style={{backgroundColor:this.state.type===3? "#78CD51":"white",marginLeft:width/20}}> */}
-            <TouchableOpacity onPress={()=>this.pressLate()} style={[cs.ModalSelectALLItems,{backgroundColor:this.state.type===3 ? "#78CD51":"white"}]}>
-              <View style={{flexDirection:"row",marginTop:width/30,marginLeft:width/20,marginBottom:width/30,}}>
-                 <Text style={{marginRight:width/30,width:width/5}}>Laat</Text>
-                 <Image source={require('../assets/images/student/presence/save.png')} style={cs.ImaSaveModal} /> 
-              </View>
-               
-            </TouchableOpacity>
-      
-            {/* </View> */}
+
+            )
+          })  
+        }
+           
         </View>
         </View>
       </Modal>)}

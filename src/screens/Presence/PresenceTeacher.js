@@ -19,6 +19,7 @@ import {
   TextInput
 } from 'react-native';
 import moment from 'moment';
+import PickerMe from '../../components/PickerMe'
 import {commonStyle as cs} from '../../styles/common/styles';
 import CalendarsChangable from  './../../components/TeacherCalendar'
 import {Button} from './../../components/widgets';
@@ -46,6 +47,7 @@ class PresenceCalendar extends Component {
       groupname: '',
       type:0,
       id:"",
+      data:['Aanwezig','Afwezig','Laat'],
       change:false,
       dateserver:"",
       teacherName:"",
@@ -53,7 +55,6 @@ class PresenceCalendar extends Component {
       groupStudent:[],
       modify:true,
       teacherlastname:"",
-      teacherInfo:null,
       changeid:"",
       comment:"",
       targetName:'',
@@ -64,9 +65,12 @@ class PresenceCalendar extends Component {
       presentStatus:[],
       LateStatus:[],
       absentStatus:[],
+      IsGroupModal:false,
       type:'',
+      Groupe:"",
       loader:false,
       IsSelectAll:false,
+      attendanceId:"",
       month:  parseInt(
         '2018-03-01'.substring(5, 7),
        10,
@@ -119,10 +123,8 @@ class PresenceCalendar extends Component {
    
 }
 
-   componentDidMount() {
-    
+   componentDidMount() {   
     this.groupStudent(-1)
-   this.loadTeacherInfo()
    this.savedate()
    this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
  
@@ -131,11 +133,9 @@ class PresenceCalendar extends Component {
 
 
 
-  savedate=async(studentData)=>{
-    
+  savedate=async(studentData)=>{  
     this.setState({presentStatus:[],absentStatus:[],LateStatus:[]})
     this.setState({datepress:studentData})
-    // console.warn("!!!!!!!!!!!!!!",studentData)
     studentData &&  this.setState({loader:true})
     axios
   .post(
@@ -154,23 +154,19 @@ class PresenceCalendar extends Component {
   .then(async(res )=> {
    
     if (res.data.msg === 'success') {
+      console.warn("eeeeee",res.data.data)
+      this.setState({attendanceId:res.data.data.FLD_PK_STUDENT_ATTENDANCE})
       const {presentStatus,LateStatus,absentStatus}= this.state
-         console.warn("@@@@@@@@@@@@@@@@@@ res for load student",res.data.data)
       await  this.setState({loadStudent:res.data.data})
         for(let i=0;i<this.state.loadStudent.length;i++){
-          console.warn("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
           this.state.presentStatus[i]=((this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false)  
           this.setState({presentStatus})         
            this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false 
            this.setState({LateStatus})     
            this.state.absentStatus[i]=(this.state.loadStudent[i].FLD_ISPRESENT!==true)?true:false
            this.setState({absentStatus})
-           console.warn("statuuuuuuuuuuuuuuuuuuuuus present",this.state.presentStatus)
            this.setState({loader:false})
          }
-        
-     
-        // this.anotherFunc();
     }
   })
   .catch(error => {
@@ -181,16 +177,17 @@ class PresenceCalendar extends Component {
 
 
   SaveBtn=async()=>{
-    this.setState({editpage:false})
-    for(var i=0;i<this.state.changedata.length;i++){
-      var info=this.state.changedata[i]
+  var comment = this.state.comment
         axios
         .post(
-          global.url + 'api/student/saveAttendance',
+          global.url + 'api/school/addAttendance',
           {
-            id: this.state.changedata[i].FLD_PK_STUDENT_ATTENDANCE,
+            // attendanceId: ,
             isPresent:this.state.changedata[i].FLD_ISPRESENT,
-            isLate:this.state.changedata[i].FLD_IS_LATE
+            isLate:this.state.changedata[i].FLD_IS_LATE,
+            date:this.state.datepress,
+            comment:comment
+
           },
           {
             headers: {
@@ -212,41 +209,14 @@ class PresenceCalendar extends Component {
         .catch(error => {
        
         });
-      }
+      
   }
 
 
-  loadTeacherInfo = async () => {
-    axios
-      .get(global.url + 'api/teacher/loadInfo', {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': await AsyncStorage.getItem('@token'),
-        },
-      })
-      .then(res => {
-        // console.warn("===============name@@@@@@@@@@@@@@@@@",res.data)
-        this.setState({teacherInfo: res.data});
-        // console.warn('===>res when call twice for component', res);
-        if (res.data.msg === 'success') {
-        }
-        if (res.data.msg === 'fail') {
-          // console.warn('fail', res.data);
-          return;
-        }
-      })
-      .catch(error => {
-        console.warn('error', error);
-      });
-  };
+ 
   
-  activeEditPage=(status)=>{
-    // console.warn("++++++++++++++",status)
-    this.setState({editpage:status})
-
-  }
-
   groupStudent=async(teacherId )=> {  
+    console.warn("log date press for me********",this.state.datepress)
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
      console.warn("current date",this.state.datepress,"fffff",`${moment().year()}/${moment().month()+1}/1`)
       axios
@@ -278,25 +248,19 @@ class PresenceCalendar extends Component {
   }
 
   componentWillUpdate(prevProps) {
-  //  console.warn("focuuuuuuuuuuuuuuuuuuus",prevProps.isFocused, this.props.isFocused)
     if (prevProps.isFocused !== this.props.isFocused) {
       this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
       this.savedate()   
-      this.loadTeacherInfo()
-      this.groupStudent(-1)
-      
+      this.groupStudent(-1)     
       }
     }
 
     OpenNoteModal=(comment)=>{
-      // console.warn("@@@@@@@@@@@****",comment!==null)
       this.setState({comment:comment.Fld_Comment}),this.setState({IsOpenNote:true})
-
     }
 
 
     groupeNoteOpen=async()=>{
-      // console.warn("###############",this.state.datepress)
       this.setState({IsGroupNote:true})
       axios
       .post(
@@ -314,10 +278,7 @@ class PresenceCalendar extends Component {
       )
       .then(async(res) => {
         if (res.data.msg === 'success') {
-          // console.warn("note group",res.data)
-          this.setState({groupNote:res.data.data})
-    
-          
+          this.setState({groupNote:res.data.data})  
         }
       })
       .catch(error => {
@@ -336,7 +297,9 @@ class PresenceCalendar extends Component {
       const {absentStatus}=this.state
       this.state.absentStatus[index]=(this.state.absentStatus[index]===true)?false:true
       this.setState({absentStatus})
-      //  this.setState({presentStatus})
+      const {LateStatus}=this.state
+      this.state.LateStatus[index]=(this.state.presentStatus[index]===false)?false:this.state.LateStatus[index]
+      this.setState({LateStatus})
       console.warn(index, this.state.presentStatus[index])
     }
 
@@ -346,11 +309,10 @@ class PresenceCalendar extends Component {
       this.state.LateStatus[index]=(this.state.LateStatus[index]===true)?false:true
       this.setState({LateStatus})
       const {presentStatus}=this.state
-      this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
+      this.state.presentStatus[index]=this.state.LateStatus[index]===true ? true : this.state.presentStatus[index]
       this.setState({presentStatus})
-      //  this.setState({presentStatus})
       const {absentStatus}=this.state
-      this.state.absentStatus[index]=(this.state.absentStatus[index]===true)?false:true
+      this.state.absentStatus[index]=(this.state.LateStatus[index]===true)?false:(this.state.presentStatus[index]===true) ? false:true
       this.setState({absentStatus})
       console.warn(index, this.state.LateStatus[index])
     }
@@ -363,6 +325,9 @@ class PresenceCalendar extends Component {
       this.state.presentStatus[index]=(this.state.presentStatus[index]===true)?false:true
       this.setState({presentStatus})
       //  this.setState({presentStatus})
+      const {LateStatus}=this.state
+      this.state.LateStatus[index]=(this.state.absentStatus[index]===true)?false:true
+      this.setState({LateStatus})
       console.warn(index, this.state.absentStatus[index])
     }
     CloseStudentModal=(status)=>{
@@ -373,18 +338,77 @@ class PresenceCalendar extends Component {
 
     CloseGroupeNoteModal=(status)=>{
       this.setState({IsGroupNote:status})
-       console.warn(status,"status for close group student")
+ 
     }
 
     CloseSelectALLeModal=(status)=>{
       this.setState({IsSelectAll:status})
-       console.warn(status,"status for close group student")
+ 
+    }
+
+    CloseGroupModal=(value)=>{
+      this.setState({IsGroupModal:value})
+     
+
     }
 
     Type=(value)=>{
       this.setState({type:value})
+      console.warn("skdksdfhksdjfh",value==="Aanwezig",value )
+      if(value==="Aanwezig"){
+     this.AllStudentPresent()}else
+     if(value==="Afwezig"){
+       this.AllStudentAbsent()
+     }else if(value==="Laat"){
+      this.AllStudentLate()
+     }
+      
+    }
+
+    AllStudentPresent=()=>{
+      for (var i=0; i<this.state.presentStatus.length ;i++){
+        console.warn(this.state.presentStatus[i])
+       
+        this.state.presentStatus[i]=true
+        this.state.absentStatus[i]=false
+       
+      }
+    }
+
+    AllStudentAbsent=()=>{
+      for (var i=0; i<this.state.presentStatus.length ;i++){
+        console.warn(this.state.presentStatus[i])
+       
+        this.state.presentStatus[i]=false
+        this.state.LateStatus[i]=false
+        this.state.absentStatus[i]=true
+      }
+    }
+
+    AllStudentLate=()=>{
+      for (var i=0; i<this.state.presentStatus.length ;i++){
+        console.warn(this.state.presentStatus[i])
+        this.state.LateStatus[i]=true
+        this.state.presentStatus[i]=true
+        this.state.absentStatus[i]=false
+      }
+    }
+    GroupeName=(value)=>{
+      this.getGroupFunction(value)
+      // console.warn("222222",value.FLD_GROUP_NAME)
+      this.setState({Groupe:value.FLD_GROUP_NAME})
+    }
+
+    OpenModal=(value)=>{
+      this.setState({IsSelectAll:value})
+
+    }
+
+    OpenGroupModal=(value)=>{
+      this.setState({IsGroupModal:value})
     }
   render() {
+    console.warn("&&&&&&&&&&&&&&&&&&&",this.state.presentStatus)
  
     const {loadMonthAttendance} = this.props;
    
@@ -392,7 +416,8 @@ class PresenceCalendar extends Component {
       <ScrollView>   
         <StudentCommentModal comment={this.state.comment}  CloseStudentModal={this.CloseStudentModal} IsOpenNote={this.state.IsOpenNote} />
         <GroupeNoteModal    IsGroupNote={this.state.IsGroupNote} CloseGroupeNoteModal={this.CloseGroupeNoteModal} CloseStudentModal={this.CloseStudentModal} GroupeNote={this.state.GroupeNote} />
-        <SelectAllModal Type={this.Type}    CloseSelectALLeModal={this.CloseSelectALLeModal}  IsSelectAll={this.state.IsSelectAll} />
+        <SelectAllModal  Title={"Groepsbericht"}  Type={this.Type}  data={this.state.data}   CloseSelectALLeModal={this.CloseSelectALLeModal}  IsSelectAll={this.state.IsSelectAll} />
+        <SelectAllModal  Title={"groepen"} Type={this.GroupeName}  data={this.state.groupStudent}   CloseSelectALLeModal={this.CloseGroupModal}  IsSelectAll={this.state.IsGroupModal} />
       
         <View
         pointerEvents={(this.state.modify===true) ? 'none':null}
@@ -466,7 +491,7 @@ class PresenceCalendar extends Component {
                 </View>
               </View>
               
-             <View style={[cs.pickerContainerTeacher]}>
+             {/* <View style={[cs.pickerContainerTeacher]}>
                 <Picker
                   placeholder="Selecteer type kosten"
                   style={{backgroundColor:"transparent",}}
@@ -498,25 +523,21 @@ class PresenceCalendar extends Component {
                     style={{marginLeft: 5, marginTop: 5}}
                   />
                 </View>
-             </View>
-            {this.state.loadStudent.length!==0 && <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/13}}>
-                  <TouchableOpacity   onPress={()=>this.SelectAllPress()} style={cs.pickerMe}> 
-                     <Text style={{marginTop:2,marginRight:20}}>{this.state.type!=="" ?(this.state.type): ("Markeer iedereen als")}</Text>
-                     <View style={{borderRadius:20,width:20,height:20,backgroundColor:"gray",alignItems:"center",justifyContent:"center"}} >
-                      <Icon
-                        name="chevron-down"
-                        color="white"
-                        size={10}
-                        style={{}}
-                      />
-                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this.groupeNoteOpen()} style={cs.groupNote}>
-                     <Image source={require('../../assets/images/student/presence/notepad.png')} style={{width:"15%",height:30,resizeMode:"contain",tintColor:"white"}} />
-                     <Text style={{color:"white"}}>Groeps notitie</Text>
+             </View> */}
+             <PickerMe   TextStyle={{marginLeft:width*0.270,width:100}} style={{width:width*0.900,alignSelf:"center",marginBottom:-width/30}} styleIcon={{marginLeft:width*0.180}}  OpenModal={this.OpenGroupModal} type={this.state.Groupe} defaultText={"Teacher Groups"} />
+            {this.state.loadStudent.length!==0 && 
+         
+            <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/30}}>
+                 <PickerMe  style={{justifyContent:"center"}}  TextStyle={{width:width/3}} style={{marginRight:width/35}} OpenModal={this.OpenModal } type={this.state.type}  defaultText={"Markeer iedereen als"}/>
+                <TouchableOpacity onPress={()=>this.groupeNoteOpen()} >
+                    <View style={cs.groupNote}>
+                     <Image source={require('../../assets/images/student/presence/notepad.png')} style={{width:"15%",height:30,resizeMode:"contain",tintColor:"white"}} /> 
+                    <Text style={{color:"white"}}>Groeps notitie</Text>
+                    </View>
                 </TouchableOpacity>
                 
-             </View>}
+             </View>
+             }
             {this.state.loadStudent.map((item,index)=>{
               console.warn("present status",this.state.loadStudent[index].FLD_ISPRESENT)
               // console.warn("in render part log present status$$$",this.state.presentStatus)

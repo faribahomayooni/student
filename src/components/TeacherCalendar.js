@@ -77,7 +77,7 @@ loadmonth=async(date)=>{
       },
     },
   )
-  .then((res )=> {
+  .then(async(res )=> {
     if (res.data.msg === 'success') {
       console.warn("@@@@@@@@@@@@@@@@@@ res for load month",res.data.data)
       this.setState({resloadmonthattendance:res.data.data})
@@ -172,11 +172,12 @@ loadmonth=async(date)=>{
 
   
  componentWillReceiveProps=async(nexxt,dat)=>{
-    console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.props.groupId)
+    console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.state.studentid!==nexxt.groupId)
   // this.func()
    if(this.state.counter!==this.props.count)
  {  
   if(this.state.studentid!==nexxt.groupId){
+    this.setState({studentstatus:[]})
     this.loadStudentInfo()
     this.setState({changedisablemode:true})
     this.setState({disable:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']});
