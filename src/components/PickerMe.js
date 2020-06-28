@@ -25,7 +25,8 @@ class GroupeNoteModal extends Component {
 
 
 render(){
- console.warn("!!!!!!!!!!!!!!! is open Modal",this.props.type)
+  // var data =  JSON.stringify( this.props.group[0].FLD_GROUP_NAME)
+//  console.warn("!!!!!!!!!!!!!!! is open Modal",this.props.group!==undefined && data.FLD_GROUP_NAME)
   return(
    
 <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/13,backgroundColor:"#F2F3F7"}}>

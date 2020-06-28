@@ -33,7 +33,7 @@ class CalendarsScreen extends Component {
     super(props);
 
     this.state = {
-     
+      PressDate:"",
       counter: 0,
       selected: '',
       dynamicdate: [],
@@ -54,12 +54,13 @@ class CalendarsScreen extends Component {
      changemodedate:[],
       resloadmonthattendance:"",
      modify:0,
+     AllData:[],
      changedisablemode:false,
     };
   }
 
 loadmonth=async(date)=>{
-  console.warn("state of month and year in moment ",this.state.month===""?`${moment().year()}/0${moment().month()+1}/01}`:`${this.state.year}/0${this.state.month}/01`)
+  // console.warn("state of month and year in moment ",this.state.month===""?`${moment().year()}/0${moment().month()+1}/01}`:`${this.state.year}/0${this.state.month}/01`)
    var startDATE =date==undefined?`${moment().year()}/0${moment().month()+1}/01`:`${date.year}/0${date.month}/01`;
   var endDate =date==undefined?`${moment().year()}/0${moment().month()+1}/30`:`${date.year}/0${date.month}/30`;
   axios
@@ -79,16 +80,20 @@ loadmonth=async(date)=>{
   )
   .then(async(res )=> {
     if (res.data.msg === 'success') {
-      console.warn("@@@@@@@@@@@@@@@@@@ res for load month",res.data.data)
-      this.setState({resloadmonthattendance:res.data.data})
+      // console.warn("@@@@@@@@@@@@@@@@@@ res for load month",res.data.data)
+    await  this.setState({resloadmonthattendance:res.data.data})
       res.data.data !== undefined &&
       res.data.data.filter(obj => {
         if (obj.STATUS === 2) {
+         
           this.state.studentstatus.push({
             date: obj.selected_date,
             type: 3,
-            status:obj.CountStudent
+            status:obj.CountStudent,
+            present:obj.Count_presents,
+            absent:obj.Count_absents
           });
+          
         } 
        
       });
@@ -172,11 +177,12 @@ loadmonth=async(date)=>{
 
   
  componentWillReceiveProps=async(nexxt,dat)=>{
-    console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.state.studentid!==nexxt.groupId)
+    // console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.state.studentid!==nexxt.groupId)
   // this.func()
    if(this.state.counter!==this.props.count)
  {  
   if(this.state.studentid!==nexxt.groupId){
+    console.warn("+++++++++++++++++++++++",this.state.studentid,nexxt.groupId)
     this.setState({studentstatus:[]})
     this.loadStudentInfo()
     this.setState({changedisablemode:true})
@@ -187,7 +193,7 @@ loadmonth=async(date)=>{
     this.setState({studentstatus:[]})
     this.setState({dynamicdate:[]})
  }
- this.setState({press:false})
+//  this.setState({press:false})
 if(this.state.press!==true){
   this.loadmonth()
 
@@ -251,10 +257,59 @@ anotherFunc = async() => {
     
    this.setState({dynamicdate:obj,changedisablemode:false})
    this.setState({markedDates:{...this.state.markedDates,...obj}})
-};
-  edit=(day)=>{
  
-            this.props.savedate(day.dateString)
+};
+  edit=async(day)=>{
+    
+ this.setState({press:true})
+       this.props.savedate(day.dateString)
+        //  this.props.allDate(this.state.studentstatus)
+         this.state.studentstatus.push(
+           { 
+             date:day.dateString,
+             type:2
+
+           },
+           {
+             date:this.state.PressDate,
+             type:3
+
+           }
+         )
+
+         var obj = await this.state.studentstatus.reduce(
+          (c, v) =>
+            Object.assign(c, {
+               [v.date]: {         
+                customStyles: {
+                  container: {
+                    width: '95%',
+                    backgroundColor:
+                      (v.type === 1 && '#E7B52E') ||
+                      (v.type === 2 && 'blue') ||
+                      (v.type === 3 && '#88C755'),
+                    borderRadius: 0,
+                  },
+                  text: {
+                    color: 'white',
+                    fontSize:12,
+                  },
+                 
+                },
+               
+      
+                
+              },
+            
+            }),
+            
+          {},
+        );
+          
+         this.setState({dynamicdate:obj,changedisablemode:false})
+         this.setState({markedDates:{...this.state.markedDates,...obj}})
+         this.setState({PressDate:day.dateString})
+         this.props.allDate(this.state.studentstatus)
 
   }
 
@@ -273,7 +328,7 @@ anotherFunc = async() => {
 
  
   render() {
-   
+  //  console.warn("all data in calndar",this.state.AllDatsa)
     const {loadMonthAttendance} = this.props;
     return (
       <ScrollView style={styles.container}>
@@ -317,7 +372,9 @@ anotherFunc = async() => {
             this.state.studentstatus.push({
             date: obj.selected_date,
             type: 3,
-            status:obj.CountStudent
+            status:obj.CountStudent,
+            present:obj.Count_presents,
+            aBsent:obj.Count_absents
           });
         } 
      

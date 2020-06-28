@@ -29,6 +29,7 @@ import GroupeNoteModal from '../../components/GroupeNoteModal'
 import SelectAllModal from '../../components/SelectAllModal'
 import axios from 'axios';
 import { withNavigationFocus } from 'react-navigation';
+import { Value } from 'react-native-reanimated';
 
 const {width, height} = Dimensions.get('window');
 class PresenceCalendar extends Component {
@@ -41,6 +42,7 @@ class PresenceCalendar extends Component {
       count: 0,
       changedata:[],
       selected: '',
+      dateStudentStatus:[],
       datepress:"",
       groupName: '',
       groupId: '',
@@ -56,10 +58,11 @@ class PresenceCalendar extends Component {
       modify:true,
       teacherlastname:"",
       changeid:"",
-      comment:"",
+      comment:[],
       targetName:'',
       loadStudent:[],
       date:"",
+      allDate:[],
       IsOpenNote:false,
       editpage:false,
       presentStatus:[],
@@ -67,10 +70,13 @@ class PresenceCalendar extends Component {
       absentStatus:[],
       IsGroupModal:false,
       type:'',
+      IndexComment:'',
       Groupe:"",
       loader:false,
       IsSelectAll:false,
       attendanceId:"",
+      statusPress:[],
+      index:0,
       month:  parseInt(
         '2018-03-01'.substring(5, 7),
        10,
@@ -154,11 +160,13 @@ class PresenceCalendar extends Component {
   .then(async(res )=> {
    
     if (res.data.msg === 'success') {
-      console.warn("eeeeee",res.data.data)
+      // console.warn("eeeeee",res.data.data)
       this.setState({attendanceId:res.data.data.FLD_PK_STUDENT_ATTENDANCE})
       const {presentStatus,LateStatus,absentStatus}= this.state
       await  this.setState({loadStudent:res.data.data})
         for(let i=0;i<this.state.loadStudent.length;i++){
+          this.state.comment.push(this.state.loadStudent[i].Fld_Comment)
+          // this.setState({comment:this.state.loadStudent[i].Fld_Comment})
           this.state.presentStatus[i]=((this.state.loadStudent[i].FLD_ISPRESENT===true)?true:false)  
           this.setState({presentStatus})         
            this.state.LateStatus[i]=(this.state.loadStudent[i].FLD_IS_LATE===true)?true:false 
@@ -177,16 +185,19 @@ class PresenceCalendar extends Component {
 
 
   SaveBtn=async()=>{
+    // console.warn(this.state.loadStudent,"lsdjfjsdfjhsdgfhj")
   var comment = this.state.comment
+  for (var i=0; i<this.state.loadStudent.length;i++){
+    // console.warn("present",this.state.presentStatus[i],"late",this.state.LateStatus[i],"datepress",this.state.datepress,"comment",comment[i])
         axios
         .post(
           global.url + 'api/school/addAttendance',
           {
-            // attendanceId: ,
-            isPresent:this.state.changedata[i].FLD_ISPRESENT,
-            isLate:this.state.changedata[i].FLD_IS_LATE,
+           attendanceId:this.state.loadStudent[i].FLD_PK_STUDENT_ATTENDANCE,
+            isPresent:this.state.presentStatus[i],
+            isLate:this.state.LateStatus[i],
             date:this.state.datepress,
-            comment:comment
+            comment:comment[i]
 
           },
           {
@@ -209,22 +220,22 @@ class PresenceCalendar extends Component {
         .catch(error => {
        
         });
-      
+      }
   }
 
 
  
   
   groupStudent=async(teacherId )=> {  
-    console.warn("log date press for me********",this.state.datepress)
+    // console.warn("log date press for me********",this.state.datepress)
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
-     console.warn("current date",this.state.datepress,"fffff",`${moment().year()}/${moment().month()+1}/1`)
+    //  console.warn("current date",this.state.datepress,"fffff",`${moment().year()}/${moment().month()+1}/1`)
       axios
         .post(
           global.url + 'api/teacher/loadGroupsByDate',
           {
             teacherId :-1 ,
-            date:this.state.datepress!=="" ?this.state.datepress:`${moment().year()}/${moment().month()}/1`
+            date:this.state.datepress!=="" ? this.state.datepress:`${moment().year()}/${moment().month()}/1`
           },
           {
             headers: {
@@ -237,13 +248,14 @@ class PresenceCalendar extends Component {
           if (res.data.msg === 'success') {
             // console.warn("grouppppppppppppppppppp",res.data)
         this.setState({groupStudent:res.data.data})
+        this.setState({Groupe:res.data.data[0].FLD_GROUP_NAME})
         this.getGroupFunction(res.data.data[0])
             // this.setState({id:res.data.data[0].FLD_FK_GROUP})
             
           }
         })
         .catch(error => {
-          console.warn("%%%%%%%%%this is group for teacher by date",error);
+          // console.warn("%%%%%%%%%this is group for teacher by date",error);
         }); 
   }
 
@@ -255,8 +267,12 @@ class PresenceCalendar extends Component {
       }
     }
 
-    OpenNoteModal=(comment)=>{
-      this.setState({comment:comment.Fld_Comment}),this.setState({IsOpenNote:true})
+    OpenNoteModal=(comment,index)=>{
+      // this.state.comment.push(comment.Fld_Comment);
+      this.setState({index:index})
+      this.setState({itemPress:comment})
+     this.setState({IsOpenNote:true})
+      this.setState({IndexComment:index})
     }
 
 
@@ -331,7 +347,7 @@ class PresenceCalendar extends Component {
       console.warn(index, this.state.absentStatus[index])
     }
     CloseStudentModal=(status)=>{
-      console.warn("$$$$$$$$$$$$$$$$$$",status)
+      // console.warn("$$$$$$$$$$$$$$$$$$",status)
     this.setState({IsOpenNote:status})  
     }
     
@@ -367,7 +383,7 @@ class PresenceCalendar extends Component {
 
     AllStudentPresent=()=>{
       for (var i=0; i<this.state.presentStatus.length ;i++){
-        console.warn(this.state.presentStatus[i])
+        // console.warn(this.state.presentStatus[i])
        
         this.state.presentStatus[i]=true
         this.state.absentStatus[i]=false
@@ -377,7 +393,7 @@ class PresenceCalendar extends Component {
 
     AllStudentAbsent=()=>{
       for (var i=0; i<this.state.presentStatus.length ;i++){
-        console.warn(this.state.presentStatus[i])
+        // console.warn(this.state.presentStatus[i])
        
         this.state.presentStatus[i]=false
         this.state.LateStatus[i]=false
@@ -387,7 +403,7 @@ class PresenceCalendar extends Component {
 
     AllStudentLate=()=>{
       for (var i=0; i<this.state.presentStatus.length ;i++){
-        console.warn(this.state.presentStatus[i])
+        // console.warn(this.state.presentStatus[i])
         this.state.LateStatus[i]=true
         this.state.presentStatus[i]=true
         this.state.absentStatus[i]=false
@@ -407,17 +423,31 @@ class PresenceCalendar extends Component {
     OpenGroupModal=(value)=>{
       this.setState({IsGroupModal:value})
     }
+
+    getComment=(value)=>{
+      // console.warn("valueeee of comment********************** ",value)
+     this.state.comment[this.state.index]=value
+    }
+
+    allDate=(VALUE)=>{
+      this.setState({allDate:[]})
+      console.warn("valueeeeeee of all month@@@@@@@@@@@@",VALUE)
+      //  this.state.allDate.push(VALUE)
+this.setState({allDate:VALUE})
+    }
+
+
   render() {
-    console.warn("&&&&&&&&&&&&&&&&&&&",this.state.presentStatus)
+    // console.warn("&&&&&&&&&&&&&&&&&&&",this.state.allDate)
  
     const {loadMonthAttendance} = this.props;
    
     return (
       <ScrollView>   
-        <StudentCommentModal comment={this.state.comment}  CloseStudentModal={this.CloseStudentModal} IsOpenNote={this.state.IsOpenNote} />
-        <GroupeNoteModal    IsGroupNote={this.state.IsGroupNote} CloseGroupeNoteModal={this.CloseGroupeNoteModal} CloseStudentModal={this.CloseStudentModal} GroupeNote={this.state.GroupeNote} />
-        <SelectAllModal  Title={"Groepsbericht"}  Type={this.Type}  data={this.state.data}   CloseSelectALLeModal={this.CloseSelectALLeModal}  IsSelectAll={this.state.IsSelectAll} />
-        <SelectAllModal  Title={"groepen"} Type={this.GroupeName}  data={this.state.groupStudent}   CloseSelectALLeModal={this.CloseGroupModal}  IsSelectAll={this.state.IsGroupModal} />
+        <StudentCommentModal   loadStudent={this.state.itemPress}  index={this.state.index} getComment={(value)=>this.getComment(value)}  CloseStudentModal={this.CloseStudentModal} IsOpenNote={this.state.IsOpenNote} />
+        <GroupeNoteModal       IsGroupNote={this.state.IsGroupNote} CloseGroupeNoteModal={this.CloseGroupeNoteModal} CloseStudentModal={this.CloseStudentModal} GroupeNote={this.state.GroupeNote} />
+        <SelectAllModal        Title={"Groepsbericht"} git Type={this.Type}  data={this.state.data}   CloseSelectALLeModal={this.CloseSelectALLeModal}  IsSelectAll={this.state.IsSelectAll} />
+        <SelectAllModal        Title={"groepen"} Type={this.GroupeName}  data={this.state.groupStudent}   CloseSelectALLeModal={this.CloseGroupModal}  IsSelectAll={this.state.IsGroupModal} />
       
         <View
         pointerEvents={(this.state.modify===true) ? 'none':null}
@@ -443,6 +473,7 @@ class PresenceCalendar extends Component {
              <View style={cs.calendarsWrapper}>
                 <View style={{width: '100%'}}>    
                   <CalendarsChangable
+                    allDate={this.allDate}
                     navigation={this.props.navigation}
                     group={this.state.group}
                     type={this.state.type}
@@ -467,6 +498,36 @@ class PresenceCalendar extends Component {
                   marginBottom: 20,
                   width: '100%',
                 }}>
+                {
+
+                this.state.allDate.length!==0 &&
+                this.state.allDate.filter(obj=>obj.data===this.state.datepress && this.state.statusPress.push(obj)),
+                    <View>
+                  <View style={{flexDirection:"row",marginTop:width/35,marginLeft:width/40}}> 
+                      <Text  style={{fontWeight:"bold",fontSize:width/30}}>
+                          Alle aanwezigen  :
+                       </Text>
+                       <Text  style={{fontWeight:"bold",fontSize:width/30}}>
+                        {this.state.allDate.length!==0 && this.state.allDate[0].present}
+                       </Text>
+ 
+                   </View>
+                   <View style={{flexDirection:"row",marginTop:width/35,marginLeft:width/40}}> 
+                      <Text  style={{fontWeight:"bold",fontSize:width/30}}>
+                          Alle Afwezig  :
+                       </Text>
+                       <Text  style={{fontWeight:"bold",fontSize:width/30}}>
+                      { this.state.allDate.length!==0 &&  this.state.allDate[0].absent}
+                       </Text>
+ 
+                   </View>
+                   </View>} 
+
+           
+                
+                  
+                  
+                 
                 
                 <View
                   style={{
@@ -524,7 +585,7 @@ class PresenceCalendar extends Component {
                   />
                 </View>
              </View> */}
-             <PickerMe   TextStyle={{marginLeft:width*0.270,width:100}} style={{width:width*0.900,alignSelf:"center",marginBottom:-width/30}} styleIcon={{marginLeft:width*0.180}}  OpenModal={this.OpenGroupModal} type={this.state.Groupe} defaultText={"Teacher Groups"} />
+             <PickerMe  group={this.state.groupStudent}  TextStyle={{marginLeft:width*0.270,width:100}} style={{width:width*0.900,alignSelf:"center",marginBottom:-width/30}} styleIcon={{marginLeft:width*0.180}}  OpenModal={this.OpenGroupModal} type={this.state.Groupe}  />
             {this.state.loadStudent.length!==0 && 
          
             <View style={{flexDirection:"row",justifyContent:"center",marginBottom:width/30}}>
@@ -539,13 +600,13 @@ class PresenceCalendar extends Component {
              </View>
              }
             {this.state.loadStudent.map((item,index)=>{
-              console.warn("present status",this.state.loadStudent[index].FLD_ISPRESENT)
+              // console.warn("present status",this.state.loadStudent[index].FLD_ISPRESENT)
               // console.warn("in render part log present status$$$",this.state.presentStatus)
             
               // console.warn(item)
               return(
                 <View key={index} style={{flexDirection:"row",marginTop:10,justifyContent:"center"}}>
-                  <TouchableOpacity onPress={()=>this.OpenNoteModal(item)}>
+                  <TouchableOpacity onPress={()=>this.OpenNoteModal(item,index)}>
                       <Image source={require('../../assets/images/student/presence/notebook.png')} style={{width:20,height:20,resizeMode:"contain",marginTop:5}} />
                  </TouchableOpacity>
                 <Text style={{marginTop:0,fontSize:15,marginRight:0,width:"25%",marginTop:5}}>{item.StudentFullName}</Text>

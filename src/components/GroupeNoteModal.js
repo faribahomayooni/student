@@ -19,7 +19,7 @@ class GroupeNoteModal extends Component {
  
 
 render(){
-    console.warn("!!!!!!!!!!!!!!! is open Modal",this.state.IsGroupNote)
+    // console.warn("!!!!!!!!!!!!!!! is open Modal",this.state.IsGroupNote)
   return(
     <Modal
     style={{marginTop:width/2}}

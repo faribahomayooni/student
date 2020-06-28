@@ -13,13 +13,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const {width,height}=Dimensions.get("window")
 class GroupeNoteModal extends Component {
     state={
-        IsOpenNote:this.props.IsOpenNote
+        IsOpenNote:this.props.IsOpenNote,
+        StudentComment:""
     }
   
+    SaveComment=()=>{
+      const {StudentComment}=this.state
+      this.props.getComment(StudentComment)
+      this.props.CloseStudentModal(false)
+    }
 
 render(){
-   
-    // console.warn("!!!!!!!!!!!!!!! is open Modal",this.state.IsOpenNote)
+   const {loadStudent,index}=this.props
+  //  console.warn("!!!!!!!!!!!!!!! comments in student",loadStudent.Fld_Comment)
   return(
  <Modal
    style={{marginTop:width/2}}
@@ -47,14 +53,14 @@ render(){
         numberOfLines={10}
         multiline={true}
            style={{padding:10, borderColor: 'lightgray', borderWidth: 1 ,marginTop:10,height:width/2, justifyContent: "flex-start"}}
-           onChangeText={text => this.setState({comment:text})}
-           value={this.props.comment}
+           onChangeText={text => this.setState({StudentComment:text})}
+        value={loadStudent!==undefined && loadStudent.Fld_Comment}
          />
          <View style={{flexDirection:"row",marginTop:5}}>
                <TouchableOpacity  onPress={()=> this.props.CloseStudentModal(false)} style={{backgroundColor:"red",borderRadius:5,padding:5,marginRight:5}}>
                    <Text style={{color:"white"}}>sluiten</Text>
                </TouchableOpacity>
-               <TouchableOpacity style={{backgroundColor:"green",borderRadius:5,padding:5}}>
+               <TouchableOpacity  onPress={()=>this.SaveComment()} style={{backgroundColor:"green",borderRadius:5,padding:5}}>
                    <Text  style={{color:"white"}}>Bevestiging</Text>
                </TouchableOpacity>
          </View>
