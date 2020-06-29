@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {Text, View,StyleSheet, Dimensions,ScrollView,TouchableOpacity,Image,AsyncStorage,ToastAndroid, ActivityIndicator} from 'react-native';
 import {commonStyle as cs} from './../styles/common/styles';
 import {getnotification} from '../actions/notificationAction';
+import messaging from '@react-native-firebase/messaging';
 import {getGroupStudent} from '../actions/TravelcostAction'
 import {connect} from 'react-redux';
 import {TypeSignIn} from '../actions/ProfileAction'
@@ -73,12 +74,92 @@ class DashboardBox extends Component {
   };
 
 async componentDidMount() {
+  console.warn("22222222222222222222222222222222222")
   this.props.TypeSignIn( await AsyncStorage.getItem('@typeofsignin'))
   // console.warn("sadasdgashd")
   this.setState({selectedItems:[]})
   if(this.state.edit===false){
        this.loadDashboard()} 
+        var data= await AsyncStorage.getItem('@notification')
+     this.props.notification.length!==0 && this.setState({modalVisible:true})  
+      this.checkPermission();
+      const {dispatch} = this.props;
+      this.SaveTokenwithapi()
+      const unsubscribe = messaging().onMessage(async remoteMessage => {
+      this.setState({modalVisible:true})
+      this.props.getnotification(remoteMessage)
+      
+     });
+        messaging().setBackgroundMessageHandler(async remoteMessage => {   
+        this.props.getnotification(remoteMessage)
+        this.setState({modalVisible:true})
+        ;
+      });
     }
+
+    async checkPermission() {
+      const enabled = await messaging().hasPermission();
+      if (enabled) {
+          this.getToken();
+      } else {
+          this.requestPermission();
+      }
+    }
+
+    
+    async getToken() {
+      let fcmToken = await AsyncStorage.getItem('fcmToken');
+  
+      if (!fcmToken) {
+          fcmToken = await messaging().getToken();
+          if (fcmToken) {
+             
+              await AsyncStorage.setItem('fcmToken', fcmToken);
+          }
+      }
+    }
+    
+      //2
+    async requestPermission() {
+      try {
+          await messaging().requestPermission();
+  
+          this.getToken();
+      } catch (error) {
+         
+      }
+    }
+  
+  SaveTokenwithapi= async()=>{
+    console.warn("fcmmmmmmmmmmmmmm token",await AsyncStorage.getItem('getToken'))
+    axios
+    .post(
+      global.url + 'api/user/saveFirebase',
+      {
+        firebaseToken: await AsyncStorage.getItem('getToken')
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-access-token': await AsyncStorage.getItem('@token'),
+        },
+      },
+    )
+    .then(res => {
+      if (res.data.msg === 'success') {
+        console.warn("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",res.data.data)
+        messaging().onNotificationOpenedApp(remoteMessage => {
+          alert(remoteMessage.notification)
+         
+        });
+        
+      }
+    })
+    .catch(error => {
+      console.warn("ssssssssssssssssssssssssssssssssssssssssssssss",error)
+    });
+  }
+  
   
    componentWillReceiveProps(next){
     this.setState({data:this.state.selectedItems})

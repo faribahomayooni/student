@@ -13,9 +13,10 @@ import {commonStyle as cs} from './../styles/common/styles';
 import BlankMessage from './../components/BlankMessage';
 import Archive from './../components/Archive';
 import SchoolMessage from './../components/SchoolMessage';
+import {connect} from 'react-redux';
 import Footer from '../components/Footer';
 
-export default class Messages extends React.Component {
+class Messages extends React.Component {
   constructor(props) {
     super(props);
     this.FirstRoute = this.FirstRoute.bind(this);
@@ -26,28 +27,41 @@ export default class Messages extends React.Component {
     index: 0,
     currentRoute:"first",
     routes: [
-      {key: 'first', title: 'NIEUW'},
-      {key: 'second', title: 'ARCHIEF'},
-      {key: 'third', title: 'SCHOOL'},
+      {key: 'first', title:this.props.TypeSign==="teacher"?'STUUR': 'NIEUW'},
+      {key: 'second', title:this.props.TypeSign==="teacher"? 'NIEUW':'ARCHIEF'},
+      {key: 'third', title:this.props.TypeSign==="teacher"? 'ARCHIEF':'SCHOOL'},
     ],
   };
 
  
 
   FirstRoute = () => (
+    this.props.TypeSign==="teacher"?
     <View>
       <BlankMessage navigation={this.props.navigation} />
-    </View>
+    </View>:
+    <View>
+    <BlankMessage navigation={this.props.navigation} />
+  </View>
+
   );
   SecondRoute = () => (
+    this.props.TypeSign==="teacher"?
     <View>
-      <Archive navigation={this.props.navigation} />
-    </View>
+       <BlankMessage navigation={this.props.navigation} />
+    </View>:
+     <View>
+     <Archive navigation={this.props.navigation} />
+   </View>
   );
   ThirdRoute = () => (
+    this.props.TypeSign==="teacher"?
     <View>
       <SchoolMessage navigation={this.props.navigation} />
-    </View>
+    </View>:
+    <View>
+    <SchoolMessage navigation={this.props.navigation} />
+  </View>
   );
   
 
@@ -165,3 +179,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
+
+const mapStateToProps = state => {
+  return {
+    TypeSign:state.TypeSign
+  };
+};
+
+export default connect(mapStateToProps)(Messages);

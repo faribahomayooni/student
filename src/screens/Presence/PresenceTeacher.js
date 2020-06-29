@@ -108,6 +108,7 @@ class PresenceCalendar extends Component {
   }
 
   getGroupFunction= (newGroup)=> {
+  
   this.setState({id:""})
    this.setState({group: this.state.group + 1});
    this.setState({change:true})
@@ -123,6 +124,12 @@ class PresenceCalendar extends Component {
    this.passGroupdata(newGroup.FLD_FK_GROUP,this.state.month)
  
  }
+
+CleangroupId=(value)=>{
+  console.warn("valueeeeee of GROUP",value)
+  value===true &&  this.setState({groupId:""})
+  value===false && this.setState({groupId:this.state.id})
+}
  
 
  passGroupdata=(groupId,month)=>{
@@ -260,7 +267,11 @@ class PresenceCalendar extends Component {
   }
 
   componentWillUpdate(prevProps) {
+   
     if (prevProps.isFocused !== this.props.isFocused) {
+      this.setState({statusPress:[]})
+      console.warn("status pressssssssssssssss",this.state.statusPress)
+    
       this.setState({presentStatus:[],LateStatus:[],absentStatus:[]})
       this.savedate()   
       this.groupStudent(-1)     
@@ -433,7 +444,8 @@ class PresenceCalendar extends Component {
       this.setState({allDate:[]})
       console.warn("valueeeeeee of all month@@@@@@@@@@@@",VALUE)
       //  this.state.allDate.push(VALUE)
-this.setState({allDate:VALUE})
+      this.setState({allDate:VALUE})
+      this.setState({statusPress:[]})
     }
 
 
@@ -473,6 +485,7 @@ this.setState({allDate:VALUE})
              <View style={cs.calendarsWrapper}>
                 <View style={{width: '100%'}}>    
                   <CalendarsChangable
+                    CleangroupId={this.CleangroupId}
                     allDate={this.allDate}
                     navigation={this.props.navigation}
                     group={this.state.group}
@@ -501,14 +514,15 @@ this.setState({allDate:VALUE})
                 {
 
                 this.state.allDate.length!==0 &&
-                this.state.allDate.filter(obj=>obj.data===this.state.datepress && this.state.statusPress.push(obj)),
+               
+                this.state.allDate.filter(async(obj)=>obj.date===this.state.datepress && await this.state.statusPress.push(obj)),
                     <View>
-                  <View style={{flexDirection:"row",marginTop:width/35,marginLeft:width/40}}> 
+                   <View style={{flexDirection:"row",marginTop:width/35,marginLeft:width/40}}> 
                       <Text  style={{fontWeight:"bold",fontSize:width/30}}>
                           Alle aanwezigen  :
                        </Text>
                        <Text  style={{fontWeight:"bold",fontSize:width/30}}>
-                        {this.state.allDate.length!==0 && this.state.allDate[0].present}
+                        {this.state.statusPress.length!==0 && this.state.statusPress[0].present}
                        </Text>
  
                    </View>
@@ -517,18 +531,11 @@ this.setState({allDate:VALUE})
                           Alle Afwezig  :
                        </Text>
                        <Text  style={{fontWeight:"bold",fontSize:width/30}}>
-                      { this.state.allDate.length!==0 &&  this.state.allDate[0].absent}
+                      { this.state.statusPress.length!==0 &&  this.state.statusPress[0].absent}
                        </Text>
  
                    </View>
                    </View>} 
-
-           
-                
-                  
-                  
-                 
-                
                 <View
                   style={{
                     marginTop: 5,
@@ -547,8 +554,7 @@ this.setState({allDate:VALUE})
                 </View>
 
                 <View
-               >
-                  
+               >             
                 </View>
               </View>
               

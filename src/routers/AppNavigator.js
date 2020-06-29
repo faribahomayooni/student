@@ -33,7 +33,8 @@ import {Image, View,Text,Animated, Alert} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import IconBadge from 'react-native-icon-badge';
 import {connect} from 'react-redux';
-import MyTabBar from '../../src/components/MyTabBar'
+import MyTabBar from '../../src/components/MyTabBar';
+import SendTeacherMessage from '../components/SendTeacherMessage'
 import DashboardTeacherBox from '../components/DashboardTeacherBox'
 import ChoosedDashboard from '../../src/components/ChoosedDashboard'
 
@@ -144,6 +145,12 @@ const MessageStack = createStackNavigator(
         title: 'SchoolMessage',
       },
     },
+    SendTeacherMessage:{
+      screen:SendTeacherMessage,
+      navigationOptions:{
+        title:"Stuur een bericht"
+      }
+    }
   },
   {
     defaultNavigationOptions: {

@@ -5,6 +5,7 @@ import messaging from '@react-native-firebase/messaging';
 import {getnotification} from '../actions/notificationAction'
 import { withNavigationFocus } from 'react-navigation';
 import {connect} from 'react-redux';
+import NT2Button from '../components/NT2Button';
 
 
 const {width,height}=Dimensions.get("window")
@@ -47,6 +48,7 @@ const {width,height}=Dimensions.get("window")
   render() {
     return (
       <ScrollView>
+         
       <View>
        {this.props.notification.length==0 ?
       <View>
@@ -54,8 +56,7 @@ const {width,height}=Dimensions.get("window")
                <Text style={cs.noMessageTitle}>Geen berichten</Text>
                     <Text style={cs.noMessageSecondTitle}>Je hebt alles gelezen!</Text>
                     <Text style={cs.noMessageText}>
-                      Er zijn op dit moment geen nieuwe berichten van de school of je
-                      docent.
+                    {this.props.TypeSign==="teacher"?"Er zijn op dit moment geen nieuwe berichten van uw school of opdrachtgever." : "Er zijn op dit moment geen nieuwe berichten van de school of jedocent."}  
                 </Text>
             </View>
       </View>    
@@ -114,19 +115,20 @@ const {width,height}=Dimensions.get("window")
                   </TouchableOpacity>
               </View>
               </View>
+             
               <View style={cs.messageDateWrapper}>
                 <Text style={cs.messageDateText}>{ this.state.date}</Text>
-              
               </View>
-             
             </View>
     
           )
-        }
+        },
+       
         ) 
        
         
   }
+ {this.props.TypeSign==="teacher" &&  <NT2Button   name="VERSTUUR BERICHT"  Color={"#5467fd"} style={{marginTop:width/8}} navigation={this.props.navigation} />}
   </View>
   </ScrollView>
     );
@@ -145,7 +147,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
  return { loadBasicList: state.api.loadBasic,
-         notification:state.notification}
+         notification:state.notification,
+         TypeSign:state.TypeSign
+        }
 };
 
 const mapDispatchToProps= {

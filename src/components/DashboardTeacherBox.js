@@ -12,7 +12,7 @@ import COLORS from '../styles/variables';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
 // import firebase from '@react-native-firebase/app'
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 
 const {width,height}=Dimensions.get("window")
 
@@ -55,21 +55,21 @@ async componentDidMount() {
    this.setState({dashboardItems:this.state.popItems})
   this.props.TypeSignIn(await AsyncStorage.getItem('@typeofsignin'))
   this.setState({conut:this.state.dashboardItems})
-  var data= await AsyncStorage.getItem('@notification')
-     this.props.notification.length!==0 && this.setState({modalVisible:true})  
-      this.checkPermission();
-      const {dispatch} = this.props;
-      this.SaveTokenwithapi()
-      const unsubscribe = messaging().onMessage(async remoteMessage => {
-      this.setState({modalVisible:true})
-      this.props.getnotification(remoteMessage)
+  // var data= await AsyncStorage.getItem('@notification')
+  //    this.props.notification.length!==0 && this.setState({modalVisible:true})  
+  //     this.checkPermission();
+  //     const {dispatch} = this.props;
+  //     this.SaveTokenwithapi()
+  //     const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     this.setState({modalVisible:true})
+  //     this.props.getnotification(remoteMessage)
       
-     });
-        messaging().setBackgroundMessageHandler(async remoteMessage => {   
-        this.props.getnotification(remoteMessage)
-        this.setState({modalVisible:true})
-        ;
-      });  
+  //    });
+  //       messaging().setBackgroundMessageHandler(async remoteMessage => {   
+  //       this.props.getnotification(remoteMessage)
+  //       this.setState({modalVisible:true})
+  //       ;
+  //     });  
   }
 
 
@@ -79,69 +79,72 @@ async componentDidMount() {
     // this.state.dashboardItems.filter(obj=>this.props.navigation.state.param.select.filter(item=>{(item.index==obj.index)&& this.state.selectedItems.push(item)}))
  
   }
-   registerAppWithFCM=async ()=> {
-    await messaging().registerDeviceForRemoteMessages();
-  }
+  //  registerAppWithFCM=async ()=> {
+  //   await messaging().registerDeviceForRemoteMessages();
+  // }
 
-  async checkPermission() {
-    const enabled = await messaging().hasPermission();
-    if (enabled) {
-        this.getToken();
-    } else {
-        this.requestPermission();
-    }
-  }
+  // async checkPermission() {
+  //   const enabled = await messaging().hasPermission();
+  //   if (enabled) {
+  //       this.getToken();
+  //   } else {
+  //       this.requestPermission();
+  //   }
+  // }
   
 
-  async getToken() {
-    let fcmToken = await AsyncStorage.getItem('fcmToken');
+  // async getToken() {
+  //   let fcmToken = await AsyncStorage.getItem('fcmToken');
 
-    if (!fcmToken) {
-        fcmToken = await messaging().getToken();
-        if (fcmToken) {
+  //   if (!fcmToken) {
+  //       fcmToken = await messaging().getToken();
+  //       if (fcmToken) {
            
-            await AsyncStorage.setItem('fcmToken', fcmToken);
-        }
-    }
-  }
+  //           await AsyncStorage.setItem('fcmToken', fcmToken);
+  //       }
+  //   }
+  // }
   
-    //2
-  async requestPermission() {
-    try {
-        await messaging().requestPermission();
+ 
+//   async requestPermission() {
+//     try {
+//         await messaging().requestPermission();
 
-        this.getToken();
-    } catch (error) {
+//         this.getToken();
+//     } catch (error) {
        
-    }
-  }
+//     }
+//   }
 
-SaveTokenwithapi= async()=>{
-  axios
-  .post(
-    global.url + 'api/user/saveFirebase',
-    {
-      firebaseToken: await AsyncStorage.getItem('fcmToken')
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': await AsyncStorage.getItem('@token'),
-      },
-    },
-  )
-  .then(res => {
-    if (res.data.msg === 'success') {
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        alert(remoteMessage.notification)
+// SaveTokenwithapi= async()=>{
+//   console.warn("fcmmmmmmmmmmmmmm token",await AsyncStorage.getItem('getToken'))
+//   axios
+//   .post(
+//     global.url + 'api/user/saveFirebase',
+//     {
+//       firebaseToken: await AsyncStorage.getItem('getToken')
+//     },
+//     {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'x-access-token': await AsyncStorage.getItem('@token'),
+//       },
+//     },
+//   )
+//   .then(res => {
+//     if (res.data.msg === 'success') {
+//       console.warn("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",res.data.data)
+//       messaging().onNotificationOpenedApp(remoteMessage => {
+//         alert(remoteMessage.notification)
        
-      });
+//       });
       
-    }
-  })
-  .catch(error => {
-  });
-}
+//     }
+//   })
+//   .catch(error => {
+//     console.warn("ssssssssssssssssssssssssssssssssssssssssssssss",error)
+//   });
+// }
 
 addItems=(items)=>{
  

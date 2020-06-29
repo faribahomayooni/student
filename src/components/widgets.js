@@ -12,6 +12,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 import COLORS from './../styles/variables';
 
+
+const {width,height}= Dimensions.get('window')
 export class InputField extends Component {
   constructor(props) {
     super(props);
@@ -103,12 +105,12 @@ export class Button extends Component {
       },
     ];
     return (
-      <TouchableOpacity style={buttonStyle} onPress={onClick}>
+      <TouchableOpacity style={[buttonStyle,{justifyContent:"center"}]} onPress={onClick}>
         <View style={{flexDirection: 'row'}}>
           {imgSource !== '' ? (
             <Image style={{width: 25, height: 25}} source={imgSource} />
           ) : null}
-          <Text style={{color: '#fff', fontSize: 21, fontWeight: '700'}}>
+          <Text style={{color: '#fff', fontSize: 21, fontWeight: '700',marginRight:width/15}}>
             {name}
           </Text>
 

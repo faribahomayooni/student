@@ -60,6 +60,7 @@ class CalendarsScreen extends Component {
   }
 
 loadmonth=async(date)=>{
+  console.warn("#################",this.props.groupId)
   // console.warn("state of month and year in moment ",this.state.month===""?`${moment().year()}/0${moment().month()+1}/01}`:`${this.state.year}/0${this.state.month}/01`)
    var startDATE =date==undefined?`${moment().year()}/0${moment().month()+1}/01`:`${date.year}/0${date.month}/01`;
   var endDate =date==undefined?`${moment().year()}/0${moment().month()+1}/30`:`${date.year}/0${date.month}/30`;
@@ -80,13 +81,15 @@ loadmonth=async(date)=>{
   )
   .then(async(res )=> {
     if (res.data.msg === 'success') {
-      // console.warn("@@@@@@@@@@@@@@@@@@ res for load month",res.data.data)
-    await  this.setState({resloadmonthattendance:res.data.data})
+  await    this.setState({studentstatus:[]})
+      // this.props.CleangroupId(true)
+       console.warn("@@@@@@@@@@@@@@@@@@ res for load month",this.props.groupId,res.data.data)
+      this.setState({resloadmonthattendance:res.data.data})
       res.data.data !== undefined &&
-      res.data.data.filter(obj => {
-        if (obj.STATUS === 2) {
-         
-          this.state.studentstatus.push({
+      res.data.data.filter(async(obj )=> {
+     
+        if (obj.STATUS === 2) {      
+        this.state.studentstatus.push({
             date: obj.selected_date,
             type: 3,
             status:obj.CountStudent,
@@ -98,8 +101,9 @@ loadmonth=async(date)=>{
        
       });
   
-        this.anotherFunc();
+       this.anotherFunc();
     }
+    
   })
   .catch(error => {
   
@@ -167,23 +171,24 @@ loadmonth=async(date)=>{
   }
 
   componentDidMount(){
-    this.loadmonth()
+     this.setState({groupId:this.props.groupId})
+  
     let today = new Date();
     let mydate = moment(today, 'DD/MM/YYYY', true).format('YYYY-MM-DD');
     const {loadMonthAttendance} = this.props;
     this.loadStudentInfo()
+    this.loadmonth() 
    }
 
 
   
  componentWillReceiveProps=async(nexxt,dat)=>{
-    // console.warn("WILLRECIEVE^^^^^^^^^^^^^^^^^^^^^^^^^^ddddd^^^",this.state.studentid!==nexxt.groupId)
-  // this.func()
    if(this.state.counter!==this.props.count)
- {  
+   {  
   if(this.state.studentid!==nexxt.groupId){
+    this.setState({groupId:this.props.groupId})
     console.warn("+++++++++++++++++++++++",this.state.studentid,nexxt.groupId)
-    this.setState({studentstatus:[]})
+    // this.setState({studentstatus:[]})
     this.loadStudentInfo()
     this.setState({changedisablemode:true})
     this.setState({disable:['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday']});
@@ -192,16 +197,14 @@ loadmonth=async(date)=>{
     this.setState({studentid:nexxt.groupId})
     this.setState({studentstatus:[]})
     this.setState({dynamicdate:[]})
- }
-//  this.setState({press:false})
-if(this.state.press!==true){
-  this.loadmonth()
-
+    console.warn("##############",this.props.change)
 }
- 
+this.setState({press:false})
+
+  if(this.state.press!==true){
+  this.loadmonth()
+}
     }
-
-
  }
 
 getDaysInMonth(month, year, days) {
@@ -225,7 +228,6 @@ var filterdate=data.filter(obj=>obj===this.state.studentstatus.date)
 
 
 anotherFunc = async() => {
-//  console.warn("tessssssssssssssssssssssssssssssssssssst")
   var obj = await this.state.studentstatus.reduce(
     (c, v) =>
       Object.assign(c, {
@@ -245,9 +247,6 @@ anotherFunc = async() => {
             },
            
           },
-         
-
-          
         },
       
       }),
@@ -256,59 +255,59 @@ anotherFunc = async() => {
   );
     
    this.setState({dynamicdate:obj,changedisablemode:false})
-   this.setState({markedDates:{...this.state.markedDates,...obj}})
- 
+ await  this.setState({markedDates:{...this.state.markedDates,...obj}})
+console.warn("marrrrrrrrrrrrrrkeeeeeeeeeeeed",this.state.markedDates)
 };
   edit=async(day)=>{
     
  this.setState({press:true})
        this.props.savedate(day.dateString)
         //  this.props.allDate(this.state.studentstatus)
-         this.state.studentstatus.push(
-           { 
-             date:day.dateString,
-             type:2
+        //  this.state.studentstatus.push(
+        //    { 
+        //      date:day.dateString,
+        //      type:2
 
-           },
-           {
-             date:this.state.PressDate,
-             type:3
+        //    },
+        //    {
+        //      date:this.state.PressDate,
+        //      type:3
 
-           }
-         )
+        //    }
+        //  )
 
-         var obj = await this.state.studentstatus.reduce(
-          (c, v) =>
-            Object.assign(c, {
-               [v.date]: {         
-                customStyles: {
-                  container: {
-                    width: '95%',
-                    backgroundColor:
-                      (v.type === 1 && '#E7B52E') ||
-                      (v.type === 2 && 'blue') ||
-                      (v.type === 3 && '#88C755'),
-                    borderRadius: 0,
-                  },
-                  text: {
-                    color: 'white',
-                    fontSize:12,
-                  },
+        //  var obj = await this.state.studentstatus.reduce(
+        //   (c, v) =>
+        //     Object.assign(c, {
+        //        [v.date]: {         
+        //         customStyles: {
+        //           container: {
+        //             width: '95%',
+        //             backgroundColor:
+        //               (v.type === 1 && '#E7B52E') ||
+        //               (v.type === 2 && 'blue') ||
+        //               (v.type === 3 && '#88C755'),
+        //             borderRadius: 0,
+        //           },
+        //           text: {
+        //             color: 'white',
+        //             fontSize:12,
+        //           },
                  
-                },
+        //         },
                
       
                 
-              },
+        //       },
             
-            }),
+        //     }),
             
-          {},
-        );
+        //   {},
+        // );
           
-         this.setState({dynamicdate:obj,changedisablemode:false})
-         this.setState({markedDates:{...this.state.markedDates,...obj}})
-         this.setState({PressDate:day.dateString})
+        //  this.setState({dynamicdate:obj,changedisablemode:false})
+        //  this.setState({markedDates:{...this.state.markedDates,...obj}})
+        //  this.setState({PressDate:day.dateString})
          this.props.allDate(this.state.studentstatus)
 
   }
@@ -316,19 +315,18 @@ anotherFunc = async() => {
   
   componentWillUpdate(prevProps) {
      if (prevProps.isFocused !== this.props.isFocused) {
-       this.loadmonth()
+      //  this.loadmonth()
       this.setState({id:""})
        this.setState({studentstatus:[],dynamicdate:[]})
        this.setState({markedDates:[]})
-      //  this.loadmonth()
-  
+       this.loadmonth()
        }
      }
  
 
  
   render() {
-  //  console.warn("all data in calndar",this.state.AllDatsa)
+    console.warn("groupidddddddddddddddddddddddd",this.props.groupId)
     const {loadMonthAttendance} = this.props;
     return (
       <ScrollView style={styles.container}>
@@ -431,7 +429,6 @@ anotherFunc = async() => {
 
 const mapStateToProps = state => {
   return {
-    // loadMonthAttendance: state.api.loadMonthAttendance,
   };
 };
 
